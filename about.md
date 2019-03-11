@@ -28,7 +28,9 @@ mind and hand，我希望自己既会动脑，也会动手。
 <p> 
 
 
-![](/images/back.png)   
+
+![](/images/readme//back.png)   
+
 
 
 {% include comments.html %}
