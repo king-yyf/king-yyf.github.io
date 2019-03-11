@@ -1,0 +1,157 @@
+BODY {
+	/*margin: 2em;*/
+	padding : 1cm 1cm 2cm 1cm;
+	font-size : medium;
+	font-family : Luxi Serif, Lucida Serif, Lucida Sans, Verdana, Courier, helvetica, sans-serif, ËÎÌו;
+	background : white;
+	border-style: solid;
+        border-width: thick;        /* sets border width on all sides */
+        border-color: orange;
+}
+
+BODY.Home{
+	background: Navy;
+	border : thick solid #FFE4C4;
+}
+
+body.ascii{
+	background-color : Black;
+}
+
+BODY.fvwm {
+	width: 49em;
+}
+
+P{
+	text-indent : 2em;
+}
+
+p.banner {
+	text-align : center;
+}
+
+P.Home{
+}
+
+P.mmix{
+	text-indent : 0;
+	font-size : medium;
+}
+
+OL{
+	list-style-type: cjk-ideographic;
+	padding-bottom : 8px;
+	text-indent : 0;
+	font-size : medium;
+	/*background: gray;*/
+}
+
+OL.roman{
+	list-style-type: lower-roman;
+}
+	
+
+H2 {
+	font-size: 20pt;
+	color: navy;
+	text-align : left;
+}
+
+A{
+	color: blue;
+	text-decoration: none;
+}
+
+A:Hover {
+	text-decoration: none;
+	background-color: bisque;
+	caption-side : left;
+}
+
+HR {
+	color: #2E8B57;
+	height: 1pt;
+}
+
+UL {
+	list-style-type : circle;
+}
+
+div{
+	border : 1pt;
+	border-color : white;
+	border-style : solid;
+	padding: 10pt;
+}
+
+IMG{
+	border : 0;
+	margin : 4pt 4pt 4pt;
+}
+
+img.formula {
+	border : thin;
+	border-color: blue;
+	border-style : solid;
+}
+
+pre{
+	font-family: terminal, fixed;
+	font-size: 90%;
+	text-align: left;
+	border-style: solid;
+	border-width: thin;        /* sets border width on all sides */
+	border-color: blue;
+	padding: 2pt;
+	color: black;
+	background: pink;
+}
+
+pre.syntax {
+	background: lightblue;
+}
+pre.error {
+	background-color: red;
+}
+
+pre.url {
+	background: bisque;
+}
+
+em {
+	color: red;
+	text-decoration:none;
+	font-style:normal;
+}
+
+em.phrase {
+	color: blue;
+	text-decoration:none;
+	font-style:normal;
+}
+
+H1 {
+	color: Blue;
+	clear: left;
+	margin-top: 2em;
+	text-align: center;
+}
+LI {
+	margin-top: 3ex;
+}
+
+LI.explained {
+}
+
+p.adage{ 
+	background: lightyellow; 
+	border: green; 
+	border-style: solid;
+}
+
+p.script {
+	font-size: small;
+	text-align:right;
+}
+
+	
