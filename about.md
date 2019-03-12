@@ -29,7 +29,7 @@ mind and hand，我希望自己既会动脑，也会动手。
 
 
 
-<img src="http://sigmaho.oss-cn-qingdao.aliyuncs.com/blogs/back.png" height="380" width="701"> 
+<img src="http://sigmaho.oss-cn-qingdao.aliyuncs.com/blogs/back.png"  width="100%"> 
 
 <!-- ![](http://sigmaho.oss-cn-qingdao.aliyuncs.com/blogs/back.png)    -->
 
