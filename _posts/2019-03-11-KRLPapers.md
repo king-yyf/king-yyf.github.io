@@ -185,4 +185,51 @@ We release [OpenKE](https://github.com/thunlp/openKE), an open source toolkit fo
 *Dai Quoc Nguyen, Tu Dinh Nguyen, Dat Quoc Nguyen, Dinh Phung.* NAACL-HLT 2018. [paper](http://aclweb.org/anthology/N18-2053)
 	> ConvKB applies the global relationships among same dimensional entries of the entity and relation embeddings, so that ConvKB generalizes the transitional characteristics in the transition-based embedding models. In addition, ConvKB is evaluated on WN18RR and FB15K237.
 
+1. **Modeling Relational Data with Graph Convolutional Networks.**
+*Michael Schlichtkrull, Thomas N. Kipf, Peter Bloem, Rianne van den Berg, Ivan Titov, Max Welling.* ESWC 2018. [paper](https://arxiv.org/pdf/1703.06103.pdf) [code1](https://github.com/tkipf/relational-gcn) [code2](https://github.com/MichSchli/RelationPrediction)
+	> R-GCN applies Graph Convolutional Networks to relational Knowledge Bases creating a new encoder for the link predicion and entity classification tasks.
+
+1. **Improving Knowledge Graph Embedding Using Simple Constraints.**
+*Boyang Ding, Quan Wang, Bin Wang, Li Guo.* ACL 2018. [paper](https://aclweb.org/anthology/P18-1011) [code](https://github.com/iieir-km/ComplEx-NNE_AER)
+	> This paper investigates the potential of using very simple constraints to improve KG embedding. It examines non-negativity constraints on entity representations and approximate entailment constraints on relation representations.
+
+1. **Differentiating Concepts and Instances for Knowledge Graph Embedding.**
+*Xin Lv, Lei Hou, Juanzi Li, Zhiyuan Liu.* EMNLP 2018. [paper](http://aclweb.org/anthology/DB-1222) [code](https://github.com/davidlvxin/TransC)
+	> TransC proposes a novel knowledge graph embedding model by differentiating concepts and instances. Specifically, TransC encodes each concept in knowledge graph as a sphere and each instance as a vector in the same semantic space. This model can also handle the transitivity of isA relations much better than previous models.
+
+1. **SimplE Embedding for Link Prediction in Knowledge Graphs.**
+*Seyed Mehran Kazemi, David Poole.* NeurIPS 2018. [paper](https://www.cs.ubc.ca/~poole/papers/Kazemi_Poole_SimplE_NIPS_2018.pdf) [code](https://github.com/Mehran-k/SimplE)
+	> SimplE is a simple enhancement of CP (Canonical Polyadic) to allow the two embeddings of each entity to be learned dependently. The complexity of SimplE grows linearly with the size of embeddings. The embeddings learned through SimplE are interpretable, and certain types of background knowledge can be incorporated into these embeddings through weight tying.
+	
+1. **RotatE: Knowledge Graph Embedding by Relational Rotation in Complex Space.**
+*Zhiqing Sun, Zhi Hong Deng, Jian Yun Nie, Jian Tang.* ICLR 2019. [paper](https://openreview.net/pdf?id=HkgEQnRqYQ) [code](https://github.com/DeepGraphLearning/KnowledgeGraphEmbedding)
+	> RotatE infers various relation patterns including: symmetry/antisymmetry, inversion, and composition. Specifically, the RotatE model defines each relation as a rotation from the source entity to the target entity in the complex vector space. 
+	
+1. **TuckER: Tensor Factorization for Knowledge Graph Completion.**
+*Ivana Balazˇevic ́, Carl Allen, Timothy M. Hospedales.* arxiv 2019. [paper](https://arxiv.org/pdf/1901.09590.pdf) [code](https://github.com/ibalazevic/TuckER)
+	> TuckER is a relatively simple but powerful linear model based on Tucker decomposition of the binary tensor representation of knowledge graph triples. TuckER is a fully expressive model, deriving the bound on its entity and relation embedding dimensionality for full expressiveness which is several orders of magnitude smaller than the bound of previous models ComplEx and SimplE. Besides, TuckER achieves the state-of-the-art performance.
+
+1. **CrossE: Interaction Embeddings for Prediction and Explanation in Knowledge Graphs.**
+*Wen Zhang, Bibek Paudel, Wei Zhang.* WSDM 2019. [paper](https://arxiv.org/pdf/1903.04750.pdf)
+	>  CrossE, a novel knowledge graph embedding which explicitly simulates crossover interactions. It not only learns one general embedding for each entity and relation as most previous methods do, but also generates multiple triple specific embeddings for both of them, named interaction embeddings.
+
+1. **Learning Attention-based Embeddings for Relation Prediction in Knowledge Graphs.**
+*Deepak Nathani, Jatin Chauhan, Charu Sharma, Manohar Kaul.* ACL 2019. [paper](https://arxiv.org/pdf/1906.01195.pdf) [code](https://github.com/deepakn97/relationPrediction) [blog](https://deepakn97.github.io/blog/2019/Knowledge-Base-Relation-Prediction/)
+	> This is a novel attention-based feature embedding model that captures both entity and relation features in any given entity’s neighborhood. This architecture is an encoder-decoder model where the generalized graph attention model and ConvKB play the roles of encoder and decoder respectively.
+
+1. **RSN: Learning to Exploit Long-term Relational Dependencies in Knowledge Graphs.**
+*Lingbing Guo, Zequn Sun, Wei Hu.* ICML 2019. [paper](http://proceedings.mlr.press/v97/guo19c/guo19c.pdf)  [supplementary](http://proceedings.mlr.press/v97/guo19c/guo19c-supp.pdf) [code](https://github.com/nju-websoft/RSN) 
+	> RSNs integrate recurrent neural networks with residual learning to efficiently capture the long-term relational dependencies of entities within and between KGs. We also design an end-to-end framework to support RSNs on two tasks link prediction and entity alignment. 
+
+1. **DihEdral: Relation Embedding with Dihedral Group in Knowledge Graph.**
+*Canran Xu, Ruijiang Li.* ACL 2019. [paper](https://arxiv.org/abs/1906.00687)
+	> DihEdral models the relation in knowledge graphs with the representation of dihedral group. It is a bilinear model and supports relation symmetry, skew-symmetry, inversion, abelian composition and non-abelian composition due to the properties of dihedral group. 
+
+1. **CapsE:A Capsule Network-based Embedding Model for Knowledge Graph Completion and Search Personalization.**
+*Dai Quoc Nguyen, Thanh Vu, Tu Dinh Nguyen, Dat Quoc Nguyen, Dinh Q. Phung.* NAACL-HIT 2019. [paper](https://www.aclweb.org/anthology/N19-1226) [code](https://github.com/daiquocnguyen/CapsE)
+	> CapsE employs capsule network to model the entries in the triple at the same dimension. The high-level hypothesis is that each capsule accounts for capture variants of a relation-specific attribute of the entities. The length of the final vector serves as the plausibility score of the triple.
+
+1. **Learning Attention-based Embeddings for Relation Prediction in Knowledge Graphs.**
+*Deepak Nathani Jatin Chauhan Charu Sharma Manohar Kaul* ACL 2019. [paper](https://arxiv.org/abs/1906.01195)  [code](https://github.com/deepakn97/relationPrediction)
+
 
