@@ -5,9 +5,9 @@ title: 关于我
 
 程序员，喜欢写代码、逛论坛(reddit、v2ex...)、健身运动（球类、跑步、器械）。
 <p>
-**编程语言**：C, C++, Python, Java, Matlab, JavaScript, HTML, CSS, SQL, Latex
+<strong>编程语言</strong>>：C, C++, Python, Java, Matlab, JavaScript, HTML, CSS, SQL, Latex
 <p>
-**工具系统**：Pytorch,TensorFlow2, Sklearn, Linux, Git, Flask, MongoDB,MySQL,
+<strong>工具系统</strong>>：Pytorch,TensorFlow2, Sklearn, Linux, Git, Flask, MongoDB,MySQL,
 <p>
 研究兴趣包括知识图谱、信息抽取及相关应用。目前在做知识图谱中复杂关系的抽取、表示、推理和应用。
 <p>
@@ -24,7 +24,7 @@ title: 关于我
 
 <p>
 >> 2020-05-20 <br /> 
-        入职百度，加油！ <br /> 
+<blockquote>入职百度，加油！</blockquote>
 <p>
 >> 2020-05-10   <br /> 
         好久都没有更新过博客了，今天准备自己简历的时候，顺便捡起了落满灰尘的个人博客站点，希望可以坚持更新下去。  <br /> 
