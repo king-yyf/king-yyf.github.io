@@ -1,81 +1,83 @@
 ---
 layout: post
-title: 海量数据面试算法总结 
-date: 2020-05-10 
+title: 算法工程师思维导图 
+date: 2020-05-11
 tags: 算法    
 ---
 
-# 本文案由 夕小瑶的卖萌屋 整理
-算法工程师思维导图
+本资料源于夕小瑶的卖萌屋,我对此作了部分修改。
+
+
+#算法工程师思维导图
 
 ## 数学基础
 
 ### 线性代数
 
-https://www.zhihu.com/question/21082351/answer/1023650088
+[https://www.zhihu.com/question/21082351/answer/1023650088](https://www.zhihu.com/question/21082351/answer/1023650088)
 
 - 行列式
 
-  https://www.zhihu.com/question/36966326/answer/69790713
+  [https://www.zhihu.com/question/36966326/answer/69790713](https://www.zhihu.com/question/36966326/answer/69790713)
 
 - 矩阵运算
 
-  https://zhuanlan.zhihu.com/p/67943590
+  [https://zhuanlan.zhihu.com/p/67943590](https://zhuanlan.zhihu.com/p/67943590)
 
 ### 概率论与统计
 
 - 排列组合
 
-  https://zhuanlan.zhihu.com/p/76305844
-  好：https://zhuanlan.zhihu.com/p/105709399
+  [https://zhuanlan.zhihu.com/p/76305844](https://zhuanlan.zhihu.com/p/76305844)
+  和：[https://zhuanlan.zhihu.com/p/105709399](https://zhuanlan.zhihu.com/p/105709399)
 
 - 概率计算
 
     - 一根绳子被切两刀能组成一个三角形的概率
 
-      https://blog.csdn.net/hefenglian/article/details/82463746
+      [https://blog.csdn.net/hefenglian/article/details/82463746](https://blog.csdn.net/hefenglian/article/details/82463746)
 
     - 一段绳子切n刀，组成n边型
 
-      https://www.zhihu.com/question/25408010
+      [https://www.zhihu.com/question/25408010](https://www.zhihu.com/question/25408010)
 
     - 抛硬币多少次才连续两次正面朝上
 
-      https://zhuanlan.zhihu.com/p/68358814
+      [https://zhuanlan.zhihu.com/p/68358814](https://zhuanlan.zhihu.com/p/68358814)
 
     - 圆上取3点组成锐角三角形
 
-      https://zhuanlan.zhihu.com/p/69530841
+      [https://zhuanlan.zhihu.com/p/69530841](https://zhuanlan.zhihu.com/p/69530841)
 
     - 分配白球和红球，取到红球概率
 
-      https://blog.csdn.net/sysysty/article/details/52891663
+      [https://blog.csdn.net/sysysty/article/details/52891663](https://blog.csdn.net/sysysty/article/details/52891663)
 
     - 递归求期望
 
-      https://blog.csdn.net/pure_life/article/details/8100984
+      [https://blog.csdn.net/pure_life/article/details/8100984](https://blog.csdn.net/pure_life/article/details/8100984)
 
     - 地区每天下雨的概率是0.8，天气预报准确性为0.8
 
-      https://www.zhihu.com/question/41438692
+      [https://www.zhihu.com/question/41438692](https://www.zhihu.com/question/41438692)
 
 - 统计
 
     - 期望与方差
 
       常见分布：
-      https://blog.csdn.net/Ga4ra/article/details/78935537
+      [https://blog.csdn.net/Ga4ra/article/details/78935537](https://blog.csdn.net/Ga4ra/article/details/78935537)
       
       期望与方差的推导：
-      https://zhuanlan.zhihu.com/p/30496723
+      [https://zhuanlan.zhihu.com/p/30496723](https://zhuanlan.zhihu.com/p/30496723)
 
 ### 智力题
 
-https://zhuanlan.zhihu.com/p/106071158
+[https://zhuanlan.zhihu.com/p/106071158](https://zhuanlan.zhihu.com/p/106071158)
 
 - 取物游戏必胜
 
-  https://blog.csdn.net/lilinfang90/article/details/23481511
+  [https://blog.csdn.net/lilinfang90/article/details/23481511](https://blog.csdn.net/lilinfang90/article/details/23481511)
 
 ## 数据结构与算法
 
@@ -86,41 +88,41 @@ https://zhuanlan.zhihu.com/p/106071158
     - 二维矩阵/直方图最大距形面积
 
       矩阵最大面积：
-      https://leetcode-cn.com/problems/maximal-rectangle/solution/zui-da-ju-xing-by-leetcode/
+      [https://leetcode-cn.com/problems/maximal-rectangle/solution/zui-da-ju-xing-by-leetcode/](https://leetcode-cn.com/problems/maximal-rectangle/solution/zui-da-ju-xing-by-leetcode/)
       直方图dp
 
     - 最小栈
 
-      https://leetcode-cn.com/problems/min-stack/solution/xiang-xi-tong-su-de-si-lu-fen-xi-duo-jie-fa-by-38/
+      [https://leetcode-cn.com/problems/min-stack/solution/xiang-xi-tong-su-de-si-lu-fen-xi-duo-jie-fa-by-38/](https://leetcode-cn.com/problems/min-stack/solution/xiang-xi-tong-su-de-si-lu-fen-xi-duo-jie-fa-by-38/)
 
 - 链表
 
     - LRU：双向链表
 
-      https://leetcode-cn.com/problems/lru-cache/
+      [https://leetcode-cn.com/problems/lru-cache/](https://leetcode-cn.com/problems/lru-cache/)
       
       Least Recently Used
 
     - 寻找重复数-环的入口
 
-      https://leetcode-cn.com/problems/find-the-duplicate-number/
+      [https://leetcode-cn.com/problems/find-the-duplicate-number/](https://leetcode-cn.com/problems/find-the-duplicate-number/)
       
       快慢指针，相遇后，从头发起一个指针，按相同速度走，相遇即使环的入口
 
 - 并查集
 
-  http://www.cnblogs.com/cyjb/p/UnionFindSets.html
+  [http://www.cnblogs.com/cyjb/p/UnionFindSets.html](http://www.cnblogs.com/cyjb/p/UnionFindSets.html)
 
     - 字节跳动大闯关
 
-      https://blog.csdn.net/sinat_27705993/article/details/82053102
+      [https://blog.csdn.net/sinat_27705993/article/details/82053102](https://blog.csdn.net/sinat_27705993/article/details/82053102)
       
       求不同并查集的个数
       多一个count，每union一次count就减1
 
     - 岛屿个数
 
-      https://leetcode-cn.com/problems/number-of-islands/solution/dfs-bfs-bing-cha-ji-python-dai-ma-java-dai-ma-by-l/
+      [https://leetcode-cn.com/problems/number-of-islands/solution/dfs-bfs-bing-cha-ji-python-dai-ma-java-dai-ma-by-l/](https://leetcode-cn.com/problems/number-of-islands/solution/dfs-bfs-bing-cha-ji-python-dai-ma-java-dai-ma-by-l/)
       
       多开一个放0的岛
 
@@ -155,30 +157,30 @@ https://zhuanlan.zhihu.com/p/106071158
 
     - 二分查找树
 
-      AVL：https://mp.weixin.qq.com/s/dYP5-fM22BgM3viWg4V44A
+      AVL：[https://mp.weixin.qq.com/s/dYP5-fM22BgM3viWg4V44A](https://mp.weixin.qq.com/s/dYP5-fM22BgM3viWg4V44A)
       
-      为啥有了BST和AVL还需要红黑树？https://zhuanlan.zhihu.com/p/72505589
+      为啥有了BST和AVL还需要红黑树？[https://zhuanlan.zhihu.com/p/72505589](https://zhuanlan.zhihu.com/p/72505589)
       AVL每次进行插入/删除节点的时候，几乎都会破坏平衡树的第二个规则，进而我们都需要通过左旋和右旋来进行调整，使之再次成为一颗符合要求的平衡树
       如果在那种插入、删除很频繁的场景中，平衡树需要频繁着进行调整，这会使平衡树的性能大打折扣，为了解决这个问题，于是有了红黑树
 
     - 二叉树中的最大路径和
 
-      https://leetcode-cn.com/problems/binary-tree-maximum-path-sum/
+      [https://leetcode-cn.com/problems/binary-tree-maximum-path-sum/](https://leetcode-cn.com/problems/binary-tree-maximum-path-sum/)
 
     - 完全二叉树插入
 
-      https://blog.csdn.net/psc0606/article/details/48742239
+      [https://blog.csdn.net/psc0606/article/details/48742239](https://blog.csdn.net/psc0606/article/details/48742239)
       利用完全二叉树的性质，找到要插入的位置，先判断左子树的最右结点与右子树的最右结点高度，如果相等，只需要插入到左子树即可，否则插入右子树
 
     - 完全二叉树节点数
 
-      https://leetcode-cn.com/problems/count-complete-tree-nodes/solution/er-fen-cha-zhao-by-xu-yuan-shu/
+      [https://leetcode-cn.com/problems/count-complete-tree-nodes/solution/er-fen-cha-zhao-by-xu-yuan-shu/](https://leetcode-cn.com/problems/count-complete-tree-nodes/solution/er-fen-cha-zhao-by-xu-yuan-shu/)
 
 - 哈希表
 
     - 求最长非重复字符串长度
 
-      https://blog.csdn.net/zd_nupt/article/details/82669299
+      [https://blog.csdn.net/zd_nupt/article/details/82669299](https://blog.csdn.net/zd_nupt/article/details/82669299)
       
       做个hash_table表，记录每个字符的位置。碰到重复的就求两个重复字符之间的距离
 
@@ -186,11 +188,11 @@ https://zhuanlan.zhihu.com/p/106071158
 
         - 连续子数组和为k的倍数
 
-          https://leetcode-cn.com/problems/continuous-subarray-sum/solution/lian-xu-de-zi-shu-zu-he-by-leetcode/
+          [https://leetcode-cn.com/problems/continuous-subarray-sum/solution/lian-xu-de-zi-shu-zu-he-by-leetcode/](https://leetcode-cn.com/problems/continuous-subarray-sum/solution/lian-xu-de-zi-shu-zu-he-by-leetcode/)
 
         - 和为K的子数组
 
-          https://leetcode-cn.com/problems/subarray-sum-equals-k/
+          [https://leetcode-cn.com/problems/subarray-sum-equals-k/](https://leetcode-cn.com/problems/subarray-sum-equals-k/)
           
           连续区间和为K，用字典存储累计和
 
@@ -200,7 +202,7 @@ https://zhuanlan.zhihu.com/p/106071158
 
     - bug-free写法：左闭右开，先写排除中位数的逻辑
 
-      https://www.zhihu.com/question/36132386/answer/97729337
+      [https://www.zhihu.com/question/36132386/answer/97729337](https://www.zhihu.com/question/36132386/answer/97729337)
       lower/upper bound
 
     - 旋转数组
@@ -225,29 +227,29 @@ https://zhuanlan.zhihu.com/p/106071158
     - 寻找峰值
 
       左闭右开，往高的地方走
-      https://leetcode-cn.com/explore/learn/card/binary-search/210/template-ii/841/
+      [https://leetcode-cn.com/explore/learn/card/binary-search/210/template-ii/841/](https://leetcode-cn.com/explore/learn/card/binary-search/210/template-ii/841/)
 
     - 寻找重复数
 
-      https://leetcode-cn.com/problems/find-the-duplicate-number/solution/xun-zhao-zhong-fu-shu-by-leetcode/
+      [https://leetcode-cn.com/problems/find-the-duplicate-number/solution/xun-zhao-zhong-fu-shu-by-leetcode/](https://leetcode-cn.com/problems/find-the-duplicate-number/solution/xun-zhao-zhong-fu-shu-by-leetcode/)
 
     - 双数组中位数
 
-      https://leetcode-cn.com/problems/median-of-two-sorted-arrays/solution/xiang-xi-tong-su-de-si-lu-fen-xi-duo-jie-fa-by-w-2/
+      [https://leetcode-cn.com/problems/median-of-two-sorted-arrays/solution/xiang-xi-tong-su-de-si-lu-fen-xi-duo-jie-fa-by-w-2/](https://leetcode-cn.com/problems/median-of-two-sorted-arrays/solution/xiang-xi-tong-su-de-si-lu-fen-xi-duo-jie-fa-by-w-2/)
 
     - 找出第K小的距离对
 
-      https://leetcode-cn.com/problems/find-k-th-smallest-pair-distance/solution/hei-ming-dan-zhong-de-sui-ji-shu-by-leetcode/
+      [https://leetcode-cn.com/problems/find-k-th-smallest-pair-distance/solution/hei-ming-dan-zhong-de-sui-ji-shu-by-leetcode/](https://leetcode-cn.com/problems/find-k-th-smallest-pair-distance/solution/hei-ming-dan-zhong-de-sui-ji-shu-by-leetcode/)
       
       二分查找 + 双指针
 
     - 阶乘函数后K个零
 
-      https://leetcode-cn.com/problems/preimage-size-of-factorial-zeroes-function/solution/jie-cheng-han-shu-hou-kge-ling-by-leetcode/
+      [https://leetcode-cn.com/problems/preimage-size-of-factorial-zeroes-function/solution/jie-cheng-han-shu-hou-kge-ling-by-leetcode/](https://leetcode-cn.com/problems/preimage-size-of-factorial-zeroes-function/solution/jie-cheng-han-shu-hou-kge-ling-by-leetcode/)
 
     - 乘法表中第k小的数
 
-      https://leetcode-cn.com/problems/kth-smallest-number-in-multiplication-table/
+      [https://leetcode-cn.com/problems/kth-smallest-number-in-multiplication-table/](https://leetcode-cn.com/problems/kth-smallest-number-in-multiplication-table/)
       
       给定高度m 、宽度n 的一张 m * n的乘法表，以及正整数k，你需要返回表中第k 小的数字。
 
@@ -255,24 +257,24 @@ https://zhuanlan.zhihu.com/p/106071158
 
     - 迷宫中的最短路径
 
-      https://blog.csdn.net/qq_28468707/article/details/102786710
+      [https://blog.csdn.net/qq_28468707/article/details/102786710](https://blog.csdn.net/qq_28468707/article/details/102786710)
 
     - 字符串A和B的最小相似度
 
-      https://leetcode-cn.com/problems/k-similar-strings/solution/xiang-si-du-wei-k-de-zi-fu-chuan-by-leetcode/
+      [https://leetcode-cn.com/problems/k-similar-strings/solution/xiang-si-du-wei-k-de-zi-fu-chuan-by-leetcode/](https://leetcode-cn.com/problems/k-similar-strings/solution/xiang-si-du-wei-k-de-zi-fu-chuan-by-leetcode/)
 
     - 抖音红人
 
-      DFS：https://blog.csdn.net/anlian523/article/details/82557468
+      DFS：[https://blog.csdn.net/anlian523/article/details/82557468](https://blog.csdn.net/anlian523/article/details/82557468)
       
-      BFS：https://blog.csdn.net/u014253011/article/details/82556976
+      BFS：[https://blog.csdn.net/u014253011/article/details/82556976](https://blog.csdn.net/u014253011/article/details/82556976)
       对于每个用户，遍历粉丝数（记录visited）
 
 - DFS
 
     - 八皇后
 
-      https://blog.csdn.net/handsomekang/article/details/41308993
+      [https://blog.csdn.net/handsomekang/article/details/41308993](https://blog.csdn.net/handsomekang/article/details/41308993)
       
       一行一行依次遍历(从上往下),决定放在哪列(从左往右),这样就不用判断行冲突,只需要判断列冲突和主斜线副斜线冲突.
       
@@ -280,19 +282,19 @@ https://zhuanlan.zhihu.com/p/106071158
 
     - 全排列
 
-      https://leetcode-cn.com/problems/permutations/solution/
+      [https://leetcode-cn.com/problems/permutations/solution/](https://leetcode-cn.com/problems/permutations/solution/)
       
-      有重复数字的全排列 sort：https://leetcode-cn.com/problems/permutations-ii/
+      有重复数字的全排列 sort：[https://leetcode-cn.com/problems/permutations-ii/](https://leetcode-cn.com/problems/permutations-ii/)
 
     - 复原IP地址
 
-      https://blog.csdn.net/OneDeveloper/article/details/84946233
+      [https://blog.csdn.net/OneDeveloper/article/details/84946233](https://blog.csdn.net/OneDeveloper/article/details/84946233)
       
       dfs，如果加完3个“.”了则判断是否符合条件，否则继续加（start，start+3）
 
     - 连通岛屿个数
 
-      字节-部门合并：https://blog.csdn.net/zd_nupt/article/details/82669299
+      字节-部门合并：[https://blog.csdn.net/zd_nupt/article/details/82669299](https://blog.csdn.net/zd_nupt/article/details/82669299)
       
       dfs：每次遍历到1，则把联通的岛置为0
 
@@ -300,7 +302,7 @@ https://zhuanlan.zhihu.com/p/106071158
 
     - 两数之和
 
-      https://leetcode-cn.com/problems/two-sum-ii-input-array-is-sorted/solution/liang-shu-zhi-he-ii-shu-ru-you-xu-shu-zu-by-leetco/
+     [ https://leetcode-cn.com/problems/two-sum-ii-input-array-is-sorted/solution/liang-shu-zhi-he-ii-shu-ru-you-xu-shu-zu-by-leetco/]( https://leetcode-cn.com/problems/two-sum-ii-input-array-is-sorted/solution/liang-shu-zhi-he-ii-shu-ru-you-xu-shu-zu-by-leetco/)
       
       在已排序的数组中找到两个数，和为target
       
@@ -312,7 +314,7 @@ https://zhuanlan.zhihu.com/p/106071158
 
     - 数组中两数相减的最大值
 
-      https://blog.csdn.net/fkyyly/article/details/83930343
+      [https://blog.csdn.net/fkyyly/article/details/83930343](https://blog.csdn.net/fkyyly/article/details/83930343)
       
       非排序数组中两个数相减（前面减后面）的最大值。
       i<j, max(a[i]-a[j])
@@ -324,17 +326,17 @@ https://zhuanlan.zhihu.com/p/106071158
 
     - 最小覆盖子串
 
-      https://leetcode-cn.com/problems/minimum-window-substring/solution/zui-xiao-fu-gai-zi-chuan-by-leetcode-2/
+      [https://leetcode-cn.com/problems/minimum-window-substring/solution/zui-xiao-fu-gai-zi-chuan-by-leetcode-2/](https://leetcode-cn.com/problems/minimum-window-substring/solution/zui-xiao-fu-gai-zi-chuan-by-leetcode-2/)
 
     - 和为K的子数组
 
-      https://blog.csdn.net/a546167160/article/details/94401251
+      [https://blog.csdn.net/a546167160/article/details/94401251](https://blog.csdn.net/a546167160/article/details/94401251)
       
       当区间和等于target，再向后遍历，可以i+或j+，但是j+可能会越界，因此选择i+
 
     - 乘积小于K的子数组
 
-      https://leetcode-cn.com/problems/subarray-product-less-than-k/solution/cheng-ji-xiao-yu-kde-zi-shu-zu-by-leetcode/
+      [https://leetcode-cn.com/problems/subarray-product-less-than-k/solution/cheng-ji-xiao-yu-kde-zi-shu-zu-by-leetcode/](https://leetcode-cn.com/problems/subarray-product-less-than-k/solution/cheng-ji-xiao-yu-kde-zi-shu-zu-by-leetcode/)
 
 ### 排序
 
@@ -362,7 +364,7 @@ https://zhuanlan.zhihu.com/p/106071158
 
     - 快速排序
 
-      https://blog.csdn.net/qq_36528114/article/details/78667034
+      [https://blog.csdn.net/qq_36528114/article/details/78667034](https://blog.csdn.net/qq_36528114/article/details/78667034)
       
       快排优化：
       1. 在个数小于N时使用插入排序
@@ -374,7 +376,7 @@ https://zhuanlan.zhihu.com/p/106071158
 - 归并排序：稳定
 
   原地归并：直接把合适的片段swap过去
-  https://blog.csdn.net/xiaolewennofollow/article/details/50896881
+  [https://blog.csdn.net/xiaolewennofollow/article/details/50896881](https://blog.csdn.net/xiaolewennofollow/article/details/50896881)
   两个片段的交换需要三次逆转：分别逆转[1, i]和[i+1,n]
   再逆转[1, n]
   
@@ -382,50 +384,51 @@ https://zhuanlan.zhihu.com/p/106071158
 
     - 数组中的逆序对
 
-      https://leetcode-cn.com/problems/shu-zu-zhong-de-ni-xu-dui-lcof/
+      [https://leetcode-cn.com/problems/shu-zu-zhong-de-ni-xu-dui-lcof/](https://leetcode-cn.com/problems/shu-zu-zhong-de-ni-xu-dui-lcof/)
 
     - 区间和的个数在某个区间
 
-      https://leetcode-cn.com/problems/count-of-range-sum/
+      [https://leetcode-cn.com/problems/count-of-range-sum/](https://leetcode-cn.com/problems/count-of-range-sum/)
 
 - 基数排序：稳定
 - 链表排序
 
-  https://www.cnblogs.com/TenosDoIt/p/3666585.html
-  https://leetcode-cn.com/problems/sort-list/solution/sort-list-gui-bing-pai-xu-lian-biao-by-jyd/
+  [https://www.cnblogs.com/TenosDoIt/p/3666585.html
+    https://leetcode-cn.com/problems/sort-list/solution/sort-list-gui-bing-pai-xu-lian-biao-by-jyd/](https://www.cnblogs.com/TenosDoIt/p/3666585.html
+  https://leetcode-cn.com/problems/sort-list/solution/sort-list-gui-bing-pai-xu-lian-biao-by-jyd/)
 
 - 拓扑排序
 
-  https://www.cnblogs.com/fengziwei/p/7875355.html
+  [https://www.cnblogs.com/fengziwei/p/7875355.html](https://www.cnblogs.com/fengziwei/p/7875355.html)
 
 - 字典序
 
     - 下一个排列
 
-      https://leetcode-cn.com/articles/next-permutation/
+      [https://leetcode-cn.com/articles/next-permutation/](https://leetcode-cn.com/articles/next-permutation/)
 
     - 字典序的第K小数字
 
-      https://leetcode-cn.com/problems/k-th-smallest-in-lexicographical-order/
+      [https://leetcode-cn.com/problems/k-th-smallest-in-lexicographical-order/](https://leetcode-cn.com/problems/k-th-smallest-in-lexicographical-order/)
 
     - 字典序排数-先序遍历
 
-      https://leetcode-cn.com/problems/lexicographical-numbers/
+      [https://leetcode-cn.com/problems/lexicographical-numbers/](https://leetcode-cn.com/problems/lexicographical-numbers/)
 
     - 按字典序排在最后的子串
 
-      https://leetcode-cn.com/problems/last-substring-in-lexicographical-order/
+      [https://leetcode-cn.com/problems/last-substring-in-lexicographical-order/](https://leetcode-cn.com/problems/last-substring-in-lexicographical-order/)
 
 - TopK问题
 
     - 移除K位数字得到最小结果-栈
 
       给定一个以字符串表示的非负整数 num，移除这个数中的 k 位数字，使得剩下的数字最小。
-      https://leetcode-cn.com/problems/remove-k-digits/
+      [https://leetcode-cn.com/problems/remove-k-digits/](https://leetcode-cn.com/problems/remove-k-digits/)
 
     - 数组中前K个高频元素
 
-      https://leetcode-cn.com/problems/top-k-frequent-elements/solution/leetcode-di-347-hao-wen-ti-qian-k-ge-gao-pin-yuan-/
+     [ https://leetcode-cn.com/problems/top-k-frequent-elements/solution/leetcode-di-347-hao-wen-ti-qian-k-ge-gao-pin-yuan-/]( https://leetcode-cn.com/problems/top-k-frequent-elements/solution/leetcode-di-347-hao-wen-ti-qian-k-ge-gao-pin-yuan-/)
       
       哈希统计频率+topK排序
       
@@ -433,21 +436,21 @@ https://zhuanlan.zhihu.com/p/106071158
 
     - 查找和最小的K对数字
 
-      https://leetcode-cn.com/problems/find-k-pairs-with-smallest-sums/
+      [https://leetcode-cn.com/problems/find-k-pairs-with-smallest-sums/](https://leetcode-cn.com/problems/find-k-pairs-with-smallest-sums/)
 
 ### 动态规划
 
 - 编辑距离
 
-  https://zhuanlan.zhihu.com/p/80682302
+  [https://zhuanlan.zhihu.com/p/80682302](https://zhuanlan.zhihu.com/p/80682302)
 
 - 最长回文子序列／子串
 
   最长回文子序列：bbbab -> bbbb
-  https://leetcode-cn.com/problems/longest-palindromic-subsequence/solution/dong-tai-gui-hua-si-yao-su-by-a380922457-3/
+ [ https://leetcode-cn.com/problems/longest-palindromic-subsequence/solution/dong-tai-gui-hua-si-yao-su-by-a380922457-3/]( https://leetcode-cn.com/problems/longest-palindromic-subsequence/solution/dong-tai-gui-hua-si-yao-su-by-a380922457-3/)
   
   最长回文子串：bbbab -> bbb
-  https://leetcode-cn.com/problems/longest-palindromic-substring/solution/zui-chang-hui-wen-zi-chuan-by-leetcode/
+  [https://leetcode-cn.com/problems/longest-palindromic-substring/solution/zui-chang-hui-wen-zi-chuan-by-leetcode/](https://leetcode-cn.com/problems/longest-palindromic-substring/solution/zui-chang-hui-wen-zi-chuan-by-leetcode/)
 
 - LCS
 
@@ -469,20 +472,20 @@ https://zhuanlan.zhihu.com/p/106071158
 
 - 背包问题
 
-  https://blog.csdn.net/stack_queue/article/details/53544109
+ [ https://blog.csdn.net/stack_queue/article/details/53544109]( https://blog.csdn.net/stack_queue/article/details/53544109)
 
 - 最短路径
 
-  Dijkstra：单源&边权非负 https://www.jianshu.com/p/ff6db00ad866
+  Dijkstra：单源&边权非负 [https://www.jianshu.com/p/ff6db00ad866](https://www.jianshu.com/p/ff6db00ad866)
   
   Floyd：全源&负环，任意两点间的最短路径，时间复杂度为O(N3)，空间复杂度为O(N2) 
   
-  Bellmanford：单源 https://blog.csdn.net/lpjishu/article/details/52413812
+  Bellmanford：单源 [https://blog.csdn.net/lpjishu/article/details/52413812](https://blog.csdn.net/lpjishu/article/details/52413812)
   Johnson：全源&非负环
 
 - 股票问题
 
-  https://leetcode-cn.com/problems/best-time-to-buy-and-sell-stock/solution/yi-ge-fang-fa-tuan-mie-6-dao-gu-piao-wen-ti-by-l-3/
+  [https://leetcode-cn.com/problems/best-time-to-buy-and-sell-stock/solution/yi-ge-fang-fa-tuan-mie-6-dao-gu-piao-wen-ti-by-l-3/](https://leetcode-cn.com/problems/best-time-to-buy-and-sell-stock/solution/yi-ge-fang-fa-tuan-mie-6-dao-gu-piao-wen-ti-by-l-3/)
 
 ### 模式匹配
 
@@ -490,7 +493,7 @@ https://zhuanlan.zhihu.com/p/106071158
 
   字符串匹配，返回第一个匹配的位置
   
-  https://www.zhihu.com/question/21923021/answer/281346746
+  [https://www.zhihu.com/question/21923021/answer/281346746](https://www.zhihu.com/question/21923021/answer/281346746)
 
 - 多模式单匹配：Trie
 - 多模式多匹配：AC自动机
@@ -513,7 +516,7 @@ https://zhuanlan.zhihu.com/p/106071158
     - 梯度消失与爆炸
 
       反向传播到梯度消失爆炸
-      https://zhuanlan.zhihu.com/p/76772734
+      [https://zhuanlan.zhihu.com/p/76772734](https://zhuanlan.zhihu.com/p/76772734)
 
         - 原因
 
@@ -543,7 +546,7 @@ https://zhuanlan.zhihu.com/p/106071158
 
       通过平铺的方式转换成全联接层
       
-      https://zhuanlan.zhihu.com/p/81675803
+      [https://zhuanlan.zhihu.com/p/81675803](https://zhuanlan.zhihu.com/p/81675803)
       
       avg pooling：相当于成了w = [1/4, 1/4, 1/4, 1/4]
 
@@ -563,7 +566,7 @@ https://zhuanlan.zhihu.com/p/106071158
 
 - RNN
 
-  https://zhuanlan.zhihu.com/p/34203833
+  [https://zhuanlan.zhihu.com/p/34203833](https://zhuanlan.zhihu.com/p/34203833)
 
     - 归纳偏置：sequentiality & time invariance
     - BPTT
@@ -571,7 +574,7 @@ https://zhuanlan.zhihu.com/p/106071158
 
         - 原因
 
-          https://zhuanlan.zhihu.com/p/76772734?utm_source=wechat_session&utm_medium=social&utm_oi=46298732429312
+          [https://zhuanlan.zhihu.com/p/76772734?utm_source=wechat_session&utm_medium=social&utm_oi=46298732429312](https://zhuanlan.zhihu.com/p/76772734?utm_source=wechat_session&utm_medium=social&utm_oi=46298732429312)
           DNN中各个权重的梯度是独立的，该消失的就会消失，不会消失的就不会消失。
           RNN的特殊性在于，它的权重是共享的。当距离长了，最前面的导数就会消失或爆炸，但当前时刻整体的梯度并不会消失，因为它是求和的过程。
           RNN 所谓梯度消失的真正含义是，梯度被近距离梯度主导，导致模型难以学到远距离的依赖关系。
@@ -584,7 +587,7 @@ https://zhuanlan.zhihu.com/p/106071158
 
       消失：通过长时记忆单元，类似残差链接。但后来加了遗忘门，遗忘门介于0-1，梯度仍有可能消失
       爆炸：梯度仍可能爆炸，但LSTM机制复杂，多了一层激活函数sigmoid，可以通过正则与裁剪解决
-      https://zhuanlan.zhihu.com/p/30465140
+      [https://zhuanlan.zhihu.com/p/30465140](https://zhuanlan.zhihu.com/p/30465140)
 
         - 结构
         - 各模块可以使用其他激活函数吗？
@@ -622,7 +625,7 @@ https://zhuanlan.zhihu.com/p/106071158
 
     - Multi-head
 
-      https://zhuanlan.zhihu.com/p/76912493
+      [https://zhuanlan.zhihu.com/p/76912493](https://zhuanlan.zhihu.com/p/76912493)
       
       - 多头机制为什么有效？
       1.类似于CNN中通过多通道机制进行特征选择；
@@ -634,7 +637,7 @@ https://zhuanlan.zhihu.com/p/106071158
 
 ### 激活函数
 
-https://zhuanlan.zhihu.com/p/73214810
+[https://zhuanlan.zhihu.com/p/73214810](https://zhuanlan.zhihu.com/p/73214810)
 
 - tanh
 
@@ -665,8 +668,9 @@ https://zhuanlan.zhihu.com/p/73214810
 
 - gelu
 
-  https://zhuanlan.zhihu.com/p/100175788
-  https://blog.csdn.net/liruihongbob/article/details/86510622
+  [https://zhuanlan.zhihu.com/p/100175788
+    https://blog.csdn.net/liruihongbob/article/details/86510622](https://zhuanlan.zhihu.com/p/100175788
+  https://blog.csdn.net/liruihongbob/article/details/86510622)
   ReLu：缺乏随机因素，只用0和1
   
   https://www.cnblogs.com/shiyublog/p/11121839.html
@@ -696,7 +700,7 @@ https://zhuanlan.zhihu.com/p/73214810
 - softmax
 
   sigmoid是softmax的特例：
-  https://blog.csdn.net/weixin_37136725/article/details/53884173
+  [https://blog.csdn.net/weixin_37136725/article/details/53884173](https://blog.csdn.net/weixin_37136725/article/details/53884173)
 
     - 求梯度？
 
@@ -709,7 +713,7 @@ https://zhuanlan.zhihu.com/p/73214810
     - sigmoid loss
     - cross entropy
 
-      求导：https://zhuanlan.zhihu.com/p/60042105
+      求导：[https://zhuanlan.zhihu.com/p/60042105](https://zhuanlan.zhihu.com/p/60042105)
 
 - 回归
 
@@ -730,7 +734,7 @@ https://zhuanlan.zhihu.com/p/73214810
 
     - 一阶法：梯度下降
 
-      https://zhuanlan.zhihu.com/p/111932438
+      [https://zhuanlan.zhihu.com/p/111932438](https://zhuanlan.zhihu.com/p/111932438)
 
         - SGD
 
@@ -822,8 +826,8 @@ https://zhuanlan.zhihu.com/p/73214810
     - weight decay
 
       在更新w时减去一个常数，跟L2求导之后的公式一致
-      https://bbabenko.github.io/weight-decay/
-      Weight decay和L2正则在SGD情况下等价，Adam下不等：https://zhuanlan.zhihu.com/p/40814046
+      [https://bbabenko.github.io/weight-decay/](https://bbabenko.github.io/weight-decay/)
+      Weight decay和L2正则在SGD情况下等价，Adam下不等：[https://zhuanlan.zhihu.com/p/40814046](https://zhuanlan.zhihu.com/p/40814046)
       权重越大惩罚应该越大，但adam的adagrad调整使得惩罚变小
 
     - 正则项
@@ -905,8 +909,8 @@ https://zhuanlan.zhihu.com/p/73214810
 
         - 逻辑回归
 
-          由对数几率=>sigmoid：https://zhuanlan.zhihu.com/p/42656051
-          公式推导：https://zhuanlan.zhihu.com/p/44591359
+          由对数几率=>sigmoid：[https://zhuanlan.zhihu.com/p/42656051](https://zhuanlan.zhihu.com/p/42656051)
+          公式推导：[https://zhuanlan.zhihu.com/p/44591359](https://zhuanlan.zhihu.com/p/44591359)
 
             - 简介
 
@@ -935,7 +939,7 @@ https://zhuanlan.zhihu.com/p/73214810
             - 线性决策边界
             - 为什么不能用线性回归做分类？
 
-              https://www.zhihu.com/question/319865092/answer/661614886
+              [https://www.zhihu.com/question/319865092/answer/661614886](https://www.zhihu.com/question/319865092/answer/661614886)
               平方差的意义和交叉熵的意义不一样。概率理解上，平方损失函数意味着模型的输出是以预测值为均值的高斯分布，损失函数是在这个预测分布下真实值的似然度，softmax损失意味着真实标签的似然度。
 
     - 生成式
@@ -946,7 +950,7 @@ https://zhuanlan.zhihu.com/p/73214810
           
           当特征离散时为线性分类：
           离散特征的朴素贝叶斯分类器判别公式能够写成特征值的加权线性组合。
-          https://www.jianshu.com/p/469accb2e1a0
+          [https://www.jianshu.com/p/469accb2e1a0](https://www.jianshu.com/p/469accb2e1a0)
 
             - 假设：条件独立性
 
@@ -965,15 +969,15 @@ https://zhuanlan.zhihu.com/p/73214810
           假定已知类中的x的分别服从高斯分布，对于二分类，p(x|y=0)和p(x|y=1)分别服从两个高斯分布，方差一样，y服从bernoulli(p), P(y) = p^y(1-p)^(1-y)
           
           方差相同的情况下为线性分类（可以写成特征值x的线性加权组合）：
-          https://www.jianshu.com/p/469accb2e1a0
+          [https://www.jianshu.com/p/469accb2e1a0](https://www.jianshu.com/p/469accb2e1a0)
           方差相同时把x^2消掉了，否则带有x^2就不是线性了
 
 ### SVM
 
-https://zhuanlan.zhihu.com/p/61123737
+[https://zhuanlan.zhihu.com/p/61123737](https://zhuanlan.zhihu.com/p/61123737)
 
-解读：https://zhuanlan.zhihu.com/p/49331510 
-考点：https://zhuanlan.zhihu.com/p/76946313
+解读：[https://zhuanlan.zhihu.com/p/49331510](https://zhuanlan.zhihu.com/p/49331510) 
+考点：[https://zhuanlan.zhihu.com/p/76946313](https://zhuanlan.zhihu.com/p/76946313)
 
 - 分类
 
@@ -1009,23 +1013,23 @@ https://zhuanlan.zhihu.com/p/61123737
 
 
 理解泰勒展开： 
-https://www.zhihu.com/question/25627482/answer/31229830
+[https://www.zhihu.com/question/25627482/answer/31229830](https://www.zhihu.com/question/25627482/answer/31229830)
 理解GBDT： 
-https://www.zybuluo.com/yxd/note/611571 最好的 
-https://zhuanlan.zhihu.com/p/29765582 第二好 
-http://wepon.me/files/gbdt.pdf
-https://www.zhihu.com/question/50121267/answer/129903947
+[https://www.zybuluo.com/yxd/note/611571](https://www.zybuluo.com/yxd/note/611571) 最好的 
+[https://zhuanlan.zhihu.com/p/29765582](https://zhuanlan.zhihu.com/p/29765582) 第二好 
+[http://wepon.me/files/gbdt.pdf](http://wepon.me/files/gbdt.pdf)
+[https://www.zhihu.com/question/50121267/answer/129903947](https://www.zhihu.com/question/50121267/answer/129903947)
 官方文档： 
-https://github.com/dmlc/xgboost/tree/master/demo
-http://xgboost.readthedocs.io/en/latest/parameter.html#general-parameters
-http://xgboost.readthedocs.io/en/latest/python/python_api.html
+[https://github.com/dmlc/xgboost/tree/master/demo](https://github.com/dmlc/xgboost/tree/master/demo)
+[http://xgboost.readthedocs.io/en/latest/parameter.html#general-parameters](http://xgboost.readthedocs.io/en/latest/parameter.html#general-parameters)
+[http://xgboost.readthedocs.io/en/latest/python/python_api.html](http://xgboost.readthedocs.io/en/latest/python/python_api.html)
 调参： 
-https://www.analyticsvidhya.com/blog/2016/03/complete-guide-parameter-tuning-xgboost-with-codes-python/
-https://www.dataiku.com/learn/guide/code/python/advanced-xgboost-tuning.html
+[https://www.analyticsvidhya.com/blog/2016/03/complete-guide-parameter-tuning-xgboost-with-codes-python/](https://www.analyticsvidhya.com/blog/2016/03/complete-guide-parameter-tuning-xgboost-with-codes-python/)
+[https://www.dataiku.com/learn/guide/code/python/advanced-xgboost-tuning.html](https://www.dataiku.com/learn/guide/code/python/advanced-xgboost-tuning.html)
 源码剖析： 
-https://wenku.baidu.com/view/44778c9c312b3169a551a460.html
-min_child_weight: https://www.zhihu.com/question/68621766 
-scale_pos_weight: https://blog.csdn.net/h4565445654/article/details/72257538 
+[https://wenku.baidu.com/view/44778c9c312b3169a551a460.html](https://wenku.baidu.com/view/44778c9c312b3169a551a460.html)
+min_child_weight: [https://www.zhihu.com/question/68621766](https://www.zhihu.com/question/68621766) 
+scale_pos_weight: [https://blog.csdn.net/h4565445654/article/details/72257538](https://blog.csdn.net/h4565445654/article/details/72257538) 
 节点分裂：H，Weighted Quantile Sketch, h对loss有加权的作用 
 稀疏值处理： 
 行抽样、列抽样 
@@ -1037,8 +1041,8 @@ Exclusive Feature Bundling (EFB)
 
 *LightGBM 
 官方文档： 
-http://lightgbm.readthedocs.io/en/latest/
-https://github.com/Microsoft/LightGBM
+[http://lightgbm.readthedocs.io/en/latest/](http://lightgbm.readthedocs.io/en/latest/)
+[https://github.com/Microsoft/LightGBM](https://github.com/Microsoft/LightGBM)
 改进： 
 直方图算法 
 直方图差加速 
@@ -1052,14 +1056,14 @@ Leaf-wise建树
 
 
 * Random Forest 
-随机森林调参：http://www.cnblogs.com/pinard/p/6160412.html 
-原理：http://www.cnblogs.com/pinard/p/6156009.html 
-https://www.jianshu.com/p/dbf21ed8be88
+随机森林调参：[http://www.cnblogs.com/pinard/p/6160412.html](http://www.cnblogs.com/pinard/p/6160412.html) 
+原理：[http://www.cnblogs.com/pinard/p/6156009.html](http://www.cnblogs.com/pinard/p/6156009.html) 
+[https://www.jianshu.com/p/dbf21ed8be88](https://www.jianshu.com/p/dbf21ed8be88)
 随机森林优化： 
-https://stackoverflow.com/questions/23075506/how-to-improve-randomforest-performance
+[https://stackoverflow.com/questions/23075506/how-to-improve-randomforest-performance](https://stackoverflow.com/questions/23075506/how-to-improve-randomforest-performance)
 树模型调参： 
-https://www.zhihu.com/question/34470160/answer/114305935
-https://zhuanlan.zhihu.com/p/25308120
+[https://www.zhihu.com/question/34470160/answer/114305935](https://www.zhihu.com/question/34470160/answer/114305935)
+[https://zhuanlan.zhihu.com/p/25308120](https://zhuanlan.zhihu.com/p/25308120)
 
 - 信息熵相关概念
 - 生成
@@ -1084,12 +1088,12 @@ https://zhuanlan.zhihu.com/p/25308120
 
 - 有向图
 
-  https://www.zhihu.com/question/53458773/answer/554436625
+  [https://www.zhihu.com/question/53458773/answer/554436625](https://www.zhihu.com/question/53458773/answer/554436625)
   贝叶斯网络(Bayesian Networks, BNs)是有向图, 每个节点的条件概率分布表示为P(当前节点|父节点)
 
     - 朴素贝叶斯
 
-      https://www.zhihu.com/question/53458773/answer/554436625
+      [https://www.zhihu.com/question/53458773/answer/554436625](https://www.zhihu.com/question/53458773/answer/554436625)
       从朴素贝叶斯到HMM：
       在输出序列的y时，依据朴素贝叶斯只有 p(yi, xi) = P(xi|yi)P(yi)。没有考虑yi之间的关系，因此加入P(yi|yi-1)，得到HMM
 
@@ -1121,12 +1125,12 @@ https://zhuanlan.zhihu.com/p/25308120
 
 - 无向图
 
-  https://www.zhihu.com/question/53458773/answer/554436625
+  [https://www.zhihu.com/question/53458773/answer/554436625](https://www.zhihu.com/question/53458773/answer/554436625)
   马尔可夫网络则是无向图, 包含了一组具有马尔可夫性质的随机变量. 马尔可夫随机场(Markov Random Fields, MRF)是由参数(S,π,A)表示, 其中S是状态的集合，π是初始状态的概率, A是状态间的转移概率。一阶马尔可夫链就是假设t时刻的状态只依赖于前一时刻的状态，与其他时刻的状态和观测无关。这个性质可以用于简化概率链的计算。
 
     - 逻辑回归
 
-      https://www.zhihu.com/question/265995680/answer/303148257
+      [https://www.zhihu.com/question/265995680/answer/303148257](https://www.zhihu.com/question/265995680/answer/303148257)
       朴素贝叶斯与逻辑回归的关系？
       都是对 几率P/(1-P)进行拟合：
       朴素贝叶斯基于条件独立假设，另特征间相互独立，通过P(X|Y)P(Y)=>联合概率分布求得几率
@@ -1136,7 +1140,7 @@ https://zhuanlan.zhihu.com/p/25308120
 
         - 模型定义
 
-          举例：https://zhuanlan.zhihu.com/p/104562658
+          举例：[https://zhuanlan.zhihu.com/p/104562658](https://zhuanlan.zhihu.com/p/104562658)
           
           无向图：在给一个节点打标签时，把相邻节点的信息考虑进来（马尔可夫性：只与相邻的两个状态有关）
           线性链条件随机场：P(Yi|X,Y1,...Yn) = P(Yi|X, Yi-1, Yi+1)，只考虑当前和前一个
@@ -1160,11 +1164,10 @@ https://zhuanlan.zhihu.com/p/25308120
           1.CRF可以定义数量更多，种类更丰富的特征函数。HMM从朴素贝叶斯而来，有条件独立假设，每个观测变量只与状态变量有关。但是CRF却可以着眼于整个句子s定义更具有全局性的特征函数
           2.CRF可以使用任意的权重。将对数HMM模型看做CRF时，特征函数的权重由于是log形式的概率
           
-          https://zhuanlan.zhihu.com/p/31187060
+          [https://zhuanlan.zhihu.com/p/31187060](https://zhuanlan.zhihu.com/p/31187060)
           1.HMM是生成模型，CRF是判别模型
           2.HMM是概率有向图，CRF是概率无向图
           3.HMM求解过程可能是局部最优，CRF可以全局最优（对数似然为凸函数）
           4.CRF概率归一化较合理，HMM则会导致label bias 问题
 
-## 
 
