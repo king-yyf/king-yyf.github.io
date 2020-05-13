@@ -5,9 +5,9 @@ title: 关于我
 
 程序员，喜欢写代码、逛论坛(reddit、v2ex...)、健身运动（球类、跑步、器械）。
 <p>
-<strong>编程语言</strong>>：C, C++, Python, Java, Matlab, JavaScript, HTML, CSS, SQL, Latex
+<strong>编程语言</strong>：C, C++, Python, Java, Matlab, JavaScript, HTML, CSS, SQL, Latex
 <p>
-<strong>工具系统</strong>>：Pytorch,TensorFlow2, Sklearn, Linux, Git, Flask, MongoDB,MySQL,
+<strong>工具系统</strong>：Pytorch,TensorFlow2, Sklearn, Linux, Git, Flask, MongoDB,MySQL
 <p>
 研究兴趣包括知识图谱、信息抽取及相关应用。目前在做知识图谱中复杂关系的抽取、表示、推理和应用。
 <p>
@@ -80,7 +80,7 @@ title: 关于我
 <blockquote>北漂实习，租到个位置不错还算便宜的房子。</blockquote>
 <p>
 >> 2017-07-12  <br /> 
-<blockquote>北京大学夏令营结束，觉得不参加其它学校夏令营了，回学校</blockquote>
+<blockquote>北京大学夏令营结束，决定不参加其它学校夏令营了，回学校</blockquote>
 <p>
 >> 2014-08-30  <br /> 
  <blockquote>大学报道，开启大学生涯 </blockquote>
