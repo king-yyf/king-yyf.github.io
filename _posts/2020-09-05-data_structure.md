@@ -18,7 +18,8 @@ Index
 - [树状数组](#树状数组)
     - [树状数组的构建（以区间和问题为例）](#树状数组的构建以区间和问题为例)
     - [树状数组的特点](#树状数组的特点)
-    - [相关问题](#相关问题)
+    - [树状数组解决的几个问题](#树状数组解决的几个问题)
+    - [相关题目](#相关题目)
     - [相关阅读](#相关阅读)
 - [线段树](#线段树)
 - [ST表](#ST表)
@@ -282,13 +283,83 @@ public:
 };
 ```
 
+### 树状数组解决的几个问题
+
+```c++
+//初始化
+void build(vector<int> &nums) {
+    n = nums.size();
+    for (int i = 0; i < n; ++i) 
+        add(i + 1, nums[i]);
+}
+
+void add(int x, int k) {
+    for (; x <= n; x += lowbit(x))  
+        tr[x] += k;
+}
+
+int query(int x) {
+    int ans = 0;
+    for (; x; x -= lowbit(x)) 
+        ans += tr[x];
+    return ans;
+}
+```
+**单点修改，单点查询**
+```c++
+add(x, k)
+query(x) - query(x - 1)
+```
+
+**单点修改，区间查询**
+
+```c++
+add(x, k)
+query(r) - query(l - 1) // [l, r]的和 数组下标从1开始
+```
+
+**区间修改，单点查询**
+```c++
+add(l, d);  add(r + 1, -d);
+a[x] + query(x) //查询a[x]
+```
+
+**区间修改，去检查询**
+```c++
+int t1[maxn], t2[maxn];
+
+void add1(int x, int k) {
+    for (; x <= n; x += lowbit(x))  t1[x] += k;
+}
+int query1(int x) {
+    int ans = 0;
+    for (; x; x -= lowbit(x))  ans += t1[x];
+    return ans;
+}
+void add2(int x, int k) {
+    for (; x <= n; x += lowbit(x))  t2[x] += k;
+}
+int query2(int x) {
+    int ans = 0;
+    for (; x; x -= lowbit(x))  ans += t2[x];
+    return ans;
+}
+
+//区间修改操作 [l,r] 区间每个数+d
+add1(l, d); add1(r + 1, -d); 
+add2(l, l * d), add2(r + 1, -(r + 1) * d);
+//区间查询 [l, r]的和
+(sum[r] + (r+1)*query1(r) - query2(r)) - (sum[l - 1] + l * query1(l-1) - query2(l - 1));
+```
+
+
 ### 树状数组的特点
 - 线段树不能解决的问题，树状数组也无法解决；
 - 树状数组和线段树的时间复杂度相同：初始化 `O(n)`，查询和修改 `O(logn)`；但实际效率要高于线段树；
 - 直接维护前缀信息也能解决查询问题，但是修改的时间复杂度会比较高；
 
 
-### 相关问题
+### 相关题目
 - [665. 二维区域和检索 - 矩阵不可变](https://www.lintcode.com/problem/range-sum-query-2d-immutable/description) - LintCode 
 - [817. 二维区域和检索 - 矩阵可变](https://www.lintcode.com/problem/range-sum-query-2d-mutable/description) - LintCode 
 - [249. 统计前面比自己小的数的个数](https://www.lintcode.com/problem/count-of-smaller-number-before-itself/description) - LintCode 
@@ -313,16 +384,18 @@ ST表类似树状数组，线段树这两种算法，是一种用于解决RMQ(Ra
 
 ST表是利用的是倍增的思想
 
-**f[i][j]表示从i位起的2^j个数中的最大数**，即[i,i+2^j-1]中的最大值，从其定义中可以看出来。
+**f[i][j]表示从i位起的2^j个数中的最大数**，即[i,i+2^j-1]中的最大值，从其定义中可以看出来。  
 
 **预处理**
->* f[i][0]表示[i,i]中的最大值，只能是a[i]，故f[i][0]=a[i]。
+>* f[i][0]表示[i,i]中的最大值，只能是a[i]，故f[i][0]=a[i]。  
 >* 对于任意的f[j][i]，我们分成两段相等长度的数列来看，`[j,j+2^(i-1)-1]`和`[j+2^(i-1),j+2^i-1]`,分别对应f[j][i-1]和f[j+(1<<i-1)][i-1]。既然这两段的最大值都知道了，它们又恰好完全地覆盖了[j,j+2^i-1]，它俩的最大值就是这个区间的最大值。
 
 **查询**
->* 对于区间 `[l,r]`, 先确定一个长度2^k，其中k=log2(r-l+1)。这个长度2^k保证小于等于r-l+1，因为k是向下取整的。
->* 以l为起始点，往右查询，即f[l][k]；再以r为结束点，往左查询，即f[r-(1<<k)+1][k]。
->* 要理解 `r-(1<<k)+1` 为什么要加1,把两者比较一下，其最大值就是[l,r]中的最大值。
+>* 对于区间 `[l,r]`,先确定一个长度2^k，其中k=log2(r-l+1)。这个长度2^k保证小于等于r-l+1，因为k是向下取整的。  
+
+>* 以l为起始点，往右查询，即f[l][k]；再以r为结束点，往左查询，即f[r-(1<<k)+1][k]。  
+
+>* 要理解 `r-(1<<k)+1` 为什么要加1,把两者比较一下，其最大值就是[l,r]中的最大值.  
 
 
 预处理代码：
