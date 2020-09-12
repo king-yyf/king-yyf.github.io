@@ -5,6 +5,25 @@ date: 2020-09-03
 tags: leetcode   
 ---
 
+
+===
+
+Index
+---
+<!-- TOC -->
+
+- [常用位操作](#常用位操作)
+- [获取和设置数位](#获取和设置数位)
+- [一些有用的位操作](#一些有用的位操作)
+- [二进制所有是1的位](#二进制所有是1的位)
+- [进制转换](#进制转换)
+- [汉明距离](#汉明距离)
+- [不用额外变量交换整数的值](#不用额外变量交换整数的值)
+- [只用位运算实现整数的加减乘除](#只用位运算实现整数的加减乘除)
+
+<!-- /TOC -->
+
+
 ### 常用位操作
 
 在下面示例中，`1s` 和 `0s` 分别表示一串1和一串0
@@ -83,9 +102,93 @@ int updateBit(int num, int i, bool bit) {
 >* 清除整数最右边的1：`n = n & (n - 1)`
 >* 获得二进制中最低位的1: `lowbit = n & (-n)`
 >* 得到一个数字的相反数(按位取反，再加一)： `n = (~n) + 1`
+>* << 左移乘二，>> 除以2， 1<<i = 2^i,  x >> i = x / 2^i.
 
 
-### 整数转换，确定需要改变几个位才能将整数A转成整数B。即对应二进制不同位置的数目（汉明距离）
+### 二进制所有是1的位
+
+例如: 13, 其二进制为 1101, 二进制中所有为1的位为0, 2, 3.
+20， 其二进制为 10100, 二进制中所有为1的位为2, 4.
+
+技巧： **对于任意在[0,35]中的k，2^k%37互不相等，且恰好取遍整数1-36**
+利用这个性质可以使用hash代替取log运算，提高效率。
+
+```c++
+vector<int> getAll1(int n) {
+    int H[37];
+    for (int i = 0; i < 36; ++i) {
+        H[(1ll << i) % 36] = i;
+    }
+    vector<int> res;
+    while (n > 0) {
+        res.push_back(H[(n & -n) % 37]);
+        n -= lowbit(n);
+    }
+}
+```
+    
+### 进制转换
+
+1.将任意2-36进制数转化为10进制数
+
+```c++
+// s是给定的radix进制字符串
+int Atoi(string s, int radix) {
+    int ans = 0;
+    for (int i = 0; i < s.size(); ++i) {
+        auto t = s[i];
+        if (t >= '0' && t <= '9') 
+            ans = ans * radix + t - '0' + 10;
+        else 
+            ans = ans * radix + t - 'a' + 10;
+    }
+    return ans;
+}
+```
+
+**strtol库函数**
+函数原型为 `long int strtol(const char *nptr, char **endptr, int base)`
+base是要转化的数的进制，非法字符会赋值给endptr，nptr是要转化的字符
+
+例如：
+```c++
+string s = "10100";
+char * stop;
+int ans = strtol(s.c_str(), &stop, 2);
+// int ans = strtol(s.c_str(), NULL, 2);
+```
+
+2.将10进制数转换为任意的radix进制数，结果为char型
+
+```c++
+//n是待转数字，radix是指定的进制
+string intToA(int n, int radix) {
+    string ans = "";
+    do {
+        int t = n % radix;
+        if (t >= 0 && t <= 9) ans += t + '0';
+        else ans += t - 10 + 'a';
+        n /= radix;
+    } while(n)
+    reverse(ans.begin(), ans.end());
+    return ans;
+}
+```
+
+**itoi库函数**
+
+可以将一个10进制数转换为任意的2-36进制字符串
+函数原型：`char* itoa(int value, char* string, int radix)`
+```c++
+int num = 10;
+char str[10];
+itoa(num, str, 2); //将num转换为2进制，结果写在str中。
+```
+
+### 汉明距离
+
+整数转换，确定需要改变几个位才能将整数A转成整数B。即对应二进制不同位置的数目.
+
 示例：
 >* input : 29 (11101), 15 (01111)
 >* output : 2
