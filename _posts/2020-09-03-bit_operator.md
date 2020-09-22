@@ -18,7 +18,6 @@ Index
 - [二进制所有是1的位](#二进制所有是1的位)
 - [进制转换](#进制转换)
 - [汉明距离](#汉明距离)
-- [位运算求两数之和](#位运算求两数之和)
 - [不用额外变量交换整数的值](#不用额外变量交换整数的值)
 - [只用位运算实现整数的加减乘除](#只用位运算实现整数的加减乘除)
 
@@ -205,30 +204,6 @@ int hammingDistance(int x, int y) {
 }
 ```
 
-### 位运算求两数之和
-
->* `a ^ b` 可以得到两数相加不进位的加法结果
->* `(a & b) << 1` 可以得到两数相加产生的进位
-
-将不进位的加法结果与进位相加，即可得到两数相加的实际结果。需要注意的是：不进位加法结果与进位相加有可能再次造成进位，所以需要迭代处理，直到不再产生新的进位为止。
-
-```c++
-int getSum(int a, int b) {
-    return a & b ? getSum(a ^ b, (unsigned int)(a & b) << 1) : a ^ b;
-}
-```
-
-迭代写法：
-```c++
-int getSum(int a, int b) {
-    while (b) {
-        int carry = (unsigned int)(a & b) << 1;
-        a ^= b;
-        b = carry;
-    }
-    return a;
-}
-```
 
 ### 不用额外变量交换整数的值
 
@@ -257,7 +232,7 @@ int add(int a, int b) {
     int sum = a;
     while (b) {
         sum = a ^ b;
-        b = (a & b) << 1;
+        b = (unsigned int)(a & b) << 1;
         a = sum;
     }
     return sum;
