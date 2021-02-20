@@ -5,8 +5,24 @@ date: 2020-08-15
 tags: leetcode    
 ---
 
+===
 
-### 1.最长公共子序列
+Index
+---
+<!-- TOC -->
+
+- [最长公共子序列](#最长公共子序列)
+- [最长公共子串](#最长公共子串)
+- [最长回文子序列](#最长回文子序列)
+- [最长回文子串](#最长回文子串)
+- [回文子串数目](#回文子串数目)
+- [分割回文串](#分割回文串)
+- [让字符串成为回文串的最少插入次数](#让字符串成为回文串的最少插入次数)
+
+<!-- /TOC -->
+
+
+### 最长公共子序列
 
 给定两个字符串 s 和 t，返回这两个字符串的最长公共子序列的长度。
 
@@ -27,7 +43,34 @@ int longestCommonSubsequence(string s, string t) {
 }
 ```
 
-### 2.最长回文子序列
+### 最长公共子串
+
+[NL127](https://www.nowcoder.com/practice/f33f5adc55f444baa0e0ca87ad8a6aac?tpId=196&rp=1&ru=%2Fta%2Fjob-code-total&qru=%2Fta%2Fjob-code-total%2Fquestion-ranking&tab=answerKey)
+
+给定两个字符串str1和str2,输出两个字符串的最长公共子串，如果最长公共子串为空，输出-1
+
+```c++
+string LCS(string s1, string s2) {
+    int n = s1.size(), m = s2.size();
+    vector<int> dp(m + 1, 0);
+    int res = 0, start = 0;
+    for (int i = 1; i <= n; ++i) {
+        for (int j = m; j >= 1; --j) {
+            if (s1[i - 1] == s2[j - 1]) {
+                dp[j] = dp[j - 1] + 1;
+                if (dp[j] > res) {
+                    res = dp[j];
+                    start = j - dp[j];
+                }
+            } eles dp[j] = 0;
+        }
+    }
+    return res > 0 ? s2.substr(start, res): "-1";
+}
+```
+
+
+### 最长回文子序列
 
 [leetcode 516](https://leetcode-cn.com/problems/longest-palindromic-subsequence/)
 
@@ -50,7 +93,7 @@ int longestPalindromeSubseq(string s) {
 }
 ```
 
-### 3.最长回文子串
+### 最长回文子串
 
 给定一个字符串 s，找到 s 中最长的回文子串。
 
@@ -99,7 +142,7 @@ string longestPalindrome(string s) {
 }
 ```
 
-### 4.回文子串数目
+### 回文子串数目
 
 [leetcode 647](https://leetcode-cn.com/problems/palindromic-substrings/)
 
@@ -119,7 +162,7 @@ int countSubstrings(string s) {
 }
 ```
 
-### 5.分割回文串
+### 分割回文串
 
 [leetcode 131](https://leetcode-cn.com/problems/palindrome-partitioning/)
 
@@ -155,7 +198,7 @@ vector<vector<string>> partition(string s) {
 }
 ```
 
-### 6.让字符串成为回文串的最少插入次数
+### 让字符串成为回文串的最少插入次数
 
 [leetcode 1312](https://leetcode-cn.com/problems/minimum-insertion-steps-to-make-a-string-palindrome/)  
 
