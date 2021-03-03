@@ -14,8 +14,8 @@ Index
 
 - [用两个栈模拟队列](#用两个栈模拟队列)
 - [最小栈](#最小栈)
-- [LRU 缓存机制](#LRU缓存机制)
-- [LFU 缓存](#LFU缓存)
+- [LRU 缓存机制](#lru缓存机制)
+- [LFU 缓存](#lfu缓存)
 - [树状数组](#树状数组)
     - [树状数组的构建（以区间和问题为例）](#树状数组的构建以区间和问题为例)
     - [树状数组的特点](#树状数组的特点)
@@ -23,7 +23,7 @@ Index
     - [相关题目](#相关题目)
     - [相关阅读](#相关阅读)
 - [线段树](#线段树)
-- [ST 表](#ST表)
+- [ST 表](#st表)
 - [字典树（Trie）](#字典树trie)
 
 <!-- /TOC -->
@@ -145,7 +145,7 @@ public:
 };
 ```
 
-### LRU缓存机制
+### lru缓存机制
 
 [leetcode 146](https://leetcode-cn.com/problems/lru-cache/)
 
@@ -190,7 +190,7 @@ public:
 };
 ```
 
-### LFU缓存
+### lfu缓存
 
 [leetcode 460](https://leetcode-cn.com/problems/lfu-cache/)
 
@@ -434,7 +434,7 @@ add2(l, l * d), add2(r + 1, -(r + 1) * d);
 [线段树总结](https://www.acwing.com/blog/content/3369/)
 
 
-### ST 表
+### st表
 
 ST表类似树状数组，线段树这两种算法，是一种用于解决RMQ(Range Minimum/Maximum Query,即区间最值查询)问题的离线算法
 
