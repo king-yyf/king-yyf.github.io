@@ -14,7 +14,8 @@ Index
 
 - [用两个栈模拟队列](#用两个栈模拟队列)
 - [最小栈](#最小栈)
-- [LRU缓存机制](#LRU缓存机制)
+- [LRU 缓存机制](#LRU 缓存机制)
+- [LFU 缓存](#LFU 缓存)
 - [树状数组](#树状数组)
     - [树状数组的构建（以区间和问题为例）](#树状数组的构建以区间和问题为例)
     - [树状数组的特点](#树状数组的特点)
@@ -22,7 +23,7 @@ Index
     - [相关题目](#相关题目)
     - [相关阅读](#相关阅读)
 - [线段树](#线段树)
-- [ST表](#ST表)
+- [ST 表](#ST表)
 - [字典树（Trie）](#字典树trie)
 
 <!-- /TOC -->
@@ -188,6 +189,65 @@ public:
     }
 };
 ```
+
+### LRU缓存机制
+
+[leetcode 460](https://leetcode-cn.com/problems/lfu-cache/)
+
+请你为 最不经常使用（LFU）缓存算法设计并实现数据结构。
+
+实现 LFUCache 类：
+
+>* LFUCache(int capacity) - 用数据结构的容量 capacity 初始化对象
+>* int get(int key) - 如果键存在于缓存中，则获取键的值，否则返回 -1。
+>* void put(int key, int value) - 如果键已存在，则变更其值；如果键不存在，请插入键值对。当缓存达到其容量时，则应该在插入新项之前，使最不经常使用的项无效。在此问题中，当存在平局（即两个或更多个键具有相同使用频率）时，应该去除 最久未使用 的键。
+注意「项的使用次数」就是自插入该项以来对其调用 get 和 put 函数的次数之和。使用次数会在对应项被移除后置为 0 。
+
+为了确定最不常使用的键，可以为缓存中的每个键维护一个 使用计数器 。使用计数最小的键是最久未使用的键。
+
+当一个键首次插入到缓存中时，它的使用计数器被设置为 1 (由于 put 操作)。对缓存中的键执行 get 或 put 操作，使用计数器的值将会递增。
+
+```c++
+class LFUCache {
+    int capacity, min_freq;
+    unordered_map<int, pair<int, int>> kv_freq;
+    unordered_map<int, list<int>> freq_k;
+    unordered_map<int, list<int>::iterator> k_iter;
+public:
+    LFUCache(int capacity) : capacity(capacity) {}
+    
+    int get(int key) {
+        if (kv_freq.find(key) == kv_freq.end()) return -1;
+        int freq = kv_freq[key].second;
+        freq_k[freq++].erase(k_iter[key]);
+        freq_k[freq].emplace_front(key);
+        k_iter[key] = freq_k[freq].begin();
+        kv_freq[key].second = freq;
+
+        if (freq_k[min_freq].empty()) min_freq = freq;
+        return kv_freq[key].first;
+    }
+    
+    void put(int key, int value) {
+        if (capacity <= 0) return;
+        if (get(key) != -1) {
+            kv_freq[key].first = value;
+            return;
+        }
+        if (kv_freq.size() == capacity) {
+            int del_k = freq_k[min_freq].back();
+            freq_k[min_freq].pop_back();
+            kv_freq.erase(del_k);
+            k_iter.erase(del_k);
+        }
+        min_freq = 1;
+        kv_freq[key] = {value, min_freq};
+        freq_k[min_freq].emplace_front(key);
+        k_iter[key] = freq_k[min_freq].begin();
+    }
+};
+```
+
 
 ## 树状数组
 - 树状数组是一种用于维护**前缀信息**的数据结构
@@ -374,7 +434,7 @@ add2(l, l * d), add2(r + 1, -(r + 1) * d);
 [线段树总结](https://www.acwing.com/blog/content/3369/)
 
 
-### ST表
+### ST 表
 
 ST表类似树状数组，线段树这两种算法，是一种用于解决RMQ(Range Minimum/Maximum Query,即区间最值查询)问题的离线算法
 
