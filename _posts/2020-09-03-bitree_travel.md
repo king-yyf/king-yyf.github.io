@@ -15,7 +15,7 @@ Index
 - [先序遍历](#先序遍历)
 - [中序遍历](#中序遍历)
 - [后序遍历](#后序遍历)
-- [二叉树的层次遍历II](#二叉树的层次遍历II)
+- [二叉树的层次遍历II](#二叉树的层次遍历ii)
 - [二叉树的锯齿形层次遍历](#二叉树的锯齿形层次遍历)
 - [N叉树的层序遍历](#N叉树的层序遍历)
 - [二叉树的右视图](#二叉树的右视图)
@@ -138,7 +138,7 @@ vector<int> preorderTraversal(TreeNode* root) {
     }
 ```
 
-### 二叉树的层次遍历II
+### 二叉树的层次遍历ii
 
 [leetcode 107](https://leetcode-cn.com/problems/binary-tree-level-order-traversal-ii/)
 
