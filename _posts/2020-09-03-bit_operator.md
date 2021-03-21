@@ -17,6 +17,7 @@ Index
 - [一些有用的位操作](#一些有用的位操作)
 - [二进制所有是1的位](#二进制所有是1的位)
 - [进制转换](#进制转换)
+- [格雷编码](#格雷编码)
 - [汉明距离](#汉明距离)
 - [不用额外变量交换整数的值](#不用额外变量交换整数的值)
 - [只用位运算实现整数的加减乘除](#只用位运算实现整数的加减乘除)
@@ -183,6 +184,64 @@ string intToA(int n, int radix) {
 int num = 10;
 char str[10];
 itoa(num, str, 2); //将num转换为2进制，结果写在str中。
+```
+
+### 格雷编码
+
+[leetcode 89](https://leetcode-cn.com/problems/gray-code/)
+
+格雷编码是一个二进制数字系统，在该系统中，两个连续的数值仅有一个位数的差异。
+
+给定一个代表编码总位数的非负整数 n，打印其格雷编码序列。即使有多个不同答案，你也只需要返回其中一种。
+
+格雷编码序列必须以 0 开头。
+
+**1.直接计算**
+
+```
+    关键是搞清楚格雷编码的生成过程, G(i) = i ^ (i/2);
+    如 n = 3: 
+    G(0) = 000, 
+    G(1) = 1 ^ 0 = 001 ^ 000 = 001
+    G(2) = 2 ^ 1 = 010 ^ 001 = 011 
+    G(3) = 3 ^ 1 = 011 ^ 001 = 010
+    G(4) = 4 ^ 2 = 100 ^ 010 = 110
+    G(5) = 5 ^ 2 = 101 ^ 010 = 111
+    G(6) = 6 ^ 3 = 110 ^ 011 = 101
+    G(7) = 7 ^ 3 = 111 ^ 011 = 100
+```
+
+```c++
+    vector<int> grayCode(int n) {
+        vector<int> res(1 << n);
+        for (int i = 0; i < (1 << n); ++i) {
+            res[i] = i ^ (i >> 1);
+        }
+        return res;
+    }
+```
+
+**2. DFS**
+
+```c++
+    vector<int> res;
+    int vis[1<<16+2], m;
+    void dfs(int s, int n) {
+        if (res.size() == m) return;
+        res.push_back(s);
+        vis[s] = 1;
+        for (int i = 0; i < n; ++i) {
+            int c = s ^ (1 << i);
+            if (!vis[c]) dfs(c, n);
+        }
+    }
+    vector<int> grayCode(int n) {
+        if (!n) return {0};
+        memset(vis, 0, sizeof(vis));
+        m = 1 << n;
+        dfs(0, n);
+        return res;
+    }
 ```
 
 ### 汉明距离
