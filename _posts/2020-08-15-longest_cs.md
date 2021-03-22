@@ -47,7 +47,28 @@ int longestCommonSubsequence(string s, string t) {
 
 [NL127](https://www.nowcoder.com/practice/f33f5adc55f444baa0e0ca87ad8a6aac?tpId=196&rp=1&ru=%2Fta%2Fjob-code-total&qru=%2Fta%2Fjob-code-total%2Fquestion-ranking&tab=answerKey)
 
-给定两个字符串str1和str2,输出两个字符串的最长公共子串，如果最长公共子串为空，输出-1
+给定两个字符串s1和s2,输出两个字符串的最长公共子串，如果最长公共子串为空，输出-1
+
+**DP方法**
+- dp[i][j] 表示 最后一个字符分别是s1的第i个字符和s2的第j个字符最长公共子串长度
+- 则 dp[0][0] = 0 (空串)
+- dp[i][j] = dp[i - 1][j - 1] + 1 if s1[i-1] == s2[j-1]  else  0
+
+```c++
+    int lcs(string s1, string s2) {
+        int n = s1.size(), m = s2.size();
+        vector<vector<int>> dp(n + 1, vector<int>(m + 1));
+        int res = 0;
+        for (int i = 0; i <= n; ++i) 
+            for (int j = 0; j < m ; ++j) {
+                if (s1[i - 1] == s2[j - 1]) 
+                    res = max(res, dp[i][j]);
+            }
+        return res;
+    } 
+```
+
+**空间优化**
 
 ```c++
 string LCS(string s1, string s2) {
