@@ -77,6 +77,8 @@ Index
     - [数组中的最长山脉（Longest Mountain in Array）（同向双指针）](#数组中的最长山脉longest-mountain-in-array同向双指针)
     - [最小覆盖子串（Minimum Window Substring）](#最小覆盖子串minimum-window-substring)
     - [长度最小的子数组（Minimum Size Subarray Sum）](#长度最小的子数组minimum-size-subarray-sum)
+    - [最大连续1的个数](#最大连续1的个数)
+    - [替换后的最长重复字符](#替换后的最长重复字符)
     - [无重复字符的最长子串（Longest Substring Without Repeating Characters）](#无重复字符的最长子串longest-substring-without-repeating-characters)
     - [水果成篮（Fruit Into Baskets）](#水果成篮fruit-into-baskets)
 - [反向双指针](#反向双指针)
@@ -1013,13 +1015,8 @@ class Solution:
 ```python
 class Solution:
     def minSubArrayLen(self, s, A):
-        """
-        :type s: int
-        :type A: List[int]
-        :rtype: int
-        """
+    
         n = len(A)
-        
         res = n + 1
         l = -1
         cur_sum = 0
@@ -1056,7 +1053,55 @@ class Solution:
     }
 ```
 
+### 最大连续1的个数
+
+[leetcode 1004](https://leetcode-cn.com/problems/max-consecutive-ones-iii/)
+
+给定一个由若干 0 和 1 组成的数组 A，我们最多可以将 K 个值从 0 变成 1 。
+返回仅包含 1 的最长（连续）子数组的长度。
+
+**分析**：对于区间[l, r]，只要区间内0的数目不超过k，就满足条件，对于每个右边界r，求满足条件的最下熬的l，更新答案。
+
+```c++
+    int longestOnes(vector<int>& a, int k) {
+        int l = 0, cnt = 0, ans = 0;
+        for (int r = 0; r < a.size(); ++r) {
+            if (!a[r]) cnt++;
+            while (cnt > k) {
+                if (!a[l]) cnt--;
+                l++;
+            }
+            ans = max(ans, r - l + 1);
+        }
+        return ans;
+    }
+```
+
+### 替换后的最长重复字符
+
+[leetcode 424](https://leetcode-cn.com/problems/longest-repeating-character-replacement/)
+
+给你一个仅由大写英文字母组成的字符串，你可以将任意位置上的字符替换成另外的字符，总共可最多替换 k 次。在执行上述操作后，找到包含重复字母的最长子串的长度。
+
+```c++
+    int characterReplacement(string s, int k) {
+        vector<int> hash(26, 0);
+        int l = 0, ans = 0, cnt = 0;
+        for (int r = 0; r < s.size(); ++r) {
+            hash[s[r] - 'A']++;
+            cnt = max(cnt, hash[s[r] - 'A']);
+            while (r - l + 1 - cnt > k) {
+                hash[s[l] - 'A']--;
+                l++;
+            }
+            ans = max(ans, r - l + 1);
+        }
+        return ans;
+    }
+```
+
 ## 无重复字符的最长子串（Longest Substring Without Repeating Characters）
+
 > LeetCode/[3. 无重复字符的最长子串](https://leetcode-cn.com/problems/longest-substring-without-repeating-characters/description/)
 
 **问题描述**
@@ -1173,10 +1218,6 @@ class Solution:
 ```python
 class Solution:
     def totalFruit(self, T):
-        """
-        :type T: List[int]
-        :rtype: int
-        """
         n = len(T)
         
         l, r = 0, 0
@@ -1204,6 +1245,23 @@ class Solution:
         return res
 ```
 
+```c++
+    int totalFruit(vector<int>& tree) {
+        unordered_map<int, int> mp;
+        int k = 2, res = 0;
+        for (int l = 0, r = 0; r < tree.size(); r++) {
+            mp[tree[r]]++;
+            while (mp.size() > k) {
+                mp[tree[l]]--;
+                if (mp[tree[l]] == 0) 
+                    mp.erase(tree[l]);
+                l++;
+            }
+            res = max(res, r - l + 1);
+        }
+        return res;
+    }
+```
 
 # 反向双指针
 
