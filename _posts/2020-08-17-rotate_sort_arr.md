@@ -16,6 +16,7 @@ Index
 - [寻找旋转排序数组中的最小值](#3.寻找旋转排序数组中的最小值)
 - [寻找旋转排序数组中的最小值（有重复）](#4.寻找旋转排序数组中的最小值)
 - [寻找两个正序数组的中位数](#寻找两个正序数组的中位数)
+- [两个排序数组第k大数](#两个排序数组第k大数)
 - [合并k个有序数组](#合并k个有序数组)
 
 
@@ -179,6 +180,26 @@ double findMedianSortedArrays(vector<int>& a1, vector<int>& a2) {
     }
     return -1;
 }
+```
+
+### 两个排序数组第k大数
+
+两个数组从小到大排序，查找两个数组的第k小数
+
+```c++
+    int findKthElm(vector<int>& nums1, vector<int>& nums2, int k){
+        int le = max(0, int(k-nums2.size())), ri = min(k, int(nums1.size()));
+        while(le < ri){
+            int m = le + (ri - le)/2;
+            if(nums2[k-m-1] > nums1[m])
+                le = m + 1;
+            else
+                ri = m;
+        }
+        int nums1LeftMax = le == 0 ? INT_MIN:nums1[le-1];
+        int nums2LeftMax = le == k ? INT_MIN:nums2[k-le-1];
+        return max(nums1LeftMax, nums2LeftMax);
+    }
 ```
 
 ### 合并k个有序数组
