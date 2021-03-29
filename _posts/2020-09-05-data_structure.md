@@ -2,7 +2,7 @@
 layout: post
 title: 数据结构
 date: 2020-09-05
-tags: leetcode    
+tags: 算法专题
 ---
 
 
@@ -16,6 +16,7 @@ Index
 - [最小栈](#最小栈)
 - [LRU 缓存机制](#lru缓存机制)
 - [LFU 缓存](#lfu缓存)
+- [添加与搜索单词](#添加与搜索单词)
 - [树状数组](#树状数组)
     - [树状数组的构建（以区间和问题为例）](#树状数组的构建以区间和问题为例)
     - [树状数组的特点](#树状数组的特点)
@@ -248,6 +249,60 @@ public:
 };
 ```
 
+### 添加与搜索单词
+
+[leetcode 211](#https://leetcode-cn.com/problems/design-add-and-search-words-data-structure/)
+
+请你设计一个数据结构，支持 添加新单词 和 查找字符串是否与任何先前添加的字符串匹配 。
+实现字典类 `WordDictionary`
+- `WordDictionary()` 初始化词典对象
+- `void addWord()` 将word添加到数据结构中，之后可以对它进行匹配
+- `bool search(word)` 如果数据结构中存在字符串与word匹配，则返回true，否则返回false。word中可能包含一些 '.' ，每个'.'都可以匹配任何一个字母。
+
+
+```c++
+struct TrieNode{
+    TrieNode* children[26];
+    bool isWord;
+    TrieNode():isWord(false) {
+        for (int i = 0; i < 26; ++i) children[i] = nullptr;
+    }
+};
+
+class WordDictionary {
+    TrieNode* root = new TrieNode();
+public:
+    WordDictionary() {}
+    
+    void addWord(string word) {
+        TrieNode* node = root;
+        for(auto ch : word) {
+            if (node->children[ch - 'a'] == nullptr) 
+                node->children[ch - 'a'] = new TrieNode();
+            node = node->children[ch - 'a'];
+        }
+        node->isWord = true;
+    }
+    
+    bool search(string word) {
+        return dfs(0, word, root);
+    }
+
+    bool dfs(int idx, string word, TrieNode* root) {
+        if (idx == word.size()) return root->isWord;
+        if (word[idx] != '.') 
+            return root->children[word[idx] - 'a'] && dfs(idx + 1, word, root->children[word[idx] - 'a']);
+        else {
+            for (int i = 0; i < 26; ++i) {
+                if (root->children[i]) {
+                    if (dfs(idx + 1, word, root->children[i])) return true;
+                }
+            }
+        }
+        return false;
+    }
+};
+```
 
 ## 树状数组
 - 树状数组是一种用于维护**前缀信息**的数据结构
