@@ -2,11 +2,26 @@
 layout: post
 title: 最长上升子串问题
 date: 2020-08-15
-tags: leetcode    
+tags: 算法专题    
 ---
 
+===
 
-### 1.最长上升子序列
+Index
+---
+<!-- TOC -->
+
+- [最长上升子序列](#最长上升子序列)
+- [最长连续递增序列](#最长连续递增序列)
+- [最长连续序列](#最长连续序列)
+- [最长递增子序列的个数](#最长递增子序列的个数)
+- [最大上升子序列和](#最大上升子序列和)
+- [最长公共子上升序列](#最长公共子上升序列)
+
+<!-- /TOC -->
+
+
+### 最长上升子序列
 
 给定一个无序的整数数组，找到其中最长上升子序列的长度。
 
@@ -24,7 +39,28 @@ int lengthOfLIS(vector<int>& nums) {
 }
 ```
 
-### 2.最长连续递增序列
+**牛客NC91**
+
+输出nums的最长递增子序列（如果有多个答案，输出其中字典序最小的）
+
+```c++
+vector<int> LCS(vector<int> nums) {
+    int n = nums.size();
+    vector<int> dp(n), res;
+    for (int i = 0; i < n; ++i) {
+        auto it = lower_bound(res.begin(), res.end(), nums[i]);
+        dp[i] = it - res.begin();
+        if (it == res.end()) res.push_back(nums[i]);
+        else *it = nums[i];
+    }
+    for (int i = n - 1; k = res.size() - 1; i >= 0; --i) {
+        if (dp[i] == k) res[k--] = nums[i];
+    }
+    return res;
+}
+```
+
+### 最长连续递增序列
 
 给定一个未经排序的整数数组，找到最长且 **连续** 的的递增序列，并返回该序列的长度。
 
@@ -45,7 +81,7 @@ int findLengthOfLCIS(vector<int>& nums) {
 }
 ```
 
-### 3.最长连续序列
+### 最长连续序列
 
 给定一个未排序的整数数组，找出最长连续序列的长度。要求算法的时间复杂度为 O(n)。
 
@@ -73,7 +109,7 @@ int longestConsecutive(vector<int>& num) {
 }
 ```
 
-### 4.最长递增子序列的个数
+### 最长递增子序列的个数
 
 给定一个未排序的整数数组，找到最长递增子序列的个数。
 
@@ -99,7 +135,7 @@ int findNumberOfLIS(vector<int>& nums) {
 ```
 
 
-### 5.最大上升子序列和
+### 最大上升子序列和
 
 给定一个数的序列，求上升子序列中的最大和，例如序列 `(100, 1, 2, 3)`,最大上升子序列和为100。
 [noi 3532](http://noi.openjudge.cn/ch0206/3532/)
@@ -119,7 +155,7 @@ int maxLISsum(int a[], int n) { // index begin from 1
 }
 ```
 
-### 6.最长公共子上升序列
+### 最长公共子上升序列
 
 给定两个整数序列， 求它们的最长上升公共子序列。
 [noi 2000](http://noi.openjudge.cn/ch0206/solution/9771864/)
