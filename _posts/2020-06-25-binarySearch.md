@@ -2,7 +2,7 @@
 layout: post
 title: 二分查找模版 
 date: 2020-06-25
-tags: leetcode    
+tags: 面试算法    
 ---
 
 bug free 的二分查找模版

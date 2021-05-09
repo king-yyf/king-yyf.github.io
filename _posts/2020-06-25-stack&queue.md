@@ -2,7 +2,7 @@
 layout: post
 title: 栈和队列
 date: 2020-06-25
-tags: leetcode    
+tags: 面试算法    
 ---
 
 栈和队列数据结构以及实现

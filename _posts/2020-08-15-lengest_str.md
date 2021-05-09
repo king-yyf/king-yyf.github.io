@@ -2,7 +2,7 @@
 layout: post
 title: 最长上升子串问题
 date: 2020-08-15
-tags: 算法专题    
+tags: 面试算法    
 ---
 
 ===

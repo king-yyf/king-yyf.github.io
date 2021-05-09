@@ -2,7 +2,7 @@
 layout: post
 title: 公共子串，回文子串问题
 date: 2020-08-15
-tags: leetcode    
+tags: 面试算法    
 ---
 
 ===
