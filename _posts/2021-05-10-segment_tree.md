@@ -1,6 +1,6 @@
 ---
 layout: post
-title: 线断树
+title: 线段树
 date: 2021-05-10
 tags: 算法模版  
 ---
@@ -291,7 +291,7 @@ S seg.all_prod()
 1.最大值
 ```c++
 int op(int a, int b){
-    return min(a, b);
+    return max(a, b);
 }
 
 int e() {
@@ -320,7 +320,11 @@ int op(int a, int b){
 int e() {
     return 0;  // e() + a[i] = a[i]
 }
+
+//将第i个数+b，
+seg.seg(a-1, seg.get(a-1) + b);
 ```
+
 
 
 ### 线段树练习题1
