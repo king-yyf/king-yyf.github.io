@@ -165,13 +165,6 @@ private:
     void update(int k) { d[k] = op(d[2 * k], d[2 * k + 1]); }
 };
 
-int main() {
-   int n = 6, k = 3; // 6个数，3次查询
-   vector<int> a{1,7,3,4,2,5};
-   vector<vector<int>> qs = {{1,5},{4,6},{2,2}};
-   segtree<int, int> st;
-   return 0;
-}
 ```
 
 ### 使用方法
