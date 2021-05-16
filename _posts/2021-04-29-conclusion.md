@@ -19,6 +19,7 @@ Index
 - [数列与递推](#数列)
   - [等差与等比数列](#等差与等比数列)
   - [错位排列](#错位排列)
+  - [第一类stirling数](#第一类stirling数)
   - [第二类stirling数](#第二类stirling数)
   - [卡塔兰(catalan)数列](#卡塔兰(catalan)数列)
   - [分平面的最大区域数](#分平面的最大区域数)
@@ -94,6 +95,45 @@ Index
 **递推公式1:**  a_1 = 0, a_2 = 1, a_n = (n-1)(a_{n-2} + a_{n-1})  
 
 **递推公式2:**  a_1 = 0, a_n = n*a_{n-1} + (-1)^{n-2}
+
+
+### 第一类stirling数
+
+第一类斯特林数表示表示将 n 个不同元素构成m个圆排列的数目.
+
+**第一类斯特林数** 把N个不同元素分为k个环，每个环非空，问有多少分法，记为S(p,k)
+S(p,p) = 1, S(p,0) = 0
+
+递推公式： `S(p,k) = (p - 1) * S(p-1, k) + s(p - 1, k - 1)`
+
+p个人排k个圈，一种方法是，第k个圈只有p自己, 其数目为 s(p-1, k-1). 还有一种方法是
+p加入p-1人组成得k个圈，排在任意一个人的左边，其数目为 `(p-1)*S(p-1,k)` .
+
+
+**实例**
+- 设f(i,j)表示i个数的排列，存在j个数，在它们前面没有比他们大的数。考虑最小的数放在哪，可以得到递推式：f(i,j)=f(i-1,j-1)+(i-1)*f(i-1,j)。
+
+
+**例题**
+
+[leetcode 5762](https://leetcode-cn.com/problems/number-of-ways-to-rearrange-sticks-with-k-sticks-visible/submissions/)
+
+```c++
+class Solution {
+public:
+    using ll = long long;
+    const ll mod = 1e9 + 7;
+    int rearrangeSticks(int n, int k) {
+        vector<vector<ll>> f(n + 1, vector<ll>(n + 1));
+        f[1][1] = 1;
+        for (int i = 2; i <= n; ++i)
+            for (int k = 1; k <= i; ++k) 
+                f[i][k] = (f[i-1][k]*(i-1) + f[i-1][k-1]) % mod;
+        return f[n][k];
+    }
+};
+```
+
 
 ### 第二类stirling数
 
