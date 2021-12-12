@@ -14,6 +14,7 @@ Index
 
 - [简介](#简介)
 - [序列顺序查询](#序列顺序查询)
+- [滑动窗口中位数](#滑动窗口中位数)
    
 
 
@@ -83,4 +84,69 @@ class SORTracker:
     def get(self) -> str:
         self.cnt += 1
         return self.data[self.cnt - 1][1]
+```
+
+
+
+### 滑动窗口中位数
+
+
+[leetcode 480](https://leetcode-cn.com/problems/sliding-window-median/)
+
+中位数是有序序列最中间的那个数。如果序列的长度是偶数，则没有最中间的数；此时中位数是最中间的两个数的平均数。
+
+例如：
+
+[2,3,4]，中位数是 3
+[2,3]，中位数是 (2 + 3) / 2 = 2.5
+给你一个数组 nums，有一个长度为 k 的窗口从最左端滑动到最右端。窗口中有 k 个数，每次窗口向右移动 1 位。你的任务是找出每次窗口移动后得到的新窗口中元素的中位数，并输出由它们组成的数组。
+
+
+```python
+from sortedcontainers import SortedList
+
+class Solution:
+    def medianSlidingWindow(self, nums: List[int], k: int) -> List[float]:
+        q = SortedList([])
+        ans = []
+        for i in range(len(nums)):
+            q.add(nums[i])
+            if i < k - 1:
+                continue
+            if i >= k:
+                q.discard(nums[i - k])
+            
+            mid = q[k // 2]
+            if k % 2 == 0:
+                mid = (mid + q[k // 2 - 1]) / 2.0
+            ans.append(mid)
+        return ans
+```
+
+
+```c++
+#include <ext/pb_ds/assoc_container.hpp>
+#include <ext/pb_ds/tree_policy.hpp>
+using namespace __gnu_pbds;
+class Solution {
+public:
+    tree<pair<int, int>, null_type, less<pair<int, int>>, rb_tree_tag, tree_order_statistics_node_update> t;
+    vector<double> medianSlidingWindow(vector<int>& nums, int k) {
+        queue<pair<int, int>> q;
+        vector<double> ans;
+        for(int i = 0; i < nums.size(); ++i) {
+            q.push({nums[i], i});
+            t.insert({nums[i], i});
+            if(q.size() >= k) {
+                long x = (*t.find_by_order(k / 2)).first;
+                long y = (*t.find_by_order((k - 1) / 2)).first;
+                ans.push_back((x + y) / 2.0);
+                t.erase(q.front());
+                q.pop();
+            }
+        }
+        return ans;
+    }
+};
+
 ```
