@@ -18,7 +18,7 @@ Index
     - [SortedDict](#sorteddict)
 - [collections](#collections)
     - [Counter](#counter)
-- [示例题目]
+- [示例题目](#示例题目)
     - [滑动窗口中位数](#滑动窗口中位数)
 
    
@@ -345,6 +345,7 @@ c = Counter(a=10, b=5, c=0)
 c.total()   # 15
 ```
 
+## 示例题目
 
 ### 滑动窗口中位数
 
