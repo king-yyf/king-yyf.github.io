@@ -170,7 +170,7 @@ string intToA(int n, int radix) {
         if (t >= 0 && t <= 9) ans += t + '0';
         else ans += t - 10 + 'a';
         n /= radix;
-    } while(n)
+    } while(n);
     reverse(ans.begin(), ans.end());
     return ans;
 }
