@@ -22,7 +22,7 @@ Index
     - [树状数组的特点](#树状数组的特点)
     - [树状数组解决的几个问题](#树状数组解决的几个问题)
     - [相关题目](#相关题目)
-    - [相关阅读](#相关阅读)
+    - [二维树状数组](#二维树状数组)
 - [线段树](#线段树)
 - [ST 表](#st表)
 - [字典树（Trie）](#字典树trie)
@@ -481,8 +481,41 @@ add2(l, l * d), add2(r + 1, -(r + 1) * d);
 - [248. 统计比给定整数小的数的个数](https://www.lintcode.com/problem/count-of-smaller-number/description) - LintCode 
 - [532. 逆序对](https://www.lintcode.com/problem/reverse-pairs/description) - LintCode 
 
-### 相关阅读
-- [夜深人静写算法（三）- 树状数组](https://blog.csdn.net/WhereIsHeroFrom/article/details/78922383) - CSDN博客 
+### 二维树状数组
+
+模版
+
+```c++
+template<typename T>
+struct FenwickTree2D{
+    vector<vector<T>> tr;
+    int n, m;
+    FenwickTree2D(int N, int M){
+        n = N, m = M; 
+        tr.assign(n + 1, vector<T>(m + 1 , 0));
+    }
+    void add(int x, int y, int val){
+        ++x, ++y;
+        for(int i = x;i <= n; i += i & -i){
+            for(int j = y;j <= m; j += j & -j){
+                tr[i][j] += val;
+            }
+        }
+    }
+ 
+    T ask(int x, int y) {
+        ++x, ++y;
+        T ret = 0;
+        for(int i = x; i >= 1;i -= i & -i)
+            for(int j = y; j >= 1;j -= j & -j)
+                ret += tr[i][j];
+        return ret;
+    }
+    T ask(int x1, int y1, int x2, int y2) {
+        return ask(x2, y2) - ask(x2, y1 - 1) - ask(x1 - 1, y2) + ask(x1 - 1, y1 - 1);
+    }
+};
+```
 
 ### 线段树
 
