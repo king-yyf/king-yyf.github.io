@@ -18,7 +18,6 @@ Index
 - [LFU 缓存](#lfu缓存)
 - [添加与搜索单词](#添加与搜索单词)
 - [树状数组](#树状数组)
-    - [树状数组的构建（以区间和问题为例）](#树状数组的构建以区间和问题为例)
     - [树状数组的特点](#树状数组的特点)
     - [树状数组解决的几个问题](#树状数组解决的几个问题)
     - [相关题目](#相关题目)
@@ -334,70 +333,6 @@ public:
   8=(1000)    C[8]=A[1]+A[2]+A[3]+A[4]+A[5]+A[6]+A[7]+A[8];
   ```
 
-### 树状数组的构建（以区间和问题为例）
-> LeetCode - [307. 区域和检索 - 数组可修改](https://leetcode-cn.com/problems/range-sum-query-mutable/description/)
-
-**问题描述**
-  ```
-  给定一个数组，支持两种操作：
-    1.查询区间和 
-    2.修改某个元素的值
-
-示例：
-```
-    Given nums = [1, 3, 5]
-
-    sumRange(0, 2) -> 9
-    update(1, 2)
-    sumRange(0, 2) -> 8
-```
-
-- 构建树状数组的过程即初始化数组 `C` 的过程
-- 基本操作：
-  - `lowbit(x)` ——求 2^k，其中 k 表示 x 二进制位中后缀 0 的个数
-  - `updateC(x, delta)` ——更新 C 数组中 A[x] 的祖先
-    - 如果是初始化阶段 delta = A[i]，
-    - 如果是更新 A[i]，则 delta = new_val - A[i]
-  - `sumPrefix(x)` ——求前缀区间 [1, x] 的和
-  - `update(i, val)` ——更新 A[i] = val，同时也会更新所有 A[i] 的祖先
-  - `sumRange(lo, hi)` ——求范围 [lo, hi] 的区间和
-
-```c++
-class NumArray {
-public:
-    vector<int> tr, data;
-    int n;
-    int lowbit(int x) { return x & -x;  }
-    //查询前缀和 区间[l,r]的和 sum(r) - sum[l]；
-    int sum(int x) {
-        int res = 0;
-        for (int i = x; i; i -= lowbit(i))
-            res += tr[i];
-        return res;
-    }
-    void add(int x, int c) {
-        for (int i = x; i <= n; i += lowbit(i))
-            tr[i] += c;
-    }
-    NumArray(vector<int>& nums) {
-        n = nums.size();
-        tr.resize(n + 1, 0);
-        for (int i = 0; i < n; ++i) 
-            add(i + 1, nums[i]);
-        data = nums;
-    }
-    
-    void update(int i, int val) {
-        add(i + 1, val - data[i]);
-        data[i] = val;
-    }
-    
-    int sumRange(int i, int j) {
-        return sum(j + 1) - sum(i);
-    }
-};
-```
-
 ### 树状数组解决的几个问题
 
 ```c++
@@ -439,7 +374,7 @@ add(l, d);  add(r + 1, -d);
 a[x] + query(x) //查询a[x]
 ```
 
-**区间修改，去检查询**
+**区间修改，区间查询**
 ```c++
 int t1[maxn], t2[maxn];
 

@@ -140,7 +140,7 @@ int Atoi(string s, int radix) {
     for (int i = 0; i < s.size(); ++i) {
         auto t = s[i];
         if (t >= '0' && t <= '9') 
-            ans = ans * radix + t - '0' + 10;
+            ans = ans * radix + t - '0';
         else 
             ans = ans * radix + t - 'a' + 10;
     }
