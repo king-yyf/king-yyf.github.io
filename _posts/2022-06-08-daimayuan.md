@@ -18,6 +18,7 @@ Index
   - [树上路径异或和](#树上路径异或和)
   - [最小或值生成树](#最小或值生成树)
   - [统计子数组和模k等于子数组长度的数量](#统计子数组的数量)
+  - [异或后最少逆序对数](#异或后最少逆序对数)
 - [div2](#div2)
   
    
@@ -277,6 +278,60 @@ long long countSubarrays(vector<int> &a, int k) {
         cnt[((s[i] - i)%k + k)%k]++;
     }
     return ans;
+}
+```
+
+### 异或后最少逆序对数
+
+给你一个有 𝑛 个非负整数组成的数组 𝑎 ，你需要选择一个非负整数 𝑥，对数组 𝑎 的每一个 𝑎𝑖 与 𝑥 进行异或后形成新的数组 𝑏，要求 𝑏 数组的逆序对个数最小，如果有多个 𝑥 满足条件，输出最小的 𝑥。
+
++ 1 <= n <= 3e5
++ 0 <= ai <= 1e9
+
+**分析**
+
+按位来确定x 的每一位选什么，每一位之间都是独立的，从高到低枚举每一位，如果当前位取1 会使逆序对数量减少就取1，从高位到低位依次确定即可
+
+```c++
+long long mergeSort(int l, int r, vector<int>& nums, vector<int>& tmp) {
+    if (l >= r) return 0;
+    int m = (l + r) / 2;
+    long long res = mergeSort(l, m, nums, tmp) + mergeSort(m + 1, r, nums, tmp);
+    int i = l, j = m + 1;
+    for (int k = l; k <= r; k++) tmp[k] = nums[k];
+    for (int k = l; k <= r; k++) {
+        if (i == m + 1) nums[k] = tmp[j++];
+        else if (j == r + 1 || tmp[i] <= tmp[j]) nums[k] = tmp[i++];
+        else {
+            nums[k] = tmp[j++];
+            res += m - i + 1; //如果是a[i] >= a[j]，tmp[i] <= tmp[j] 改为tmp[i] < tmp[j]
+        }
+    }
+    return res;
+}
+
+long long reversePairs(vector<int>& nums) {
+    vector<int> tmp(nums.size());
+    return mergeSort(0, nums.size() - 1, nums, tmp);
+}
+
+void solve(){
+    rd(n);
+    vector<int> a(n), b;
+    rd(a);
+    b = a;
+    long long mn=reversePairs(a),t;
+    long long res=0;
+    for(int k=30;~k;--k){
+        res |= 1 << k;
+        for (int i = 0; i < n; ++i) 
+            a[i] = (b[i] ^ res);
+        t = reversePairs(a);
+        if (t < mn) {
+            mn = t;
+        } else res ^= 1 << k;
+    }
+    cout << mn << " " << res << "\n";
 }
 ```
 
