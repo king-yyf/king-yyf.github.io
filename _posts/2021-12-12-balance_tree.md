@@ -13,6 +13,7 @@ Index
 <!-- TOC -->
 
 - [简介](#简介)
+- [pbds使用](#pbds使用)
 - [序列顺序查询](#序列顺序查询)
 - [滑动窗口中位数](#滑动窗口中位数)
    
@@ -25,6 +26,50 @@ Index
 ### 简介
 
 c++ 中的set, multiset, map等 都支持 维持容器的有序以及按序遍历，但是却不支持下标访问，对于一些既要有序又要支持下标访问的问题，可以使用c++中的PBDS（Policy-based data structures）或者 python中的SortedList
+
+
+### pbds使用
+
+
+```c++
+#include <bits/stdc++.h>
+using namespace std;
+#include<ext/pb_ds/assoc_container.hpp>
+#include<ext/pb_ds/tree_policy.hpp>
+using namespace __gnu_pbds;
+
+template<class T>
+using ordered_set = tree<T,null_type, less<T>, rb_tree_tag, tree_order_statistics_node_update>;
+
+int main() {
+    vector<int> v {1, 3, 5, 2, 4, 8};
+    ordered_set<int> s;
+    for (auto x : v) {
+        s.insert(x); // 插入元素
+    }
+    // 查找有多少个数小于x
+    cout << s.order_of_key(5) << "\n"; // output: 4   [1,2,3,4] 
+    cout << s.order_of_key(6) << "\n"; // output: 5   [1,2,3,4, 5] 
+
+    s.erase(5); // 删除元素
+    cout << s.order_of_key(6) << "\n"; // output: 4   [1,2,3,4]
+
+    // s : [1, 2, 3, 4, 8]
+    // 查询下表为i处的值 0 <= i < s.size() ,不在范围内返回0
+    for (int i = 0; i <= (int)s.size(); ++i) {
+        cout << "index " << i << " = " << *s.find_by_order(i) << "\n";
+    }
+
+    /*
+    index 0 = 1
+    index 1 = 2
+    index 2 = 3
+    index 3 = 4
+    index 4 = 8
+    index 5 = 0
+    */
+}
+```
 
 
 
