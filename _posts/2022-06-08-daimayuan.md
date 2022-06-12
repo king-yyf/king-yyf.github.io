@@ -20,6 +20,7 @@ Index
   - [统计子数组和模k等于子数组长度的数量](#统计子数组的数量)
   - [异或后最少逆序对数](#异或后最少逆序对数)
   - [方块消失的操作次数](#方块消失的操作次数)
+  - [工作安排](#工作安排)
 - [div2](#div2)
   
    
@@ -378,6 +379,45 @@ int calc(vector<int> &a) {
     for (int i = 0; i < n; ++i) dp1[i + 1] = min(dp1[i] + 1, a[i]);
     for (int i = n - 1; ~i; --i) dp2[i] = min(dp2[i + 1] + 1, a[i]);
     for (int i = 0; i < n; ++i) ans = max(ans, min(dp1[i + 1], dp2[i]));
+    return ans;
+}
+```
+
+### 工作安排
+
+有n项工作，每项工作话费一个单位时间，从时刻0开始，你每个时刻可以选择1-n项工作的任意一项工作完成。
+每项工作有一个截止日期di, 完成该工作可以获得利润pi，在给定工作利润和截止时间下，能获得的最大利润是多少。
+
++ 1 <= n <= 1e5
++ 0 <= di, pi <= 1e9
+
+**返回贪心**
+
+因为我们的工作的时间都为 1 ，所以我们可以直接贪心。用一个优先队列维护。
+
+只要可以放，就放，如果放不了，就拿出利润最小的那个，比较最小的这个和当前工作的利润。
+
+最后我们优先队列里面的，就是我们所选择的工作
+
+```c++
+/*
+a[i][0]: 截止时间， a[i][1]：利润   
+*/
+long long maxProfit(vector<vector<int>> &a) {
+    sort(all(a),[&](auto x, auto y){return x[0] < y[0];});
+    priority_queue<int, vector<int>, greater<int>> q;
+    for (int i = 0; i < (int)a.size(); ++i) {
+        if (a[i][0] <= 0) continue;
+        if (a[i][0] > q.size()) q.push(a[i][1]);
+        else if (a[i][1] > q.top()) {
+            q.pop();
+            q.push(a[i][1]);
+        }
+    }
+    long long ans = 0;
+    while (q.size()) {
+        ans += q.top(); q.pop();
+    }
     return ans;
 }
 ```
