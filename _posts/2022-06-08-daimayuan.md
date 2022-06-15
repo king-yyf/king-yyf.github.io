@@ -21,6 +21,7 @@ Index
   - [异或后最少逆序对数](#异或后最少逆序对数)
   - [方块消失的操作次数](#方块消失的操作次数)
   - [工作安排](#工作安排)
+  - [树上三角形数](#树上三角形数)
 - [div2](#div2)
   
    
@@ -421,5 +422,142 @@ long long maxProfit(vector<vector<int>> &a) {
     return ans;
 }
 ```
+
+### 树上三角形数
+
+给一个𝑛个节点的树, 三角果定义为一个包含3个节点的集合, 且他们两两之间的最短路长度𝑎, 𝑏, 𝑐能够构成一个三角形。
+
+计算这棵树上有多少个不同的三角果
+
++ 1 <= n <= 1e5
++ 1 <= w <= 1e5
++ 1 <= u, v <= n
+
+**1:树形DP**
+
++ 当三个点在树的一条路径上无解，其他情况均有解.
++ 由于不在一条路径上因此必然存在一个中间结点分别与这些点相连，假设这个点和其他三个点相连的边权分别a,b,c，则a+b+b+c>a+c证明与权值路径权值无关了。
+
+以点u 为中间点的方案数，这样的方案数由两部分构成：
+
++ u 的两个不同的子树各选一个，非u 的子树里选一个这样是不会构成一条路径的
++ u 的三个不同的子树各选一个，这样也不会构成一条路径
+
+**计算累乘和**
+
+1. 给定数组a，计算(如下两个函数均可)
+
+<br />
+![](/images/posts/leetcode/daimayuan_2.png)
+<br />
+
+```c++
+long long cal1(vector<long long> &a) {
+    long long  s1 = 0, s2 = 0;
+    for (auto v : a) s1 += v, s2 += v * v;
+    return (s1 * s1 - s2) / 2;
+}
+
+long long cal2(vector<long long> &a) {
+    long long s1 = 0, s2 = 0;
+    for (auto &x: a) {
+        s1 = s1 + s2 * x;
+        s2 += x;
+    }
+    return s1;
+}
+```
+
+2. 给定数组a，计算(如下两个函数均可)
+
+<br />
+![](/images/posts/leetcode/daimayuan_3.png)
+<br />
+
+```c++
+long long fun1(vector<long long> &a) {
+    long long  s1 = 0, s2 = 0, s3 = 0;
+    for (auto v : a) s3 += v;
+    for (auto v : a) s1 += 1ll * v * v * v, s2 += 3ll * v * v * (s3 - v);
+
+    return (s3 * s3 * s3 - s1 - s2) / 6;
+}
+
+long long fun2(vector<long long> &a) {
+    long long s1 = 0, s2 = 0, s3 = 0;
+    for (auto &x: a) {
+        s3 = s3 + s2 * x;
+        s2 = s2 + s1 * x;
+        s1 = s1 + x;
+    }
+    return s3;
+}
+```
+
+
+```c++
+long long cal1(vector<long long> &a) {
+    long long  s1 = 0, s2 = 0;
+    for (auto v : a) s1 += v, s2 += v * v;
+    return (s1 * s1 - s2) / 2;
+}
+long long cal2(vector<long long>&a) {
+    long long  s1 = 0, s2 = 0, s3 = 0;
+    for (auto v : a) s3 += v;
+    for (auto v : a) s1 += 1ll * v * v * v, s2 += 3ll * v * v * (s3 - v);
+
+    return (s3 * s3 * s3 - s1 - s2) / 6;
+}
+void solve(){
+    cin>>n;
+    vector<vector<int>> g(n);
+    f0(n-1){
+        rd(x,y,k);
+        x--,y--;
+        g[x].push_back(y);
+        g[y].push_back(x);
+    }
+    long long c=0;
+    vector<long long> s(n);
+    function<void(int,int)> dfs=[&](int u,int fa){
+        s[u]=1;
+        vector<long long> a;
+        for(auto&v:g[u]){
+            if(v!=fa){
+                dfs(v,u);
+                a.push_back(s[v]);
+                s[u]+=s[v];
+            }
+        }
+        int m=a.size();
+        if(m>=2) c+=cal1(a) * (n-s[u]);
+        if(m>=3) c+=cal2(a);
+    };
+    dfs(0,-1);
+    wt(c,'\n');
+}
+```
+
+**数学**
+
+如果将当前点u 去除掉我们可以得到好几颗子树，问题转化为从这些树中选三棵树每个每棵树选一个结点,设每个树的节点数为s[i], 也就是我们可以枚举其中一个点，然后保证这个点前面的递增，后面的递减即可，也就是等价于我们求到了u 这个点对于已经出现的点作为左半部分，当前枚举的作为u，未枚举到的作为右半部分，因此就可以O(n)的求了。
+
+```c++
+vector<long long > s(n);
+long long c = 0;
+function<void(int,int)> dfs=[&](int u,int fa){
+    s[u]=1;
+    for(auto&v:g[u]){
+        if(v!=fa){
+            dfs(v,u);
+            c += (s[u] - 1) * s[v] * (n - s[u] - s[v]);
+            s[u] += s[v];
+        }
+    }
+    
+};
+dfs(0,-1);
+```
+
 
 ## div2
