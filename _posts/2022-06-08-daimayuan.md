@@ -22,6 +22,8 @@ Index
   - [方块消失的操作次数](#方块消失的操作次数)
   - [工作安排](#工作安排)
   - [树上三角形数](#树上三角形数)
+  - [环上分段和的最大公约数](#环上分段和的最大公约数)
+  - [字典序最小](#字典序最小)
 - [div2](#div2)
   
    
@@ -557,6 +559,90 @@ function<void(int,int)> dfs=[&](int u,int fa){
     
 };
 dfs(0,-1);
+```
+
+### 环上分段和的最大公约数
+
+环上有𝑛个正整数。你能将环切成𝑘段，每段包含一个或者多个数字。
+
+对于一个切分方案，优美程度为每段数字和的最大公约数，你想使切分方案的优美程度最大，对于𝑘=1,2,…,𝑛输出答案。
+
++ 1 <= n <= 2000
++ 1 <= a[i] <= 5e7
+
+**分析**
+
++ g 为数组总和的因子，可以枚举 sum 的因子。
++ 如果一个因子可以是切成k段的结果，那么它也可以是切成k-1段的结果
+
+
+
+```c++
+vector<long long> maxKsegmentGCD(vector<int> &a) {
+    int n = a.size();
+    vector<long long> s(n + 1), ans(n);
+    for (int i = 0; i < n; ++i) {
+        s[i + 1] = s[i] + a[i];
+    }
+
+    auto cal = [&](long long x) {
+        map<long long, int> mp;
+        int cot = 0;
+        for (int i = 1; i <= n; i++) {
+            mp[s[i] % x]++;
+            cot = max(cot, mp[s[i] % x]);
+        }
+        ans[cot - 1] = max(ans[cot - 1], x);
+    };
+    int sq = sqrt(s[n]);
+    for (int i = 1; i <= sq; ++i) {
+        if (s[n] % i == 0) {
+            cal(i);
+            cal(s[n] / i);
+        }
+    }
+    for (int i = n - 2; ~i; --i) {
+        ans[i] = max(ans[i + 1], ans[i]);
+    }
+    return ans;
+}
+```
+
+### 字典序最小
+
+从序列 𝑀 个数中顺序选出 𝑁 个不同的数, 使得这 𝑁 个数的字典序最小。
+其中 1≤𝑎𝑖≤𝑁, 数据保证 [1,𝑁] 范围内每个数至少出现一次。
+
+让你找一个子序列，为 N 的排列，使得字典序最小，保证至少存在一个排列
+
++ 1 < n <= m <= 1e6
+
+**单调栈**
+
+顺序枚举，对于a[i],如果a[i]已经在栈中，不做处理，否则，我们弹出所有大于a[i]的数，来保证字典序最小
+但需要注意，弹出的数需要保证后面还有这个数，不然的话就不满足每个数都出现一次了。
+
+```c++
+/*
+0 <= a[i] <= n - 1
+*/
+vector<int> minLexicographicalPerm(vector<int> &a, int n) {
+    int m = a.size();
+    vector<int> p(n), s, st(n);
+    for (int i = 0; i < m; ++i) {
+        p[a[i]] = i;
+    }
+    for (int i = 0; i < m; ++i) {
+        if (st[a[i]]) continue;
+        while (s.size() && s.back() > a[i] && p[s.back()] > i) {
+            st[s.back()] = 0;
+            s.pop_back();
+        }
+        st[a[i]] = 1;
+        s.push_back(a[i]);
+    }
+    return s;
+}
 ```
 
 
