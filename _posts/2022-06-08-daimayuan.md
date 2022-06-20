@@ -24,6 +24,8 @@ Index
   - [树上三角形数](#树上三角形数)
   - [环上分段和的最大公约数](#环上分段和的最大公约数)
   - [字典序最小](#字典序最小)
+  - [好序列](#好序列)
+  - [区间和](#区间和)
 - [div2](#div2)
   
    
@@ -645,5 +647,122 @@ vector<int> minLexicographicalPerm(vector<int> &a, int n) {
 }
 ```
 
+### 好序列
+
+有一个长为𝑛的序列𝐴1,𝐴2,…,𝐴𝑛。定义一个序列{𝐴}是好的， 当且仅当他的每一个子区间[𝑙,𝑟]满足，至少存在一个元素𝑥仅出现了一次。
+
++ 1 <= n <= 2e5 
++ 1 <= a[i] <= 1e9
+
+**启发式合并**
+
+
+```c++
+bool isGoodSequence(vector<int> &a) {
+    int n = a.size();
+    vector<int> pre(n + 1, -1), nxt(n + 1, n + 1);
+    map<int, int> mp;
+    for (int i = 1; i <= n; ++i) {
+        pre[i] = mp[a[i - 1]];
+        nxt[mp[a[i - 1]]] = i;
+        mp[a[i - 1]] = i;
+    }
+    function<bool(int, int)> split = [&](int l, int r) -> bool {
+        if (l >= r) return 1;
+        int x = l, y = r;
+        while (x <= y) {
+            if (pre[x] < l && r < nxt[x]) return split(l, x - 1) && split(x + 1, r);
+            if (pre[y] < l && r < nxt[y]) return split(l, y - 1) && split(y + 1, r);
+            x++, y--;
+        }
+        return 0;
+    };
+    return split(1, n);
+}
+```
+
+### 区间和
+
+长度为n的数组A, 给出q个提示，第i个提示是A中L到R连续元素的区间和，能否根据q个提示知道数组所有元素的和？
+
+**分析**
+
+对于给定的区间和，我们考虑前缀和。
+
+给定区间 [l,r] 的和，相当于告诉了我们 s[r] - s[l - 1]的值，如果我们知道了其中一个数的值，那么另外的一个值也可以得到。
+
+我们可以通过给定的关系，得到 s[n] 的值。所以我们直接用一个并查集维护即可。
+
+
+```c++
+struct DSU {
+  public:
+    DSU() : _n(0) {}
+    explicit DSU(int n) : _n(n), parent_or_size(n, -1) {}
+
+    int merge(int a, int b) {
+        assert(0 <= a && a < _n);
+        assert(0 <= b && b < _n);
+        int x = get(a), y = get(b);
+        if (x == y) return x;
+        if (-parent_or_size[x] < -parent_or_size[y]) std::swap(x, y);
+        parent_or_size[x] += parent_or_size[y];
+        parent_or_size[y] = x;
+        return x;
+    }
+
+    bool same(int a, int b) {
+        assert(0 <= a && a < _n);
+        assert(0 <= b && b < _n);
+        return get(a) == get(b);
+    }
+
+    int get(int a) {
+        assert(0 <= a && a < _n);
+        if (parent_or_size[a] < 0) return a;
+        return parent_or_size[a] = get(parent_or_size[a]);
+    }
+
+    int size(int a) {
+        assert(0 <= a && a < _n);
+        return -parent_or_size[get(a)];
+    }
+
+    std::vector<std::vector<int>> groups() {
+        std::vector<int> leader_buf(_n), group_size(_n);
+        for (int i = 0; i < _n; i++) {
+            leader_buf[i] = get(i);
+            group_size[leader_buf[i]]++;
+        }
+        std::vector<std::vector<int>> result(_n);
+        for (int i = 0; i < _n; i++) {
+            result[i].reserve(group_size[i]);
+        }
+        for (int i = 0; i < _n; i++) {
+            result[leader_buf[i]].push_back(i);
+        }
+        result.erase(
+            std::remove_if(result.begin(), result.end(),
+                           [&](const std::vector<int>& v) { return v.empty(); }),
+            result.end());
+        return result;
+    }
+
+  private:
+    int _n;
+    // root node: -1 * component size
+    // otherwise: parent
+    std::vector<int> parent_or_size;
+};
+
+bool check(int n, vector<array<int, 2>> &Q) {
+    DSU dsu(n + 1);
+    for (auto& [l, r]: Q) {
+        dsu.merge(l - 1, r);
+    }
+    if (dsu.same(0, n)) return 1;
+    return 0;
+}
+```
 
 ## div2
