@@ -1,6 +1,6 @@
 ---
 layout: post
-title: daimayuan_div1
+title: 杂题选讲
 date: 2022-06-08
 tags: 算法专题  
 ---
@@ -12,7 +12,7 @@ Index
 ---
 <!-- TOC -->
 
-- [div1](#div1)
+- [daimayuan](#daimayuan)
   - [子串的最大差](#子串的最大差)
   - [区间中不大于x的数的数目](#区间中不大于x的数的数目)
   - [树上路径异或和](#树上路径异或和)
@@ -26,13 +26,15 @@ Index
   - [字典序最小](#字典序最小)
   - [好序列](#好序列)
   - [区间和](#区间和)
-- [div2](#div2)
+- [acwing/牛客](#acwing)
+  - [平均值大于k的最长子数组长度](#平均值大于k的最长子数组长度)
+  - [所有子数组平均数之和](#所有子数组平均数之和)
   
    
 <!-- /TOC -->
 
 
-## div1
+## daimayuan
 
 ### 子串的最大差
 
@@ -765,4 +767,118 @@ bool check(int n, vector<array<int, 2>> &Q) {
 }
 ```
 
-## div2
+## acwing
+
+### 平均值大于k的最长子数组长度
+
+[acwing 周赛57T3](https://www.acwing.com/problem/content/4490/)
+
+
+长度为n的数组A, 请你找到一个序列 a 的连续子序列 a[l], a[l+1], ..., a[r]，要求:
+
++ a[l]+a[l+1]+,,,+a[r] > 100 * (r - l + 1)
++ 子数组长度尽可能大
+
+求子数组的最大可能长度. 
+
+
+**分析**
+
+s[r] - s[l - 1] > 100 (r - l + 1)
+
+即： s[r]-s[l-1]-100(r-l+1) > 0
+
+设 s1 为 a[i] - 100 数组的前缀和，
+即 s1[r] > s1[l] (l < r) 求 r - l 的最大值。
+
+如果 i < j 同时 s[i] <= s[j] 则，s[j] 不会成为任意大于j的最小的l，所以可以维护一个单调递减的栈，每次对栈进行二分。
+
+
+**代码**
+
+```c++
+int lengthestSubArray(vector<int> &a, int k) {
+    int n = a.size(), ans = 0;
+    vector<long long> s(n + 1);
+    for (int i = 0; i < n; ++i) 
+        s[i + 1] = s[i] + (a[i] - k);
+    vector<int> sk;
+    for (int i = 0; i <= n; ++i) {
+        if (sk.empty() || s[sk.back()] > s[i]) {
+            sk.push_back(i);
+        } else {
+            int l = 0, r = sk.size() - 1, res = -1;
+            while (l <= r) {
+                int mid = (l + r) / 2;
+                if (s[sk[mid]] < s[i]) {
+                    res = mid;
+                    r = mid - 1;
+                } else l = mid + 1;
+            }
+            if (res != - 1)
+                ans = max(ans, i - sk[res]);
+        }
+    }
+    return ans;
+}
+```
+
+### 所有子数组平均数之和
+
+[牛客小白月赛51 F](https://ac.nowcoder.com/acm/contest/11228/F)
+
+给定一个数组,求出这段数组中所有子数组的平均数之和。
+答案对1e9+7取模，假设答案的最简分数表示为a/b,你需要输出最小的非负整数x，使得`x*b`与a模(1e9+7)同余。
+
+**分析**
+
+```
+对于不同长度的子区间，每个元素贡献的次数
+
+         a[1] a[2] a[3] a[4] a[5] a[6] a[7]
+l = 1     1    1    1    1    1    1    1
+l = 2     1    2    2    2    2    2    1
+l = 3     1    2    3    3    3    2    1
+l = 4     1    2    3    4    3    2    1
+l = 5     1    2    3    3    3    2    1
+l = 6     1    2    2    2    2    2    1
+l = 7     1    1    1    1    1    1    1
+
+```
+
+对于长度l=1,2,...,n分别考虑
+当l=1时，所有长度为1的子数组和为s[n]-s[0],记作sum[1];
+当l=2时，a[1]和a[n]贡献一次，a[2]...a[n-1]贡献两次
+...
+可得递推关系，见代码。
+
+最后对于每个长度进行累加和， a/b = a* pow(b,mod-2)
+
+
+```c++
+int calSubArrayMeanSum(vector<int> &a) {
+    int n = a.size(), mod = 1e9 + 7;
+    vector<long long> p(n + 1), s(n + 1);
+    for (int i = 0; i < n; ++i)
+        p[i + 1] = (p[i] + a[i]) % mod;
+    for (int l = 1; l <= n; ++l) {
+        if (l <= (n + 1) / 2) s[l] = (s[l-1] + p[n + 1 - l] - p[l - 1]) % mod;
+        else s[l] = s[n + 1 - l];
+    }
+
+    auto qp = [&](long long x, long long y) {
+        long long c = 1, t = x;
+        for (; y; y >>= 1) {
+            if (y & 1) c = c * t % mod;
+            t = t * t % mod;
+        }
+        return c;
+    };
+
+    long long ans = 0;
+    for (int l = 1; l <= n; ++l) {
+        ans = (ans + s[l] * qp(l, mod - 2)) % mod;
+    }
+    return (ans + mod) % mod;
+}
+```
