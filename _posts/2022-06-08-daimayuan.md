@@ -29,6 +29,7 @@ Index
 - [acwing/牛客](#acwing)
   - [平均值大于k的最长子数组长度](#平均值大于k的最长子数组长度)
   - [所有子数组平均数之和](#所有子数组平均数之和)
+  - [均值大于等于k的子数组数目](#均值大于等于k的子数组数目)
   
    
 <!-- /TOC -->
@@ -779,6 +780,9 @@ bool check(int n, vector<array<int, 2>> &Q) {
 + a[l]+a[l+1]+,,,+a[r] > 100 * (r - l + 1)
 + 子数组长度尽可能大
 
++ 1 <= n <= 1e6
++ 0 <= a[i] <= 5000
+
 求子数组的最大可能长度. 
 
 
@@ -823,12 +827,57 @@ int lengthestSubArray(vector<int> &a, int k) {
 }
 ```
 
+**O(n)算法**
+
+对原数组作减k操作，设s为新数组的前缀和，问题转化为：
+在s数组中找到一对i,j 使得 s[j] > s[i] 且 (j - i) 最大。
+
++ 对于一个i，如果i左侧有小于或等于s[i]的元素，那么i不可能成为最优答案中的i。
++ 对于一个j，如果j右侧有大于或等于s[j]的元素，那么j不可能成为最优答案中的j。
+
+设 lmn[i]：表示 s[0],...s[i]中的最小值，rmx[j]: 表示s[j]...s[n]中的最大值。
+
+显然，lmn 和 rmx 都是单调不增序列。
+
+从前向后遍历两个数组，如果 lmn[i] >= rmx[j]，则执行 i++，
+如果 lmn[i] < rmx[j], 更新 ans, 同时执行 j++;
+
+
+```c++
+int lengthestSubArray(vector<int> &a, int k) {
+    int n = a.size();
+    
+    vector<long long> s(n + 1);
+    for (int i = 0; i < n; ++i) 
+        s[i + 1] = s[i] + (a[i] - k);
+
+    auto lmn = s, rmx = s;
+    for (int i = 1; i <= n; ++i) 
+        lmn[i] = min(lmn[i - 1], s[i]);
+    for (int i = n - 1; i >= 0; --i) 
+        rmx[i] = max(rmx[i + 1], s[i]);
+
+    int i = 0, j = 0, ans = 0;
+    while (i <= n && j <= n) {
+        if (lmn[i] < rmx[j]) {
+            ans = max(ans, j - i);
+            j = j + 1;
+        } else i = i + 1;
+    }
+    
+    return ans;
+}
+```
+
 ### 所有子数组平均数之和
 
 [牛客小白月赛51 F](https://ac.nowcoder.com/acm/contest/11228/F)
 
 给定一个数组,求出这段数组中所有子数组的平均数之和。
 答案对1e9+7取模，假设答案的最简分数表示为a/b,你需要输出最小的非负整数x，使得`x*b`与a模(1e9+7)同余。
+
++ 1 <= n <= 1e6
++ 0 <= a[i] <= 1e9
 
 **分析**
 
@@ -880,5 +929,51 @@ int calSubArrayMeanSum(vector<int> &a) {
         ans = (ans + s[l] * qp(l, mod - 2)) % mod;
     }
     return (ans + mod) % mod;
+}
+```
+
+### 均值大于等于k的子数组数目
+
+[atcoder arc075E](https://atcoder.jp/contests/arc075/tasks/arc075_c)
+
+给定长度为n的数组k，求有多少对子数组，其平均值大于等于k。
+
++ 1 <= n <= 2e5
++ 1 <= k <= 1e9
++ 1 <= a[i] <= 1e9
+
+**分析**
+
+首先对所有数减去k，设其前缀和数组为s,问题转化为有多少对l,r使得s[r]-s[l-1]>=0, 用树状数组对s求有多少个顺序对。
+
+```c++
+long long countSubArraysK(vector<int> &a, int k) {
+    int n = a.size();
+    vector<long long> s(n + 1), tr(n + 1);
+    for (int i = 0; i < n; ++i) {
+        s[i + 1] = s[i] + (a[i] - k);
+    }
+
+    auto add = [&](int x) {
+        for (; x <= n + 1; x += x & -x) tr[x - 1] += 1;
+    };
+
+    auto ask = [&](int x) {
+        int res = 0;
+        for (; x > 0; x -= x & -x) res += tr[x - 1];
+        return res;
+    };
+
+    auto v = s;
+    sort(v.begin(), v.end());
+    v.erase(unique(begin(v), end(v)), end(v));
+
+    long long ans = 0;
+    for (int i = 0; i <= n; ++i) {
+        int p = lower_bound(v.begin(), v.end(), s[i]) - v.begin() + 1;
+        ans += ask(p); //如果是大于k的数目，改为ask(p-1)
+        add(p);
+    }
+    return ans;
 }
 ```
