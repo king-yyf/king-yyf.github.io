@@ -30,6 +30,7 @@ Index
   - [平均值大于k的最长子数组长度](#平均值大于k的最长子数组长度)
   - [所有子数组平均数之和](#所有子数组平均数之和)
   - [均值大于等于k的子数组数目](#均值大于等于k的子数组数目)
+  - [数对](#数对)
   
    
 <!-- /TOC -->
@@ -973,6 +974,94 @@ long long countSubArraysK(vector<int> &a, int k) {
         int p = lower_bound(v.begin(), v.end(), s[i]) - v.begin() + 1;
         ans += ask(p); //如果是大于k的数目，改为ask(p-1)
         add(p);
+    }
+    return ans;
+}
+```
+
+### 数对
+
+[牛客 https://ac.nowcoder.com/acm/contest/37344/D]
+
+给定长度为n的数列和两个整数x,y. 求有多少个数对 l, r, 满足
+
++ 1 <= l <= r <= n
++ a[l] + a[l+1] + ,,, + a[r]  <= x + y * (r - l + 1)
+
++ 1 <= n <= 2e5
++ -1e9 <= a[i] <= 1e9
++ -1e12 <= x, y <= 1e12
+
+**解析**
+
+另 b[i] = a[i] - y, 设b的前缀和数组为s，上述公式变为 s[r] - s[l - 1] <= x
+可以在值域上维护一个树状数组，维护每个前缀和数值的个数和。遍历右边端点r进行累加。
+
+```c++
+long long countPairs(vector<int> &a, long long x, long long y) {
+    int n = a.size();
+    vector<long long> s(n + 1), v;
+    for (int i = 0; i < n; ++i) {
+        s[i + 1] = s[i] + a[i] - y;
+    }
+
+    for (int i = 0; i <= n; ++i) {
+        v.push_back(s[i]);
+        v.push_back(s[i] - x);
+    }
+
+    sort(v.begin(), v.end());
+    v.erase(unique(begin(v), end(v)), end(v));
+
+    vector<long long> tr(v.size() + 1);
+
+    auto add = [&](int x) {
+        for (; x <= (int)tr.size(); x += x & -x) tr[x - 1] += 1;
+    };
+
+    auto ask = [&](int x) {
+        int res = 0;
+        for (; x > 0; x -= x & -x) res += tr[x - 1];
+        return res;
+    };
+
+    auto get = [&](long long x) {
+        return lower_bound(v.begin(), v.end(), x) - v.begin() + 1;
+    };
+
+    long long ans = 0;
+    for (int i = 0; i <= n; ++i) {
+        ans += i - ask(get(s[i] - x) - 1);
+        add(get(s[i]));
+    }
+    return ans;
+}
+```
+
+**解法2**
+
+可以直接用平衡树求 小于 s[r] - x 的l有多少个。 需要一个支持下表访问的multiset。
+
+
+```c++
+struct mulset {
+    // mulset 模板
+};
+
+long long countPairs(vector<int> &a, long long x, long long y) {
+    int n = a.size();
+    vector<long long> s(n + 1), v;
+    for (int i = 0; i < n; ++i) {
+        s[i + 1] = s[i] + a[i];
+    }
+
+    mulset<long long, less<long long>> st;
+    st.insert(0);
+
+    long long ans = 0;
+    for (int i = 1; i <= n; ++i) {
+        ans += i - st.order_of_key(s[i] - x);
+        st.insert(s[i]);
     }
     return ans;
 }

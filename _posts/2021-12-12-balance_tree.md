@@ -14,6 +14,7 @@ Index
 
 - [简介](#简介)
 - [pbds使用](#pbds使用)
+- [pbds实现multiset](pbds实现multiset)
 - [序列顺序查询](#序列顺序查询)
 - [滑动窗口中位数](#滑动窗口中位数)
    
@@ -55,7 +56,7 @@ int main() {
     cout << s.order_of_key(6) << "\n"; // output: 4   [1,2,3,4]
 
     // s : [1, 2, 3, 4, 8]
-    // 查询下表为i处的值 0 <= i < s.size() ,不在范围内返回0
+    // 查询下标为i处的值 0 <= i < s.size() ,不在范围内返回0
     for (int i = 0; i <= (int)s.size(); ++i) {
         cout << "index " << i << " = " << *s.find_by_order(i) << "\n";
     }
@@ -71,7 +72,60 @@ int main() {
 }
 ```
 
+### pbds实现multiset
 
+模板
+
+使用方法
+
++ 定义multiset `mulset<long long, less<long long>> s;`
++ 插入元素 `s.insert(x)`
++ 删除元素 `s.erase(x)`
++ 查询有多少个比 x 小的元素 `s.order_of_key(x)`
++ 查询下标为i处的值 0 <= i < s.size() ,不在范围内返回0 `s.find_by_order(i)`
++ 上一个元素 `s.prev(x)`
++ 下一个元素 `s.next(x)`
+
+
+```c++
+template<typename T, typename less>
+struct mulset_cmp {
+    bool operator () (const pair<T, size_t>& x, const pair<T, size_t>& y) const {
+        return less()(x.first, y.first) ? true : (less()(y.first, x.first) ? false : less()(x.second, y.second));
+    }
+};
+ 
+template<typename T, typename less>
+struct mulset {
+    tree<pair<T, size_t>, null_type, mulset_cmp<T, less>, rb_tree_tag, tree_order_statistics_node_update> t;
+    map<T, size_t> mp;
+
+    void insert(T v) {
+        t.insert({v, ++mp[v]});
+    }
+
+    void erase(T v) {
+        t.erase({v, mp[v]--});
+    }
+
+    size_t order_of_key(T v) {
+        return t.order_of_key({v, 0});
+    }
+
+    T find_by_order(size_t r) {
+        return t.find_by_order(r)->first;
+    }
+
+    T prev(T v) {
+        auto it = t.lower_bound({v, 0});
+        return (--it)->first;
+    }
+
+    T next(T v) {
+        return t.lower_bound({v + 1, 0})->first;
+    }
+};
+```
 
 ### 序列顺序查询
 
