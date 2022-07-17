@@ -14,7 +14,7 @@ Index
 
 - [简介](#简介)
 - [pbds使用](#pbds使用)
-- [pbds实现multiset](pbds实现multiset)
+- [pbds实现multiset](#pbds实现multiset)
 - [序列顺序查询](#序列顺序查询)
 - [滑动窗口中位数](#滑动窗口中位数)
    
