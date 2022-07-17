@@ -981,7 +981,7 @@ long long countSubArraysK(vector<int> &a, int k) {
 
 ### 数对
 
-[牛客 https://ac.nowcoder.com/acm/contest/37344/D]
+[牛客 河南赛D](https://ac.nowcoder.com/acm/contest/37344/D)
 
 给定长度为n的数列和两个整数x,y. 求有多少个数对 l, r, 满足
 
