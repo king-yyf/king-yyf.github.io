@@ -74,7 +74,14 @@ int main() {
 
 ### pbds实现multiset
 
-模板
+**1.使用less_equal**
+
+`template<class T> using ordered_set = tree<T, null_type, less_equal<T>, rb_tree_tag, tree_order_statistics_node_update>;`
+
+将pbds中的 less<T> 修改为 less_equal<T>, 即可支持 multiset.
+
+
+**2.实现模板**
 
 使用方法
 
