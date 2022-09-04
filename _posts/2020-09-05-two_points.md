@@ -80,6 +80,7 @@ Index
     - [最大连续1的个数](#最大连续1的个数)
     - [替换后的最长重复字符](#替换后的最长重复字符)
     - [无重复字符的最长子串（Longest Substring Without Repeating Characters）](#无重复字符的最长子串longest-substring-without-repeating-characters)
+    - [最长and值为0子数组](#最长and值为0子数组)
     - [水果成篮（Fruit Into Baskets）](#水果成篮fruit-into-baskets)
 - [反向双指针](#反向双指针)
     - [数组中的最长山脉（Longest Mountain in Array）（反向双指针）](#数组中的最长山脉longest-mountain-in-array反向双指针)
@@ -1161,6 +1162,49 @@ class Solution:
         return res;
     }
 ```
+
+## 最长and值为0子数组
+
+[leetcode周赛309 T3](https://leetcode.cn/problems/longest-nice-subarray/)
+
+给你一个由 正 整数组成的数组 nums 。
+
+如果 nums 的子数组中位于 不同 位置的每对元素按位 与（AND）运算的结果等于 0 ，则称该子数组为 优雅 子数组。
+
+返回 最长 的优雅子数组的长度。
+
+子数组 是数组中的一个 连续 部分。
+
+注意：长度为 1 的子数组始终视作优雅子数组。
+
++ 1 <= nums.length <= 1e5
++ 1 <= nums[i] <= 1e9
+
+**分析**
+
+化一下题目条件：如果两个数 AND 的结果不是 0，说明这两个数的某个二进制位都是 1。因此我们需要选出最长的区间，使得区间中每个二进制位最多出现一个 1。
+
+如果一个区间是优雅的，那么它的子区间肯定也是优雅的（因为二进制位中出现 11 的次数不会增多），因此可以使用 two pointers 解决。
+
+
+```c++
+int longestNiceSubarray(vector<int>& a) {
+    int n = a.size();
+    vector<int> c(32, -1);
+    int l = 0, res = 0;
+    for (int r = 0; r < n; ++r) {
+        for (int j = 0; j < 30; ++j) if ((a[r] >> j) & 1) {
+            if (c[j] != -1) {
+                l = max(l, c[j] + 1);
+            }
+            c[j] = r;
+        }
+        res = max(r - l + 1, res);
+    }
+    return res;
+}
+```
+
 
 ## 水果成篮（Fruit Into Baskets）
 > LeetCode/[904. 水果成篮](https://leetcode-cn.com/problems/fruit-into-baskets/description/)
