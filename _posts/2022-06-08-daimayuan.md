@@ -181,6 +181,55 @@ void solve(){
 }
 ```
 
+**思路2**
+
+可以统计该路径上每一位有多少个1，如果有奇数个，则异或和为1，否则为0，这种方法还可以扩展到一并解决路径与，路径或问题，例如对于或问题，如果路径上该位存在1，则结果的该位为1，否则为0，对于与问题，路径上该位1的个数等于路径上元素个数，则该位为1，否则为0.
+
+```c++
+void solve(int tt) {
+    cin >> n >> m;
+    vector<int> a(n);
+    for (auto &x : a) cin >> x;
+    LCA g(n);
+    for(int i=1;i<n;++i){
+        cin>>x>>y;
+        x--,y--;
+        g.add_edge(x,y);
+    }
+
+    vector<vector<int>> s(n,vector<int>(20));
+    function<void(int,int)> dfs = [&](int u,int fa) {
+        if(fa==-1){
+            for(int i=0;i<20;++i){
+                if(a[u]&(1<<i)) s[u][i]=1;
+                else s[u][i]=0;
+            }
+        }else{
+            for(int i=0;i<20;++i)
+                s[u][i]=s[fa][i]+((a[u]&(1<<i))?1:0);
+        }
+        for(auto v:g.adj[u]){
+            if(v!=fa){
+                dfs(v,u);
+            }
+        }
+
+    };
+
+    dfs(0,-1);
+    g.build();
+    while(m--){
+        cin>>x>>y;
+        x--,y--;
+        int u=g.get_lca(x,y);
+        int p=0;
+        for(int i=0;i<20;++i){
+            if((s[x][i]+s[y][i]-((a[u]&(1<<i))?1:0))%2==1)p=p|(1<<i);
+        }
+        cout<<p<<"\n";
+    }
+}
+```
 
 ### 最小或值生成树
 
