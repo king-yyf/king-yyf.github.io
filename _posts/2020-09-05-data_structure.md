@@ -18,9 +18,8 @@ Index
 - [LFU 缓存](#lfu缓存)
 - [添加与搜索单词](#添加与搜索单词)
 - [树状数组](#树状数组)
-    - [树状数组的特点](#树状数组的特点)
-    - [树状数组解决的几个问题](#树状数组解决的几个问题)
-    - [相关题目](#相关题目)
+    - [简介](#简介)
+    - [一维树状数组](#一维树状数组)
     - [二维树状数组](#二维树状数组)
 - [线段树](#线段树)
 - [ST 表](#st表)
@@ -304,6 +303,9 @@ public:
 ```
 
 ## 树状数组
+
+### 简介
+
 - 树状数组是一种用于维护**前缀信息**的数据结构
 <br />
 ![](/images/posts/leetcode/data_1.png)
@@ -333,7 +335,7 @@ public:
   8=(1000)    C[8]=A[1]+A[2]+A[3]+A[4]+A[5]+A[6]+A[7]+A[8];
   ```
 
-### 树状数组解决的几个问题
+**树状数组解决的几个问题**
 
 ```c++
 //初始化
@@ -403,20 +405,53 @@ add2(l, l * d), add2(r + 1, -(r + 1) * d);
 ```
 
 
-### 树状数组的特点
+**树状数组的特点**
 - 线段树不能解决的问题，树状数组也无法解决；
 - 树状数组和线段树的时间复杂度相同：初始化 `O(n)`，查询和修改 `O(logn)`；但实际效率要高于线段树；
 - 直接维护前缀信息也能解决查询问题，但是修改的时间复杂度会比较高；
 
 
-### 相关题目
-- [665. 二维区域和检索 - 矩阵不可变](https://www.lintcode.com/problem/range-sum-query-2d-immutable/description) - LintCode 
-- [817. 二维区域和检索 - 矩阵可变](https://www.lintcode.com/problem/range-sum-query-2d-mutable/description) - LintCode 
-- [249. 统计前面比自己小的数的个数](https://www.lintcode.com/problem/count-of-smaller-number-before-itself/description) - LintCode 
-- [248. 统计比给定整数小的数的个数](https://www.lintcode.com/problem/count-of-smaller-number/description) - LintCode 
-- [532. 逆序对](https://www.lintcode.com/problem/reverse-pairs/description) - LintCode 
+### 一维树状数组
+
+**用法**
+
++ 初始化: FenwickTree<int> fen(n); 或者 FenwickTree<int> fen(a); a 是 vector<int>
++ 添加元素: fen.add(i, val) 0 <= i < n;
++ 查询前缀和: fen.ask(i)  0 <= i < n
++ 查询区间和: fen.ask(x, y) a[x] + ..., + a[y]  0 <= x, y < n
+
+模板
+```c++
+template <typename T>
+struct FenwickTree {
+    int n;
+    vector<T> a;
+    FenwickTree(int n) : n(n), a(n) {}
+    FenwickTree(vector<T> &A) : FenwickTree((int)A.size()) {
+        for (int i = 0; i < n; ++i) add(i, A[i]);
+    }
+    void add(int x, T v) {
+        for (int i = x + 1; i <= n; i += i & -i) a[i - 1] += v;
+    }
+    T ask(int x) {
+        T ans = 0;
+        for (int i = min(x + 1, n); i > 0; i -= i & -i) ans += a[i - 1];
+        return ans;
+    }
+    T ask(int l, int r) { //sum[l..r]
+        if (l > r) return 0;
+        return ask(r) - ask(l - 1);
+    }
+};
+```
 
 ### 二维树状数组
+
+**用法**
++ 初始化: FenwickTree2D<int> fen(n, m); 或者 FenwickTree2D<int> fen(a); a 是二维vector
++ 添加元素: fen.add(i, j, val) 0 <= i < n, 0 <= j < m;
++ 查询前缀和: fen.ask(x, y)  0 <= x < n, 0 <= y < m
++ 查询区间和: fen.ask(x1, y1, x2, y2) sum[x1..x2, y1..y2]  0 <= x1, x2 < n, 0 <= y1, y2 < m
 
 模版
 
@@ -425,28 +460,27 @@ template<typename T>
 struct FenwickTree2D{
     vector<vector<T>> tr;
     int n, m;
-    FenwickTree2D(int N, int M){
-        n = N, m = M; 
-        tr.assign(n + 1, vector<T>(m + 1 , 0));
+    FenwickTree2D(int N, int M) : n(N), m(M), tr(N, vector<T>(M, 0)){}
+    FenwickTree2D(vector<vector<T>> &a) : FenwickTree2D((int)a.size(), (int)a[0].size()) {
+        for (int i = 0; i < n; ++i)
+            for (int j = 0; j < m; ++j)
+                add(i, j, a[i][j]);
     }
-    void add(int x, int y, int val){
-        ++x, ++y;
-        for(int i = x;i <= n; i += i & -i){
-            for(int j = y;j <= m; j += j & -j){
-                tr[i][j] += val;
-            }
-        }
+
+    void add(int x, int y, T val){ // 0 <= x < n, 0 <= y < m
+        for(int i = x + 1; i <= n; i += i & -i)
+            for(int j = y + 1; j <= m; j += j & -j)
+                tr[i - 1][j - 1] += val;
     }
  
-    T ask(int x, int y) {
-        ++x, ++y;
+    T ask(int x, int y) { // 0 <= x < n, 0 <= y < m
         T ret = 0;
-        for(int i = x; i >= 1;i -= i & -i)
-            for(int j = y; j >= 1;j -= j & -j)
-                ret += tr[i][j];
+        for(int i = x + 1; i > 0; i -= i & -i)
+            for(int j = y + 1; j > 0; j -= j & -j)
+                ret += tr[i - 1][j - 1];
         return ret;
     }
-    T ask(int x1, int y1, int x2, int y2) {
+    T ask(int x1, int y1, int x2, int y2) {  // sum[x1..x2, y1..y2]
         return ask(x2, y2) - ask(x2, y1 - 1) - ask(x1 - 1, y2) + ask(x1 - 1, y1 - 1);
     }
 };
