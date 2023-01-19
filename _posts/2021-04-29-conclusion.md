@@ -18,6 +18,11 @@ Index
 - [概率与期望](#概率与期望)
 - [蚂蚁掉落问题](#蚂蚁掉落问题)
 - [区间中异或值最大的两个数](#区间中异或值最大的两个数)
+- [括号序列](#括号序列)
+   - [下一个合法括号序列](#下一个合法括号序列)
+   - [括号序列的字典序排名](#括号序列的字典序排名)
+   - [第k个合法括号序列](#第k个合法括号序列)
+   - [合法括号子串数目](#合法括号子串数目)
 - [数列与递推](#数列)
   - [等差与等比数列](#等差与等比数列)
   - [错位排列](#错位排列)
@@ -164,6 +169,139 @@ long long maxXorSum(long long a, long long b) {
         x >>= 1;
     }
     return (1LL) << cnt - 1;
+}
+```
+## 括号序列
+
+### 下一个合法括号序列
+
+给出合法的括号序列 s，我们要求出按字典序升序排序的长度为 |s| 的所有合法括号序列中，序列 s 的下一个合法括号序列。在本问题中，我们认为左括号的字典序小于右括号，且不考虑变种括号序列。
+
+时间复杂度 O(n)
+
+```c++
+bool next_balanced_sequence(string &s) {
+    int n = s.size(), dep = 0;
+    for (int i = n - 1; i >= 0; --i) {
+        dep += (s[i] == '(') ? -1 : 1;
+        if (s[i] == '(' && dep > 0) {
+            dep--;
+            int l = (n - i - 1 - dep) / 2, r = n - i - 1 - l;
+            string t = s.substr(0, i) + ')' + string(l, '(') + string(r, ')');
+            s.swap(t);
+            return true;
+        }
+    }
+    return false;
+}
+```
+
+### 括号序列的字典序排名
+
+给出合法的括号序列 s，我们要求出它的字典序排名。
+
+时间复杂度 `O(n*n)`  排名从1开始
+
+```c++
+using T = long long; //mint
+T rank_of_sequence(string &s) {
+    int n = s.size();
+    vector dp(n + 1, vector<T>(n + 1));
+    dp[0][0] = 1;
+    for (int i = 1; i < n; ++i) {
+        dp[i][0] = dp[i - 1][1];
+        for (int j = 1; j < n; ++j) {
+            dp[i][j] = dp[i - 1][j - 1] + dp[i - 1][j + 1];
+        }
+    }
+    int idx = 0;
+    T ans = 0;
+    for (int i = 1; i <= n; ++i) {
+        if (s[i - 1] == ')') ans += dp[n - i][idx + 1], idx--;
+        else idx++;
+    }
+    return ans + 1;
+}
+```
+
+### 第k个合法括号序列
+
+在所有包含n对括号的合法括号序列中，求字典序第k小的括号序列。
+
+```c++
+using T = long long;
+string kth_balanced(int n, T k) { // n对括号，字符串长度为2*n
+    vector d(2 * n + 1,vector<T>(n + 1));
+    d[0][0] = 1;
+    for (int i = 1; i <= 2 * n; ++i) {
+        d[i][0] = d[i - 1][1];
+        for (int j = 1; j < n; ++j) 
+            d[i][j] = d[i-1][j-1] + d[i-1][j+1];
+        d[i][n] = d[i-1][n-1];
+    }
+    string ans;
+    int dep = 0;
+    for (int i = 0; i < 2 * n; ++i) {
+        if (dep + 1 <= n && d[2 * n - i - 1][dep + 1] >= k) {
+            ans += '(';
+            dep++;
+        } else {
+            ans += ')';
+            if (dep + 1 <= n) k -= d[2 * n - i - 1][dep + 1];
+            dep--;
+        }
+    }
+    return ans;
+}
+```
+
+### 合法括号子串数目
+
+[代码源 div1 707](http://oj.daimayuan.top/course/10/problem/707)
+
+一个只包含'('和')'的字符串S， 求有多少个非空子串是合法括号序列
+
++ 1 <= s.size() <= 1e6
+
+**分析**
+
+对于合法的括号序列，右括号  一定只能和一个左括号  匹配。
+
+我们可以跑一遍栈，得到右括号匹配的左括号。
+
+其中 pos[i] 保存着匹配的左括号的下标。
+
+可以定义 dp[i] 为，s[i] 为右括号作为结尾的情况下，合法子串的个数。
+
+我们知道 [pos[i], i] 是一个合法子串的，我们需要看看 dp[pos[i] - 1] 的值。
+
+所以 dp[i] = dp[pos[i] - 1] + 1。
+
+时间复杂度 O(n)
+
+```c++
+long long countValidSeq(string &s) {
+    int n = s.size();
+    vector<int> pos(n + 1);
+    stack<int> sk;
+    for (int i = 1; i <= n; ++i) {
+        if (s[i - 1] == '(') sk.push(i);
+        else {
+            if(sk.size()) {
+                pos[i] = sk.top();
+                sk.pop();
+            }
+        } 
+    }
+    long long ans = 0;
+    vector<long long> dp(n + 1);
+    for (int i = 1; i <= n; ++i) {
+        if (pos[i]) {
+            dp[i] = dp[pos[i] - 1] + 1;
+            ans += dp[i];
+        }
+    }
+    return ans;
 }
 ```
 

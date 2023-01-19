@@ -26,6 +26,7 @@ Index
   - [字典序最小](#字典序最小)
   - [好序列](#好序列)
   - [区间和](#区间和)
+  - [最大权值和划分](#最大权值和划分)
 - [acwing/牛客](#acwing)
   - [平均值大于k的最长子数组长度](#平均值大于k的最长子数组长度)
   - [所有子数组平均数之和](#所有子数组平均数之和)
@@ -822,6 +823,45 @@ bool check(int n, vector<array<int, 2>> &Q) {
     return 0;
 }
 ```
+
+### 最大权值和划分
+
+[div1 709](http://oj.daimayuan.top/course/10/problem/709)
+
+对于一段序列，这段序列的权值定义为最大值与最小值之差，给定数组a，可以将其划分为任意连续的序列，求出数组每一段权值求和的最大值
+
++ 1 <= n <= 1e6
++ -1e9 <= a[i] <= 1e9
+
+**分析**
+
+最优解中，数组分成的每一段序列内部都是单调的，这样不会对最终的结果值造成损失。
+
++ dp[i][0]: 第i个数在下降序列中的最大值
++ dp[i][1]: 第i个数在上升序列中的最大值
+
+当遍历到a[i]时，如果a[i]>a[i-1]:
+讨论a[i-1]在上升序列或下降序列中，可得dp[i][1]=max(dp[i-1][0],dp[i-1][1]+a[i]-a[i-1])
+dp[i][0] = max(dp[i-1][0],dp[i-1][1])
+
+
+```c++
+long long maxWeightSum(vector<int> &a) {
+    int n = a.size();
+    vector<vector<long long>> dp(n, vector<long long>(2));
+    for (int i = 1; i < n; ++i) {
+        if (a[i] > a[i - 1]) {
+            dp[i][1] = max(dp[i - 1][0], dp[i - 1][1] + a[i] - a[i - 1]);
+            dp[i][0] = max(dp[i - 1][0], dp[i - 1][1]);
+        } else {
+            dp[i][0] = max(dp[i - 1][0] + a[i - 1] - a[i], dp[i - 1][1]);
+            dp[i][1] = max(dp[i - 1][0], dp[i - 1][1]);
+        }
+    }
+    return max(dp[n - 1][0], dp[n - 1][1]);
+}
+```
+
 
 ## acwing
 
