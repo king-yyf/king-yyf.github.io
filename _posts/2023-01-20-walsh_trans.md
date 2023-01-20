@@ -20,6 +20,7 @@ Index
 - [例题](#例题)
   - [统计异或值在范围内的数对有多少](#统计异或值在范围内的数对有多少)
   - [频率最高的子序列异或和](#频率最高的子序列异或和)
+  - [所有子数组异或和之和](#所有子数组异或和之和)
 
    
 <!-- /TOC -->
@@ -245,5 +246,42 @@ vector<int> xorSubsequence(vector<int> a) {
         }
     }
     return {ans, max_freq};
+}
+```
+
+### 所有子数组异或和之和
+
+一个长度为n的数组a有 n * (n+1)/2 个非空子数组，每个子数组有一个异或和，求所有子数组异或和的总和。
+
++ 1 <= n <= 1e5
++ 1 < a[i] <= 2e16
+
+**分析**
+
+本题可使用上一题的cnt 数组计算，同时也可以按位计算。
+
+```c++
+long long xorSumSeqSum(vector<int> &a) {
+    int n = a.size(), m = 16;
+    long long sum = 0;
+    for (int i = 0; i < m; ++i) {
+        vector<int> s(n), p(n + 1);
+        s[n - 1] = (a[n - 1] >> i & 1);
+        for (int j = n - 2; j >= 0; --j) {
+            s[j] = (s[j + 1] + (a[j] >> i & 1)) % 2;
+        }
+        for (int j = 0; j < n; ++j) 
+            p[j + 1] = p[j] + s[j];
+        for (int j = 0; j < n; ++j) {
+            int x = 0;
+            if (a[j] >> i & 1) {
+                x = (s[j] == 0) ? j + 1 - p[j + 1] : p[j + 1];
+            } else {
+                x = (s[j] == 0) ? p[j + 1] : j + 1 - p[j + 1];
+            }
+            sum += x * 1ll * (1 << i);
+        }
+    }
+    return sum;
 }
 ```
