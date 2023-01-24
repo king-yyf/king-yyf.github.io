@@ -341,6 +341,14 @@ long long minSwapCount(string &s) {
 ![](/images/posts/leetcode/math2.png)
 <br />
 
+**等差数列前n项和**
+
+```c++
+long long arith_seq_sum(long long a1, long long d, long long n) {
+    return a1 * n + n * (n - 1) * d / 2;
+}
+```
+
 **等比数列**
 
 <br />
@@ -350,6 +358,15 @@ long long minSwapCount(string &s) {
 <br />
 ![](/images/posts/leetcode/math4.png)
 <br />
+
+**等比数列前n项和**
+
+```c++
+mint geo_seq_sum(mint a1, mint q, int n) {
+    if (q == 1) return a1 * n;
+    return a1 * (q.pow(n) - 1) / (q - 1);
+}
+```
 
 
 **常见数列前n项和公式**
