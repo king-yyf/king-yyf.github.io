@@ -34,6 +34,7 @@ Index
   - [数对](#数对)
 - [其它](#其它)
     - [统计排列的MEX值](#统计排列的mex值)
+    - [交换后最小化最值差](#交换后最小化最值差)
 
   
    
@@ -1201,6 +1202,41 @@ vector<long long> countPermulationMEX(vector<int> &a) {
             r = k;
         }
     }
+    return ans;
+}
+```
+
+### 交换后最小化最值差
+
+[codechef symswaps](https://www.codechef.com/problems/SYMARRSWAP)
+
+两个长为n的数组a,b，每次操作可以选择一个i，交换a[i],b[i],可以操作任意次，求能取得的 a_max-a_min的最小值。
+
++ 1 <= n <= 2e5
++ 1 <= a[i], b[i] <= 1e9
+
+
+```c++
+int minDiffSwaps(vector<int> &a, vector<int> &b) {
+    int n = a.size();
+    vector<pair<int,int> > c(n);
+    for (int i = 0; i < n; ++i) {
+        c[i] ={min(a[i],b[i]), max(a[i],b[i])}; 
+    }
+
+    sort(c.begin(), c.end());
+    multiset<int> s;
+    for (int i = 0; i < n; ++i) {
+        s.insert(c[i].first);
+    } 
+
+    int ans = *(s.rbegin()) - *(s.begin());
+    for (int i = 0; i < n; ++i) {
+        s.erase(c[i].first);
+        s.insert(c[i].second);
+        ans = min(ans, *(s.rbegin()) - *(s.begin()));
+    }
+
     return ans;
 }
 ```
