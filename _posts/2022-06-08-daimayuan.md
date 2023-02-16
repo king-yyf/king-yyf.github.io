@@ -35,6 +35,8 @@ Index
 - [其它](#其它)
     - [统计排列的MEX值](#统计排列的mex值)
     - [交换后最小化最值差](#交换后最小化最值差)
+    - [不相交子数组数目](#不相交子数组数目)
+    - [删除子数组的方案数](#删除子数组的方案数)
 
   
    
@@ -1237,6 +1239,102 @@ int minDiffSwaps(vector<int> &a, vector<int> &b) {
         ans = min(ans, *(s.rbegin()) - *(s.begin()));
     }
 
+    return ans;
+}
+```
+
+
+### 不相交子数组数目
+
+[codechef segment](https://www.codechef.com/problems/CHSGMNTS)
+
+长为n的数组A，求有多少个不相交的区间 [a,b] 和 [c,d], `1 <= a <= b < c <= d <= n`, 满足 A[a..b] 和 A[c..d]两个子数组中不存在相同元素。
+
++ 1 <= n <= 1000
++ 1 <= A[i] <= 1e9
+
+**分析**
+
+https://discuss.codechef.com/t/chsgments-editorial/12767
+
+```c++
+template <class T>
+struct Discrete {
+    vector<T> xs;
+    Discrete(const vector<T>& v) {
+        xs = v;
+        sort(xs.begin(), xs.end());
+        xs.erase(unique(xs.begin(), xs.end()), xs.end());
+    }
+    int get(const T& x) const {
+        return lower_bound(xs.begin(), xs.end(), x) - xs.begin();
+    }
+    inline int operator()(const T& x) const { return get(x); }
+    T operator[](int i) { return xs[i]; }
+    int size() const { return xs.size(); }
+};
+
+
+int count_non_intersec_seg(vector<int> &a) {
+    Discrete<int> v(a);
+    for(int &x:a)
+        x=v(x);
+    int n=a.size();
+    vector<vector<int>> p(n);
+    for (int i = 0; i < n; ++i) {
+        p[a[i]].push_back(i);   
+    }
+    int ans = 0;
+    for (int i = 0; i < n; ++i) {
+        set<int> b{i - 1, n};
+        vector<int> vis(n);
+        int tot = (n - i) * (n - i + 1) / 2;
+        for (int j = i; j < n; ++j) {
+            if (vis[a[j]]) {
+                ans += tot;
+                continue;
+            }
+            vis[a[j]] = 1;
+            for (int x : p[a[j]]) {
+                auto it = b.lower_bound(x);
+                int r = *it, l = *prev(it);
+                tot -= (x - l) * (r - x);
+                b.insert(x);
+            }
+            ans += tot;
+        }
+        p[a[i]].erase(p[a[i]].begin());
+
+    }
+    return ans;
+}
+```
+
+
+### 删除子数组的方案数
+
+[codechef delarray](https://www.codechef.com/problems/DELARRAY?tab=statement)
+
+给定数组A。计算有多少种不同的方案能从该序列中删去一个非空的子数组，使得剩余的数组非空且严格递增。
+
++ 1 <= n <= 1e5
++ -1e9 <= a[i] <= 1e9
+
+**分析**
+
+
+```c++
+long long countDelWays(vector<int> &a) {
+    int n = a.size(), r = n;
+    a.insert(a.begin(), INT_MIN);
+    long long ans = 0;
+    while (r - 1 >= 1 && a[r] > a[r - 1]) r--;
+    ans = n - max(1, r - 1);
+    for (int l = 1; l < n; l++) {
+        if (not (a[l - 1] < a[l])) break;
+        while (r <= n and not (a[l] < a[r])) r++;
+        ans += n - max(l + 1, r - 1) + 1;
+    }
     return ans;
 }
 ```
