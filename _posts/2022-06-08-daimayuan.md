@@ -37,6 +37,7 @@ Index
     - [交换后最小化最值差](#交换后最小化最值差)
     - [不相交子数组数目](#不相交子数组数目)
     - [删除子数组的方案数](#删除子数组的方案数)
+    - [最大异或值的最小x](#最大异或值的最小x)
 
   
    
@@ -1336,5 +1337,20 @@ long long countDelWays(vector<int> &a) {
         ans += n - max(l + 1, r - 1) + 1;
     }
     return ans;
+}
+```
+
+### 最大异或值的最小x
+
+[interview bit](https://www.interviewbit.com/problems/maximum-xor-with-min-x/)
+
+给定一个整数A，选择两个整数（X，Y），使1<=X，Y<=A，使它们的xor值最大。
+如果有多个(X, Y)；选择一个最小的X。
+
+```c++
+vector<int> maxXorMinX(int n) {
+    if (n == 1) return {1, 1};
+    int x  = 32 - __builtin_clz(n), k = (1 << x) - 1;
+    return k == n ? vector<int>{1, n - 1} : vector<int>{k ^ n, n};
 }
 ```
