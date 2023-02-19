@@ -38,6 +38,8 @@ Index
     - [不相交子数组数目](#不相交子数组数目)
     - [删除子数组的方案数](#删除子数组的方案数)
     - [最大异或值的最小x](#最大异或值的最小x)
+    - [第n个二进制表示是回文串的数](#第n个二进制表示是回文串的数)
+    - [1到n中二进制1的总数](#1到n中二进制1的总数)
 
   
    
@@ -1347,10 +1349,74 @@ long long countDelWays(vector<int> &a) {
 给定一个整数A，选择两个整数（X，Y），使1<=X，Y<=A，使它们的xor值最大。
 如果有多个(X, Y)；选择一个最小的X。
 
++ 1 <= A <= 1e9
+
 ```c++
 vector<int> maxXorMinX(int n) {
     if (n == 1) return {1, 1};
     int x  = 32 - __builtin_clz(n), k = (1 << x) - 1;
     return k == n ? vector<int>{1, n - 1} : vector<int>{k ^ n, n};
+}
+```
+
+### 第n个二进制表示是回文串的数
+
+[interview bit](https://www.interviewbit.com/problems/palindromic-binary-representation/)
+
+给定整数n，找到第n个二进制表示是回文串的数
+
++ 1 <= n <= 2e4
+
+```c++
+int nth_palin(int n) {
+    long long p = 1, ans = 0;
+    int l = 0, sum = 1;
+    while(1) {
+        l++;
+        if(sum + p > a) break;
+        sum += p;
+        l++;
+        if(sum + p > a) break;
+        sum += p;
+        p <<= 1;
+    }
+    int bits[l]{};
+    bits[0] = bits[l - 1] = 1;
+
+    int mid = l >> 1, diff = a - sum; 
+    for(int i = 0; diff && i < mid; i++) {
+        bits[mid - i - !(l & 1)] = bits[mid + i] = diff & 1;
+        diff >>= 1;
+    }
+    p = 1;
+    for(int i = 0; i < l; i++) {
+        ans += bits[i] * p;
+        p <<= 1;
+    }
+    return ans;
+}
+```
+
+### 1到n中二进制1的总数
+
+[interview bit](https://www.interviewbit.com/problems/count-total-set-bits/)
+
+统计从1到n的所有数字的二进制表示中的1的总数
+
++ 1 <= n <= 1e9
+
+```c++
+int solve(int n) {
+    long long ans = 0;
+    int x = log10(n) / log10(2);
+    for (int i = 0; i <= x; i++){
+        int c = 1 << i, cnt = 0;
+        int set = (n + 1) / c;
+        cnt = (set / 2) * c;
+        int d = (n + 1) % c;
+        if (set % 2 != 0) cnt += d;
+        ans = (ans + cnt) % 1000000007;
+    }
+    return ans;
 }
 ```
