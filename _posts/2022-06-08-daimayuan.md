@@ -1408,13 +1408,13 @@ int nth_palin(int n) {
 ```c++
 int solve(int n) {
     long long ans = 0;
-    int x = log10(n) / log10(2);
+    int x = 31 - __builtin_clz(n);
     for (int i = 0; i <= x; i++){
         int c = 1 << i, cnt = 0;
-        int set = (n + 1) / c;
-        cnt = (set / 2) * c;
+        int p = (n + 1) / c;
+        cnt = (p / 2) * c;
         int d = (n + 1) % c;
-        if (set % 2 != 0) cnt += d;
+        if (p % 2 != 0) cnt += d;
         ans = (ans + cnt) % 1000000007;
     }
     return ans;
