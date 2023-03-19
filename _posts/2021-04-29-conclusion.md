@@ -15,9 +15,9 @@ Index
 
 - [数论](#数论)
 - [排列组合](#排列组合)
-- [概率与期望](#概率与期望)
 - [蚂蚁掉落问题](#蚂蚁掉落问题)
 - [区间中异或值最大的两个数](#区间中异或值最大的两个数)
+- [部分结论题](#部分结论题)
 - [括号序列](#括号序列)
    - [下一个平衡括号序列](#下一个平衡括号序列)
    - [括号序列的字典序排名](#括号序列的字典序排名)
@@ -71,9 +71,6 @@ Index
 
 **答案：** `combi(n + 8, 8)` 
 
-
-
-## 概率与期望
 
 
 ### 蚂蚁掉落问题
@@ -173,6 +170,27 @@ long long maxXorSum(long long a, long long b) {
     return (1LL) << cnt - 1;
 }
 ```
+
+### 部分结论题
+
+1. n个人一圈做一个游戏，从第一个人开始，每隔一个人移除一个人，问第k个移除的人是谁？
+
+[cees math1](https://vjudge.net/problem/CSES-2164)
+
++ 1 <= k <= n <= 1e9
+
+```c++
+int kth_del(int n, int k) {
+    if (n == 1) return 1;
+    if (k <= (n + 1) / 2) 
+        return 2 * k > n ? 2 * k % n : 2 * k;
+    int c = kth_del(n >> 1, k - (n + 1) / 2);
+    return n & 1 ? 2 * c + 1 : 2 * c - 1;
+}
+```
+
+2. 
+
 ## 括号序列
 
 ### 下一个平衡括号序列
@@ -369,6 +387,46 @@ mint geo_seq_sum(mint a1, mint q, int n) {
 }
 ```
 
+**等比数列前n项和取模**
+
+[abc293 E](https://atcoder.jp/contests/abc293/tasks/abc293_e)
+
+给定整数 a, x, m， 求 `(1+a+a^2+...+a^(x-1) mod m` 的和。
+
++ 1 <= a, m <= 1e9
++ 1 <= x <= 1e12
+
+
+**注意**
+
+直接使用前n项和公式需要求 a-1的逆元，但是 a-1 模m的逆元可能不存在，所以可以使用分治的算法。
+
+```c++
+long long  qpow(long long m, long long k, long long p) {
+    long long res = 1 % p, t = m;
+    while (k) {
+        if (k&1) res = res * t % p;
+        t = t * t % p;
+        k >>= 1;
+    }
+    return (long long)res;
+}
+long long calc(long long p, long long c, int mod) {
+    if (c == 0) return 1;
+    long long x;
+    if (c % 2 == 0) 
+        x = (1 + qpow(p, c / 2, mod)) * calc(p, c/2 - 1, mod) + qpow(p, c, mod);
+    else
+        x = (1 + qpow(p, (c + 1)/ 2, mod)) * calc(p, (c - 1) / 2, mod);
+    x %= mod;
+    return x;
+}
+long long sum_mod(long long a, long long x, long long mod) {
+    if (a == 1) return x % mod;
+    if (mod == 1) return 0;
+    return calc(a, x - 1, mod);
+}
+```
 
 **常见数列前n项和公式**
 
