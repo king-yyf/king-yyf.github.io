@@ -40,6 +40,7 @@ Index
     - [最大异或值的最小x](#最大异或值的最小x)
     - [第n个二进制表示是回文串的数](#第n个二进制表示是回文串的数)
     - [1到n中二进制1的总数](#1到n中二进制1的总数)
+    - [询问mex数量](#询问mex数量)
 
   
    
@@ -1418,5 +1419,65 @@ int solve(int n) {
         ans = (ans + cnt) % 1000000007;
     }
     return ans;
+}
+```
+
+### 询问mex数量
+
+[codechef mex sefments](https://www.codechef.com/problems/MEXSEG?tab=statement)
+
+给一个0-n-1的排列P和Q个询问，每个询问给定 `L1, L2, M1, M2` 计算长度在[L1, L2]之间且 MEX值在[M1,M2] 之间的子数组数量。
+
++ 1 <= n <= 1e6
++ 1 <= q <= 2e5
++ 1 <= L1 <= L2 <= N
++ 0 <= M1 <= M2 <= N
+
+**分析**
+
+预处理函数 get(m, l) 长度大于等于l，且 MEX值大于等于m的子数组数量
+
+```c++
+void solve() {
+    int n, q;
+    cin >> n >> q;
+
+    vector<int> a(n), p(n), l(n + 1), r(n + 1);
+    for (int i = 0; i < n; ++i) {
+        cin >> a[i];
+        p[a[i]] = i + 1;
+    }
+
+    l[0] = 1e9, r[0] = -1;
+    for (int i = 1; i <= n; ++i) {
+        r[i] = max(r[i - 1], p[i - 1]);
+        l[i] = min(l[i - 1], p[i - 1]);
+    }
+
+    auto calc = [&](int m, int len) -> long long {
+        if (m > n || len <= 0) return 0;
+        if (m == 0) return 1ll * len  * (2 * n - len + 1) / 2;
+        int y = n - r[m], x = l[m] - 1, k = r[m] - l[m] + 1;
+        if (k > len) return 0;
+        int left = len - k;
+        x = min(x, left), y = min(y, left);
+        int z = min(x, y) + 1;
+        long long res = z * (z + 1ll) / 2;
+        res += max(0ll, z * 1ll * (min(max(x, y), left) - z + 1));
+        z = max(x, y);
+        int num = min(x + y, left) - z;
+        z = min(x, y);
+        res += num * 1ll * (z - num + 1 + z) / 2;
+        return res;
+    };
+
+    auto get = [&](int l1, int l2, int m1, int m2) {
+        return calc(m1, l2) - calc(m1, l1 - 1) - calc(m2 + 1, l2) + calc(m2 + 1, l1 - 1);
+    };
+
+    for (int i = 0, l1, l2, m1, m2; i < q; ++i) {
+        cin >> l1 >> l2 >> m1 >> m2;
+        cout << get(l1, l2, m1, m2) << '\n';
+    }
 }
 ```
