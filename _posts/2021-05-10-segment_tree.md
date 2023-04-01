@@ -16,7 +16,8 @@ Index
 - [区间修改与懒标记](#区间修改与懒标记)
 - [模板代码](#模板代码)
 - [使用方法](#使用方法)
-- [线段树练习题1](#线段树练习题1)
+- [线段树选题](#线段树选题)
+  - [区间取模](#区间取模)
 - [cfedu题解](#cfedu题解)
   - [维护区间最值及出现次数](#维护区间最值及出现次数)
   - [维护区间最大子数组和](#维护区间最大子数组和)
@@ -26,7 +27,8 @@ Index
   - [求交叉区间的数目](#求交叉区间的数目)
   - [区间交替符号和](#区间交替符号和)
   - [区间逆序对](#区间逆序对)
-
+- [权值线段树]
+  - [统计大小在某个范围内的数量](#统计大小在某个范围内的数量)
 
 
 <!-- /TOC -->
@@ -336,78 +338,72 @@ seg.seg(a-1, seg.get(a-1) + b);
 
 
 
-### 线段树练习题1
+## 线段树选题
 
-[atcoder pratice2](https://atcoder.jp/contests/practice2/tasks/practice2_j)
+### 区间取模
 
-给一个长度为N的数组a，有Q个下面几种类型的查询
+[cf 438D](https://codeforces.com/contest/438/problem/D)
 
-第i个查询的类型是Ti
+给定一个序列(长度n)和m次操作，每次操作有三种形式:
+1. 计算 a[l,r]的和
+2. 对 l<=i<=r, 执行 a[i] = a[i] % x
+3. 赋值 a[k] = x
 
-- Ti = 1, 你将给两个数字 X, V, 将 a[X] 赋值为 V
-- Ti = 2, 你将给两个数字 L, R, 计算 a[L], a[L+1], ..., a[R] 的最大值
-- Ti = 3, 你将给两个数字 X, V, 计算最大的 j, 使得， X <= j <= N，V <= a[j],如果不存在者也的，返回 N+1;
++ 1 <= n, m <= 1e5
++ 1 <= a[i] <= 1e9
 
-**输入格式**
+**分析**
 
-```
-N Q
-A1 A2 ... AN
-query 1
-...
-query Q
-```
-
-
-**数据范围**
-
-- 1 <= N <= 2e5
-- 0 <= Ai <= 1e9
-- 1 <= Q <= 1e5
+取模的性质 `a[i] % x <= a[i] / 2`， 即每执行一个取模操作，数值至少会减为原来的1半，n个数最多会执行`nlog(n)`次操作。维护区间最大值，最大值坐标和区间和，暴力模拟即可。
 
 ```c++
-#include <vector>
-#include <iostream>
-#include <cassert>
-using namespace std;
-
-template <class S, S (*op)(S, S), S (*e)()>
-struct segtree {
-    // ...
+struct S {
+    ll sum;
+    int mx, pos;
+    S(): sum(0),mx(-1),pos(-1){}
+    S(ll a, int b, int c) :sum(a), mx(b), pos(c){}
 };
-
-int op(int a, int b) {
-    return max(a, b);
+ 
+S op(S x, S y) {
+    S s;
+    s.sum = x.sum + y.sum;
+    s.mx = max(x.mx, y.mx);
+    s.pos = x.mx > y.mx ? x.pos : y.pos;
+    return s;
 }
-
-int e() { return -1;}
-
-int target;
-bool f(int v) {
-    return v < target;
+S e() {
+    return S();
 }
-
-int main() {
-   int n, q;
-   cin >> n >> q;
-   vector<int> a(n);
-   for (int i = 0; i < n; ++i) cin >> a[i];
-   
-   segtree<int, op, e> seg(a);
-   for (int i =0; i < q; ++i) {
-       int t; cin >> t;
-       if (t == 1) {
-           int x, v; cin >> x >> v;
-           seg.set(x - 1, v);
-       } else if (t == 2) {
-           int l, r; cin >> l >> r;
-           cout << seg.prod(l - 1, r) << "\n"; 
-       } else if (t == 3) {
-           int p; cin >> p >> target;
-           cout << seg.max_right<f>(p - 1) + 1 << "\n";
-       }
-   }
-   return 0;
+int main() {    
+    int n, q, x;
+    cin >> n >> q;
+    vector<S> a(n);
+    for (int i = 0; i < n; ++i) {
+        cin >> x;
+        a[i] = S{x, x, i};
+    }
+    SegTree<S, op, e> seg(a);
+    for (int i = 0, t, l, r, p; i < q; ++i) {
+        cin >> t;
+        if (t == 1) {
+            cin >> l >> r;
+            l--;
+            cout << seg.get(l, r).sum << '\n';
+        } else if (t == 2){
+            cin >> l >> r >> p;
+            l--;
+            auto s = seg.get(l, r);
+            while (s.mx >= p) {
+                seg.set(s.pos, S{s.mx % p, s.mx % p, s.pos});
+                s = seg.get(l, r);
+            }
+        } else {
+            cin >> p >> x;
+            p--;
+            seg.set(p, S{x, x, p});
+        }
+    }
+    return 0;
 }
 ```
 
@@ -847,3 +843,171 @@ int main() {
     return 0;
 }
 ```
+
+## 权值线段树
+
+权值线段树维护的是大小在[l, r]的范围，一般配合离散化使用。
+
+### 统计大小在某个范围内的数量
+
+[cses1144](https://vjudge.net/problem/CSES-1144)
+
+一个长度为n的序列，q次操作，每次操作有两种形式
+1. `! k x` 将第k个元素修改为x
+2. `? a b` 查询元素在[a,b]范围内的数量
+
++ 1 <= n, q <= 2e5
++ 1 <= a[i], x, a, b <= 1e9
++ 1 <= k <= n
+
+**方法1：平衡树(590ms)**
+
+```c++
+#include <bits/stdc++.h>
+using namespace std;
+#include<ext/pb_ds/assoc_container.hpp>
+#include<ext/pb_ds/tree_policy.hpp>
+using namespace __gnu_pbds;
+
+template<class T> using ordered_set = tree<T, null_type, less_equal<T>, rb_tree_tag, tree_order_statistics_node_update>;
+
+int main() {
+    ios::sync_with_stdio(false); cin.tie(nullptr);
+    
+    int n,q;
+    cin>>n>>q;
+    vector<int> a(n);
+    ordered_set<int> s;
+    for (int i = 0; i < n; ++i) {
+        cin>>a[i];  
+        s.insert(a[i]);
+    }
+
+    for (int i = 0; i < q; ++i) {
+        char c;
+        cin >> c;
+        if (c == '!') {
+            int k, x;
+            cin >> k >> x;
+            k--;
+            s.erase(s.find_by_order(s.order_of_key(a[k])));
+            a[k] = x;
+            s.insert(x);
+        } else {
+            int l, r;
+            cin >> l >> r;
+
+            cout << s.order_of_key(r + 1) - s.order_of_key(l) << '\n';
+        }
+    }
+    return 0;
+}
+```
+
+**方法2:树状数组(320ms)**
+
+```c++
+int main() {
+    ios::sync_with_stdio(false); cin.tie(nullptr);
+    
+    int n, q;
+    cin >> n >> q;
+    vector<int> a(n);
+    for (int i = 0; i < n; ++i) {
+        cin >> a[i];    
+    }
+    vector<array<int, 3>> qs(q);
+    char op;
+    for (int i = 0; i < q; ++i) {
+        cin >> op >> qs[i][1] >> qs[i][2];
+        if (op == '!') {
+            qs[i][0] = 0;
+            a.push_back(qs[i][2]);
+        } else {
+            qs[i][0] = 1;
+            a.push_back(qs[i][1]);
+            a.push_back(qs[i][2]);
+        }
+    }
+
+    Discrete<int> v(a);
+    int m = v.size();
+
+    FenwickTree<int> f(m);
+    for (int i = 0; i < n; ++i) {
+        f.add(v(a[i]), 1);
+    }
+    for (auto &[op, x, y]: qs) {
+        if (op == 0) {
+            x--;
+            f.add(v(a[x]), -1);
+            a[x] = y;
+            f.add(v(a[x]), 1);
+        } else {
+            cout << f.sum(v(x), v(y)) << '\n';
+        }
+    }
+
+    return 0;
+}
+```
+
+**方法3:权值线段树(350ms)**
+
+```c++
+using S = int;
+S op(S x, S y) {
+    S s = x + y;
+    return s;
+}
+S e() {
+    return S();
+}
+int main() {
+    ios::sync_with_stdio(false); cin.tie(nullptr);
+    
+    int n, q;
+    cin >> n >> q;
+    vector<int> a(n);
+    for (int i = 0; i < n; ++i) {
+        cin >> a[i];    
+    }
+    vector<array<int, 3>> qs(q);
+    char t;
+    for (int i = 0; i < q; ++i) {
+        cin >> t >> qs[i][1] >> qs[i][2];
+        if (t == '!') {
+            qs[i][0] = 0;
+            a.push_back(qs[i][2]);
+        } else {
+            qs[i][0] = 1;
+            a.push_back(qs[i][1]);
+            a.push_back(qs[i][2]);
+        }
+    }
+
+    Discrete<int> v(a);
+    int m = v.size();
+
+    vector<int> p(m);
+    for (int i = 0; i < n; ++i) {
+        p[v(a[i])]++;
+    }
+
+    SegTree<S, op, e> seg(p);
+
+    for (auto &[t, x, y]: qs) {
+        if (t == 0) {
+            x--;
+            seg.set(v(a[x]), seg.get(v(a[x])) - 1);
+            a[x] = y;
+            seg.set(v(a[x]), seg.get(v(a[x])) + 1);
+        } else {
+            cout << seg.get(v(x), v(y) + 1) << '\n';
+        }
+    }
+    return 0;
+}
+```
+
+### 
