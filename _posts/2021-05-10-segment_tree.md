@@ -27,8 +27,17 @@ Index
   - [求交叉区间的数目](#求交叉区间的数目)
   - [区间交替符号和](#区间交替符号和)
   - [区间逆序对](#区间逆序对)
-- [权值线段树]
+  - [Lazy-区间取max](#区间取max)
+  - [Lazy-区间赋值](#区间赋值)
+  - [Lazy-区间加区间求min](#区间加区间求min)
+  - [Lazy-区间乘与区间和](#区间乘与区间和)
+  - [Lazy-区间OR与区间AND](#区间or与区间and)
+  - [Lazy-区间赋值区间min](#区间赋值区间min)
+  - [Lazy-区间赋值区间和](#区间赋值区间和)
+  - [Lazy-区间异或区间和](#区间异或区间和)
+- [权值线段树](#权值线段树)
   - [统计大小在某个范围内的数量](#统计大小在某个范围内的数量)
+  - [查询集合MEX](#查询集合mex)
 
 
 <!-- /TOC -->
@@ -844,6 +853,440 @@ int main() {
 }
 ```
 
+### 区间取max
+
+[part2 step1B](https://codeforces.com/edu/course/2/lesson/5/1/practice/contest/279634/problem/B)
+
+
+n个初始为0元素，m次操作。(1<=n,m<=1e5)
++ 1 l r v : 对所有 l <= i < r 执行 a[i] = max(a[i], v) (0 <= v, a[i] <= 1e9)
++ 2 i 输出第i个元素
+
+```c++
+struct S {
+    int mx;
+    int size;
+};
+using F = int;
+S op(S x, S y) {
+    S s;
+    s = S{max(x.mx, y.mx), x.size + y.size};
+    return s;
+}
+S e() {
+    return S();
+};
+S tag(F f, S s) { 
+    S res;
+    res.mx = max(f, s.mx);
+    res.size = s.size;
+    return res;
+}
+F merge(F x, F y) { return max(x, y); }
+F id() { return 0; }
+
+int main() {
+    ios::sync_with_stdio(false); cin.tie(nullptr);
+    
+    int n, m;
+    cin >> n >> m;
+    LazySegTree<S, op, e, F, tag, merge, id> seg(vector<S>(n,{0,1}));
+    for (int i = 0, op, l, r, v; i < m; ++i) {
+        cin >> op;
+        if (op == 1) {
+            cin >> l >> r >> v;
+            seg.apply(l, r, v);
+        } else {
+            cin >> v;
+            cout << seg.get(v).mx << '\n';
+        }
+    }
+    return 0;
+}
+```
+
+### 区间赋值
+
+[part2 step1C](https://codeforces.com/edu/course/2/lesson/5/1/practice/contest/279634/problem/C)
+
+n个初始为0元素，m次操作。(1<=n,m<=1e5)
++ 1 l r v : 对所有 l <= i < r 执行 a[i] = v (0 <= v <= 1e9)
++ 2 i 输出第i个元素
+
+```c++
+struct S {
+    long long sum;
+    int size;
+};
+using F = long long;
+S op(S x, S y) {
+    S s;
+    s = S{x.sum + y.sum, x.size + y.size};
+    return s;
+}
+S e() {
+    return S();
+};
+S tag(F f, S s) { 
+    S res;
+    res.size = s.size;
+    res.sum = f == -1 ? s.sum : f * s.size;
+    return res;
+}
+F merge(F x, F y) { 
+    return x == -1 ? y : x;
+}
+F id() { return -1; }  // -1表示无懒标记
+
+int main() {
+    ios::sync_with_stdio(false); cin.tie(nullptr);
+    
+    int n, m;
+    cin >> n >> m;
+    LazySegTree<S, op, e, F, tag, merge, id> seg(vector<S>(n,{0,1}));
+    for (int i = 0, op, l, r, v; i < m; ++i) {
+        cin >> op;
+        if (op == 1) {
+            cin >> l >> r >> v;
+            seg.apply(l, r, v);
+        } else {
+            cin >> v;
+            cout << seg.get(v).sum << '\n';
+        }
+    }
+
+    return 0;
+}
+```
+
+### 区间加区间求min
+
+[part2 step2A](https://codeforces.com/edu/course/2/lesson/5/2/practice/contest/279653/problem/A)
+
+n个初始为0元素，m次操作。(1<=n,m<=1e5)
++ 1 l r v : 对所有 l <= i < r 执行 a[i] += v (0 <= v <= 1e9)
++ 2 l r 输出min(a[l], a[l+1], ...a[r-1])
+
+```c++
+struct S {
+    long long sum, mn;
+    int size;
+    S():sum(0),mn(1e18),size(0){} // mn 默认取最大值
+    S(long long s, long long m, int siz):sum(s),mn(m),size(siz){}
+};
+using F = long long;
+S op(S x, S y) {
+    return S{x.sum + y.sum, min(x.mn, y.mn), x.size + y.size};
+}
+S e() {
+    return S();
+};
+S tag(F f, S s) { 
+    return S{s.sum + f * s.size, s.mn + f, s.size};
+}
+F merge(F x, F y) { 
+    return x + y;
+}
+F id() { return 0; }  
+
+int main() {
+    ios::sync_with_stdio(false); cin.tie(nullptr);
+    
+    int n, m;
+    cin >> n >> m;
+    LazySegTree<S, op, e, F, tag, merge, id> seg(vector<S>(n,{0,0,1}));
+    for (int i = 0, op, l, r, v; i < m; ++i) {
+        cin >> op;
+        if (op == 1) {
+            cin >> l >> r >> v;
+            seg.apply(l, r, v);
+        } else {
+            cin >> l >> r;
+            cout << seg.get(l, r).mn << '\n';
+        }
+    }
+    return 0;
+}
+```
+
+### 区间乘与区间和
+
+[part2 step2B](https://codeforces.com/edu/course/2/lesson/5/2/practice/contest/279653/problem/B)
+
+
+n个初始为1元素，m次操作。(1<=n,m<=1e5)
++ 1 l r v : 对所有 l <= i < r 执行 a[i] *= v (1 <= v <= 1e9+7)
++ 2 l r 输出sum(a[l...r-1])的和模1e9+7
+
+```c++
+struct S {
+    mint s;
+    int size;
+    S():s(0),size(0){}
+    S(mint _s, int siz):s(_s),size(siz){}
+};
+using F = mint;
+S op(S x, S y) {
+    return S{x.s + y.s, x.size + y.size};
+}
+S e() {
+    return S();
+};
+S tag(F f, S s) { 
+    return S{s.s * f, s.size};
+}
+F merge(F x, F y) { 
+    return x * y;
+}
+F id() { return 1; } 
+
+int main() {
+    ios::sync_with_stdio(false); cin.tie(nullptr);
+    
+    int n, m;
+    cin >> n >> m;
+    LazySegTree<S, op, e, F, tag, merge, id> seg(vector<S>(n,{1,1}));
+    for (int i = 0, op, l, r, v; i < m; ++i) {
+        cin >> op;
+        if (op == 1) {
+            cin >> l >> r >> v;
+            seg.apply(l, r, v);
+        } else {
+            cin >> l >> r;
+            cout << seg.get(l, r).s << '\n';
+        }
+    }
+    return 0;
+}
+```
+
+### 区间or与区间and
+
+[part2 step2C](https://codeforces.com/edu/course/2/lesson/5/2/practice/contest/279653/problem/C)
+
+
+n个初始为0元素，m次操作。(1<=n,m<=1e5)
++ 1 l r v : 对所有 l <= i < r 执行 a[i] |= v (1 <= v <= 2^30)
++ 2 l r 输出AND(a[l...r-1])的和
+
+```c++
+struct S {
+    int sum;
+    int size;
+    S():sum(((1<<30)-1)),size(0){} // and e()默认值需要为全为1的数。
+    S(int s, int siz):sum(s),size(siz){}
+};
+using F = int;
+S op(S x, S y) {
+    return S{x.sum & y.sum, x.size + y.size};
+}
+S e() {
+    return S();
+};
+S tag(F f, S s) { 
+    return S{s.sum | f, s.size};
+}
+F merge(F x, F y) { 
+    return x | y;
+}
+F id() { return 0; } 
+
+int main() {
+    ios::sync_with_stdio(false); cin.tie(nullptr);
+    
+    int n, m;
+    cin >> n >> m;
+    LazySegTree<S, op, e, F, tag, merge, id> seg(vector<S>(n,{0,1}));
+    for (int i = 0, op, l, r, v; i < m; ++i) {
+        cin >> op;
+        if (op == 1) {
+            cin >> l >> r >> v;
+            seg.apply(l, r, v);
+        } else {
+            cin >> l >> r;
+            cout << seg.get(l, r).sum << '\n';
+        }
+    }
+    return 0;
+}
+```
+
+### 区间赋值区间min
+
+[part2 step2E](https://codeforces.com/edu/course/2/lesson/5/2/practice/contest/279653/problem/E)
+
+
+n个初始为0元素，m次操作。(1<=n,m<=1e5)
++ 1 l r v : 对所有 l <= i < r 执行 a[i] = v (1 <= v <= 1e9)
++ 2 l r 输出min(a[l...r-1])
+
+```c++
+struct S {
+    long long sum, mn;
+    S():sum(0),mn(1e18){} // mn初始化1e18,这里可以不用维护size
+    S(long long s, long long m):sum(s),mn(m){}
+};
+using F = long long;
+S op(S x, S y) {
+    return S{x.sum + y.sum, min(x.mn, y.mn)};
+}
+S e() {
+    return S();
+};
+S tag(F f, S s) { 
+    return f == -1 ? S{s.sum, s.mn} : S(f, f);
+}
+F merge(F x, F y) { 
+    return x == -1 ? y : x;
+}
+F id() { return -1; }  // -1: no tag
+LazySegTree<S, op, e, F, tag, merge, id> seg(vector<S>(n,{0,0}));
+```
+
+### 区间赋值区间和
+
+[part2 step2F](https://codeforces.com/edu/course/2/lesson/5/2/practice/contest/279653/problem/F)
+
+
+n个初始为0元素，m次操作。(1<=n,m<=1e5)
++ 1 l r v : 对所有 l <= i < r 执行 a[i] = v (1 <= v <= 1e9)
++ 2 l r 输出sum(a[l...r-1])
+
+```c++
+struct S {
+    long long sum;
+    int size;
+    S():sum(0),size(0){}
+    S(long long s, int siz):sum(s),size(siz){}
+};
+using F = long long;
+S op(S x, S y) {
+    return S{x.sum + y.sum, x.size+y.size};
+}
+S e() {
+    return S();
+};
+S tag(F f, S s) { 
+    return f == -1 ? S{s.sum, s.size} : S{f * s.size, s.size};
+}
+F merge(F x, F y) { 
+    return x == -1 ? y : x;
+}
+F id() { return -1; }  // -1: no tag
+LazySegTree<S, op, e, F, tag, merge, id> seg(vector<S>(n,{0,1}));
+```
+
+### 区间赋值区间最大子数组
+
+[part2 step3A](https://codeforces.com/edu/course/2/lesson/5/3/practice/contest/280799/problem/A)
+
+n个初始为0元素，m次操作。(1<=n,m<=1e5),每次操作
++ l r v : 对所有 l <= i < r 执行 a[i] = v (-1e9 <= v <= 1e9)
+
+每次操作输出最大子数组和。
+
+
+```c++
+struct S {
+    long long max_sum, sum, max_pre, max_suf;
+    int size;
+    S(): max_sum(0), sum(0), max_pre(0), max_suf(0), size(0){}
+    S(long long ms, long long s, long long pre, long long suf, int siz) :
+    max_sum(ms),sum(s),max_pre(pre),max_suf(suf), size(siz){}
+};
+
+S op(S x, S y) {
+    S res;
+    res.sum = x.sum + y.sum;
+    res.size = x.size + y.size;
+    res.max_pre = max(x.max_pre, x.sum + y.max_pre);
+    res.max_suf = max(y.max_suf, y.sum + x.max_suf);
+    res.max_sum = max({x.max_sum, y.max_sum, x.max_suf + y.max_pre});
+    return res;
+}
+const long long  inf = 1e18;
+using F = long long;
+S e() {
+    return S();
+};
+S tag(F f, S s) { 
+    if (f == inf) return s;
+    long long p = f * s.size;
+    return f > 0 ? S{p, p, p, p, s.size} : S{0, p, 0, 0, s.size};
+}
+F merge(F x, F y) { 
+    return x == inf ? y : x;
+}
+F id() { return inf; }  // v的范围在[-1e9,1e9],需要找一个区间外的数作为无懒标记标志
+
+int main() {
+    ios::sync_with_stdio(false); cin.tie(nullptr);
+    
+    int n, m;
+    cin >> n >> m;
+    LazySegTree<S, op, e, F, tag, merge, id> seg(vector<S>(n,{0,0,0,0,1}));
+    for (int i = 0, l, r, v; i < m; ++i) {
+        cin >> l >> r >> v;
+        seg.apply(l, r, v);
+        cout << seg.get_all().max_sum << '\n';
+    }
+    return 0;
+}
+```
+
+### 区间异或区间和
+
+[part2 step3B](https://codeforces.com/edu/course/2/lesson/5/3/practice/contest/280799/problem/B)
+
+n个初始为0元素，m次操作。(1<=n,m<=1e5),每次操作
++ 1 l r : 对所有 l <= i < r 执行 a[i] ^ 1
++ 2 k : 输出第k个1下标 (k从0开始，下标从0开始)
+
+
+```c++
+struct S {
+    int sum, size;
+    S():sum(0),size(0){}
+    S(int s, int siz): sum(s), size(siz){}
+};
+using F = int;
+S op(S x, S y) {
+    return S{x.sum + y.sum, x.size + y.size};
+}
+S e() {
+    return S();
+};
+S tag(F f, S s) { 
+    return f == 0 ? s : S{s.size - s.sum, s.size};
+}
+F merge(F x, F y) { 
+    return x ^ y;
+}
+F id() { return 0; }  // 0: no tag
+
+int main() {
+    ios::sync_with_stdio(false); cin.tie(nullptr);
+    
+    int n, m;
+    cin >> n >> m;
+    LazySegTree<S, op, e, F, tag, merge, id> seg(vector<S>(n,{0,1}));
+    for (int i = 0, op, l, r, k; i < m; ++i) {
+        cin >> op;
+        if (op == 1) {
+            cin >> l >> r;
+            seg.apply(l, r, 1);
+        } else {
+            cin >> k;
+            r = seg.max_right(0, [&](S x){
+                return x.sum < k + 1;
+            });
+            cout << r << '\n';
+        }
+    }
+    return 0;
+}
+```
+
 ## 权值线段树
 
 权值线段树维护的是大小在[l, r]的范围，一般配合离散化使用。
@@ -1010,4 +1453,98 @@ int main() {
 }
 ```
 
-### 
+### 查询集合mex
+
+[cf 817f](https://codeforces.com/contest/817/problem/F)
+
+s初始为空集合，执行n次查询：
++ 1 l r 将[l,r]中所有缺失数字插入集合中
++ 2 l r 将[l,r]中所有存在的数从集合中删除
++ 3 l r 将[l,r]中所有存在的数组删除，插入所有不存在的数字
+
+对于每次查询，输出集合的MEX （MEX>=1)
+
++ 1 <= n <= 1e5
++ 1 <= l <= r <= 1e18
+
+**1.权值线段树**
+
+将区间离散化，每次查询的MEX值要么是1，要么是某个区间[l,r]的 r+1.
+用线段树维护区间中1的数目和0的数目，找到最大的离散化后的下标，满足其0的数目为0.
+
+```c++
+struct S {
+    int x, y;  // x: 1的数量 y: 0的数量
+    S():x(0), y(0){}
+    S(int x, int y):x(x), y(y){}
+};
+S op(S x, S y) {
+    S s;
+    s = S{x.x + y.x, x.y + y.y};
+    return s;
+}
+S e() {
+    return S();
+};
+using F = int;
+S tag(F f, S s) { 
+    if (f == 0) return s;
+    if (f == 1) return S{s.x + s.y, 0};
+    if (f == 2) return S{0, s.x + s.y};
+    return S{s.y, s.x}; // 01 翻转
+}
+// 0:删除标记 1:置1 2:置0 3:翻转
+F merge(F x, F y) {
+    if (x == 0) return y;
+    if (x == 1) return 1;
+    if (x == 2) return 2;
+    if (y == 0) return 3;
+    if (y == 3) return 0;
+    if (y == 1) return 2;
+    if (y == 2) return 1;
+}
+F id() { return 0; }
+
+template <class T>
+struct Discrete {
+    vector<T> xs;
+    Discrete(const vector<T>& v) {
+        xs = v;
+        sort(xs.begin(), xs.end());
+        xs.erase(unique(xs.begin(), xs.end()), xs.end());
+    }
+    int get(const T& x) const {
+        return lower_bound(xs.begin(), xs.end(), x) - xs.begin();
+    }
+    inline int operator()(const T& x) const { return get(x); }
+    T operator[](int i) { return xs[i]; }
+    int size() const { return xs.size(); }
+};
+
+int main() {
+    ios::sync_with_stdio(false); cin.tie(nullptr);
+    
+    int n;
+    cin >> n;
+    vector<long long> l(n), r(n), a {1};
+    vector<int> t(n);
+    for (int i = 0; i < n; ++i) {
+        cin >> t[i] >> l[i] >> r[i];
+        r[i]++;
+        a.push_back(l[i]);
+        a.push_back(r[i]);
+    }
+
+    Discrete<long long> v(a);
+    int m = v.size();
+    LazySegTree<S, op, e, F, tag, merge, id> seg(vector<S>(m,{0,1}));
+    for (int i = 0; i < n; ++i) {
+        seg.apply(v(l[i]), v(r[i]), t[i]);
+        int r = seg.max_right(0, [&](S s){
+            return s.y == 0;
+        });
+        cout << v[r] << '\n';
+    }
+    return 0;
+}
+```
