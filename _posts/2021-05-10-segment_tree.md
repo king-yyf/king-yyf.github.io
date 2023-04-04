@@ -35,6 +35,10 @@ Index
   - [Lazy-区间赋值区间min](#区间赋值区间min)
   - [Lazy-区间赋值区间和](#区间赋值区间和)
   - [Lazy-区间异或区间和](#区间异或区间和)
+  - [Lazy-区间加第一个大于x的数](#区间加第一个大于x的数)
+  - [Lazy-区间赋值&区间加-求和](#区间赋值&区间加-求和)
+  - [Lazy-区间加等差数列](#区间加等差数列)
+  - [Lazy-区间加求区间乘等差数列和](#区间加求区间乘等差数列和)
 - [权值线段树](#权值线段树)
   - [统计大小在某个范围内的数量](#统计大小在某个范围内的数量)
   - [查询集合MEX](#查询集合mex)
@@ -1066,7 +1070,7 @@ int main() {
 
 
 n个初始为0元素，m次操作。(1<=n,m<=1e5)
-+ 1 l r v : 对所有 l <= i < r 执行 a[i] |= v (1 <= v <= 2^30)
++ 1 l r v : 对所有 l <= i < r 执行 `a[i] |= v (1 <= v <= 2^30)`
 + 2 l r 输出AND(a[l...r-1])的和
 
 ```c++
@@ -1281,6 +1285,249 @@ int main() {
                 return x.sum < k + 1;
             });
             cout << r << '\n';
+        }
+    }
+    return 0;
+}
+```
+
+### 区间加第一个大于x的数
+
+[part2 step3C](https://codeforces.com/edu/course/2/lesson/5/3/practice/contest/280799/problem/C)
+
+n个初始为0元素，m次操作。(1<=n,m<=1e5),每次操作
++ 1 l r x : 对所有 l <= i < r 执行 a[i] += x
++ 2 x l : 查询第一个位置 j >= l，满足 a[j] >= x
+
+**分析**
+
+维护区间和，区间最大值，操作2时在线段树上进行二分。
+
+```c++
+struct S {
+    long long sum, mx;
+    int size;
+    S():sum(0),mx(0),size(0){} 
+    S(long long s, long long m, int siz):sum(s),mx(m),size(siz){}
+};
+using F = long long;
+S op(S x, S y) {
+    return S{x.sum + y.sum, max(x.mx, y.mx), x.size + y.size};
+}
+S e() {
+    return S();
+};
+S tag(F f, S s) { 
+    return S{s.sum + f * s.size, s.mx + f, s.size};
+}
+F merge(F x, F y) { 
+    return x + y;
+}
+F id() { return 0; }  
+
+int main() {
+    ios::sync_with_stdio(false); cin.tie(nullptr);
+    
+    int n, m;
+    cin >> n >> m;
+    LazySegTree<S, op, e, F, tag, merge, id> seg(vector<S>(n,{0,0,1}));
+    for (int i = 0, op, l, r, x; i < m; ++i) {
+        cin >> op;
+        if (op == 1) {
+            cin >> l >> r >> x;
+            seg.apply(l, r, x);
+        } else {
+            cin >> x >> l;
+            r = seg.max_right(l, [&](S s){
+                return s.mx < x;
+            });
+            cout << (r == n ? -1 : r) << '\n';
+        }
+    }
+    return 0;
+}
+```
+
+### 区间赋值&区间加-求和
+
+[part2 step4a](https://codeforces.com/edu/course/2/lesson/5/4/practice/contest/280801/problem/A)
+
+n个初始为0元素，m次操作。(1<=n,m<=1e5),每次操作
++ 1 l r x : 对所有 l <= i < r 执行 a[i] = x
++ 2 l r x : 对所有 l <= i < r 执行 a[i] = a[i] + x
++ 3 l r : 求 sum[l...r-1]
+
+
+```c++
+struct S {
+    long long sum;
+    int size;
+    S():sum(0),size(0){} 
+    S(long long s, int siz):sum(s),size(siz){}
+};
+
+struct F{
+    int t;  // t=0: 赋值， t=1 加和
+    long long v;
+};
+
+S op(S x, S y) {
+    return S{x.sum + y.sum, x.size + y.size};
+}
+S e() {
+    return S();
+};
+S tag(F f, S s) { 
+    return S{(f.t ? s.sum : 0) + s.size * f.v, s.size};
+}
+F merge(F x, F y) { 
+    return x.t == 0 ? x : F{y.t, y.v + x.v};
+}
+F id() { return F{1, 0}; }  // 
+
+int main() {
+    ios::sync_with_stdio(false); cin.tie(nullptr);
+    
+    int n, m;
+    cin >> n >> m;
+    LazySegTree<S, op, e, F, tag, merge, id> seg(vector<S>(n,{0,1}));
+    for (int i = 0, op, l, r, x; i < m; ++i) {
+        cin >> op;
+        if (op == 1) {
+            cin >> l >> r >> x;
+            seg.apply(l, r, F{0, x});
+        } else if (op == 2){
+            cin >> l >> r >> x;
+            seg.apply(l, r, F{1, x});
+        } else {
+            cin >> l >> r;
+            cout << seg.get(l, r).sum << '\n';
+        }
+    }
+    return 0;
+}
+```
+
+### 区间加等差数列
+
+[part2 step4b](https://codeforces.com/edu/course/2/lesson/5/4/practice/contest/280801/problem/B)
+
+
+n个初始为0元素，m次操作。(1<=n,m<=2e5),每次操作
++ 1 l r x d : 对所有 l <= i < r 执行 a[i] = a[i] + x + (i - l) * d (1 <= l <= r <= n)
++ 2 x : 输出a[x] (1 <= x <= n)
+
++ 1 <= x, d <= 2e5
+
+**分析**
+
+在正常区间加的基础上，可以认为第i个位置的size为i，这样在求和时不同位置增加为等差数列，领一个线段树维护每个位置需要减去多少，在处理[l,r]区间时，以下标l为例，第一个线段树维护的时 `a[l]=a[l]+l*d` 第二个线段树维护 `a[l]+=a-l*d` 两个线段树相减即为要求的结果。
+
+```c++
+struct S {
+    long long sum;
+    int size;
+    S():sum(0),size(0){} 
+    S(long long s, int siz):sum(s),size(siz){}
+};
+using F = long long;
+S op(S x, S y) {
+    return S{x.sum + y.sum, x.size + y.size};
+}
+S e() {
+    return S();
+};
+S tag(F f, S s) { 
+    return S{s.sum + f * s.size, s.size};
+}
+F merge(F x, F y) { 
+    return x + y;
+}
+F id() { return 0; }  
+
+int main() {
+    ios::sync_with_stdio(false); cin.tie(nullptr);
+    
+    int n, m;
+    cin >> n >> m;
+    vector<S> v(n);
+    for (int i = 0; i < n; ++i) {
+        v[i] = {0, i};
+    } 
+    LazySegTree<S, op, e, F, tag, merge, id> seg(v);
+    LazySegTree<S, op, e, F, tag, merge, id> seg2(vector<S>(n,{0,1}));
+    for (int i = 0, op, l, r, a, d; i < m; ++i) {
+        cin >> op;
+        if (op == 1) {
+            cin >> l >> r >> a >> d;
+            l--;
+            seg.apply(l, r, d);
+            seg2.apply(l, r, a - d * 1ll * l);
+        } else {
+            cin >> l;
+            l--;
+            cout << seg.get(l).sum + seg2.get(l).sum << '\n';
+        }
+    }
+    return 0;
+}
+```
+
+### 区间加求区间乘等差数列和
+
+[part2 step4d](https://codeforces.com/edu/course/2/lesson/5/4/practice/contest/280801/problem/D)
+
+
+给定长度为n个数组a (-100 < a[i] < 100)，m次操作。(1<=n,m<=2e5),每次操作
++ 1 l r x: 对所有 l <= i < r 执行 a[i] = a[i] + x (1 <= l <= r <= n, -100 < x < 100)
++ 2 l r : 输出 a[l] * 1 + a[l + 1] * 2 + ... + a[r] * (r - l + 1)
+
+
+```c++
+struct S {
+    long long sum;
+    long long size;
+    S():sum(0),size(0){} 
+    S(long long s, long long siz):sum(s),size(siz){}
+};
+using F = long long;
+S op(S x, S y) {
+    return S{x.sum + y.sum, x.size + y.size};
+}
+S e() {
+    return S();
+};
+S tag(F f, S s) { 
+    return S{s.sum + f * s.size, s.size};
+}
+F merge(F x, F y) { 
+    return x + y;
+}
+F id() { return 0; }  
+
+int main() {
+    ios::sync_with_stdio(false); cin.tie(nullptr);
+    
+    int n, m;
+    cin >> n >> m;
+    vector<S> a(n), b(n);
+    for (int i = 0, x; i < n; ++i) {
+        cin >> x;
+        a[i] = {(i + 1) * 1ll * x, i + 1};
+        b[i] = {x, 1};
+    } 
+    LazySegTree<S, op, e, F, tag, merge, id> seg(a), seg2(b);
+    for (int i = 0, op, l, r, d; i < m; ++i) {
+        cin >> op;
+        if (op == 1) {
+            cin >> l >> r >> d;
+            l--;
+            seg.apply(l, r, d);
+            seg2.apply(l, r, d);
+        } else {
+            cin >> l >> r;
+            l--;
+            cout << seg.get(l, r).sum - l * seg2.get(l, r).sum << '\n';
         }
     }
     return 0;
