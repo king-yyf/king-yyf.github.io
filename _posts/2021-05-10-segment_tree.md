@@ -39,6 +39,7 @@ Index
   - [Lazy-区间赋值&区间加-求和](#区间赋值&区间加-求和)
   - [Lazy-区间加等差数列](#区间加等差数列)
   - [Lazy-区间加求区间乘等差数列和](#区间加求区间乘等差数列和)
+  - [Lazy-区间乘c加d](#区间乘c加d)
 - [权值线段树](#权值线段树)
   - [统计大小在某个范围内的数量](#统计大小在某个范围内的数量)
   - [查询集合MEX](#查询集合mex)
@@ -1372,12 +1373,14 @@ struct F{
 };
 
 S op(S x, S y) {
+    if (x.size == 0) return y; if (y.size == 0) return x;
     return S{x.sum + y.sum, x.size + y.size};
 }
 S e() {
     return S();
 };
 S tag(F f, S s) { 
+    if (f.t == 1 && f.v == 0) return s;
     return S{(f.t ? s.sum : 0) + s.size * f.v, s.size};
 }
 F merge(F x, F y) { 
@@ -1530,6 +1533,168 @@ int main() {
             cout << seg.get(l, r).sum - l * seg2.get(l, r).sum << '\n';
         }
     }
+    return 0;
+}
+```
+
+### 区间乘c加d
+
+[judge range_affine_point_get](https://judge.yosupo.jp/problem/range_affine_point_get)
+
+给定长度为n的数组a, q次操作，
+1. 0 l c c d  对所有 l <= i < r 执行 a[i] = a[i] * c + d;
+2. 1 x 输出 a[x] % 998244353
+
++ 1 <= n, q <= 5e5
++ 0 <= a[i], c, d < 998244353
++ 0 <= l < r < N, 0 <= x < N
+
+**方法1:Lazy seg Tree** 
+
+722ms
+
+```c++
+struct S {
+    mint sum;
+    int size;
+};
+struct F {
+    mint c, d;
+};
+S op(S x, S y) {
+    if (x.size == 0) return y;
+    if (y.size == 0) return x;
+    S s;
+    s = S{x.sum + y.sum, x.size + y.size};
+    return s;
+}
+S e() {
+    return S{0, 0};
+};
+S tag(F f, S s) { 
+    if (f.c == 1 && f.d == 0) return s;  // 加上这行耗时优化很大
+    return S{s.sum * f.c + s.size * f.d, s.size}; 
+}
+F merge(F x, F y) { return F{x.c * y.c, y.d * x.c + x.d}; }
+F id() { return F{1, 0}; }
+int main() {
+    ios::sync_with_stdio(false); cin.tie(nullptr);
+    
+    int n, q;
+    cin >> n >> q;
+    vector<S> a(n, S{0, 1});
+    for (int i = 0; i < n; ++i) {
+        cin >> a[i].sum;        
+    } 
+    LazySegTree<S, op, e, F, tag, merge, id> seg(a);
+    for (int i = 0, op, l, r, c, d; i < q; ++i) {
+        cin >> op;
+        if (op == 0) {
+            cin >> l >> r >> c >> d;
+            seg.apply(l, r, F{c, d});
+        } else {
+            cin >> l;
+            cout << seg.get(l).sum << '\n';
+        }
+    }
+
+    return 0;
+}
+```
+
+**对偶线段树**
+
+371ms, 时间和空间效率更高
+
+```c++
+template <typename T, typename F, T(*tag)(F, T), F(*merge)(F, F), F(*id)()>
+struct CommutativeDualSegmentTree {
+    CommutativeDualSegmentTree() {}
+    CommutativeDualSegmentTree(vector<T>&& a) : n(a.size()), m((1 << ceil_lg(a.size()))), data(std::move(a)), lazy(m, id()) {}
+    CommutativeDualSegmentTree(const std::vector<T>& a) : CommutativeDualSegmentTree(std::vector<T>(a)) {}
+    CommutativeDualSegmentTree(int n, const T& fill_value) : CommutativeDualSegmentTree(std::vector<T>(n, fill_value)) {}
+
+    T operator[](int i) const {
+        assert(0 <= i and i < n);
+        T res = data[i];
+        for (i = (i + m) >> 1; i; i >>= 1) res = tag(lazy[i], res);
+        return res;
+    }
+    T get(int i) const { return (*this)[i];}
+    void apply(int l, int r, const F& f) {
+        assert(0 <= l and r <= n);
+        for (l += m, r += m; l < r; l >>= 1, r >>= 1) {
+            if (l & 1) apply(l++, f);
+            if (r & 1) apply(--r, f);
+        }
+    }
+protected:
+    int n, m;
+    vector<T> data;
+    vector<F> lazy;
+
+    void apply(int k, const F& f) {
+        if (k < m) lazy[k] = merge(f, lazy[k]);
+        else data[k - m] = tag(f, data[k - m]);
+    }
+private:
+    static int ceil_lg(int x) {   // minimum non-neg x s.t. `n <= 2^x`
+        return x <= 1 ? 0 : 32 - __builtin_clz(x - 1);
+    }
+};
+template <typename T, typename F, T(*tag)(F, T), F(*merge)(F, F), F(*id)()>
+struct DualSegmentTree : public CommutativeDualSegmentTree<T, F, tag, merge, id> {
+    using base_type = CommutativeDualSegmentTree<T, F, tag, merge, id>;
+    using base_type::base_type;
+    void apply(int l, int r, const F& f) {
+        push(l, r);
+        base_type::apply(l, r, f);
+    }
+private:
+    void push(int k) {
+        base_type::apply(2 * k, this->lazy[k]), base_type::apply(2 * k + 1, this->lazy[k]);
+        this->lazy[k] = id();
+    }
+    void push(int l, int r) {
+        static const int log = __builtin_ctz(this->m);
+        l += this->m, r += this->m;
+        for (int i = log; (l >> i) << i != l; --i) push(l >> i);
+        for (int i = log; (r >> i) << i != r; --i) push(r >> i);
+    }
+};
+mint tag(pair<mint, mint> f, mint x) {
+    return f.first * x + f.second;
+}
+pair<mint, mint> merge(pair<mint, mint> f, pair<mint, mint> g) {
+    return { f.first * g.first, f.first * g.second + f.second };
+}
+pair<mint, mint> id() {
+    return { 1, 0 };
+}
+using Segtree = DualSegmentTree<mint, pair<mint, mint>, tag, merge, id>;
+
+int main() {
+    std::ios::sync_with_stdio(false); std::cin.tie(nullptr);
+
+    int n, q;
+    std::cin >> n >> q;
+
+    std::vector<mint> a(n);
+    for (auto &e : a) {
+        cin >> e;
+    }
+    Segtree seg(a);
+    for (int i = 0, op, l, r, c, d; i < q; ++i) {
+        cin >> op;
+        if (op == 0) {
+            cin >> l >> r >> c >> d;
+            seg.apply(l, r, {c, d});
+        } else {
+            cin >> l;
+            cout << seg.get(l).val() << '\n';
+        }
+    } 
+
     return 0;
 }
 ```
