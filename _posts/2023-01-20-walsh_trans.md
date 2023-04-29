@@ -254,34 +254,30 @@ vector<int> xorSubsequence(vector<int> a) {
 一个长度为n的数组a有 n * (n+1)/2 个非空子数组，每个子数组有一个异或和，求所有子数组异或和的总和。
 
 + 1 <= n <= 1e5
-+ 1 < a[i] <= 2e16
++ 1 < a[i] <= 2^31
 
 **分析**
 
-本题可使用上一题的cnt 数组计算，同时也可以按位计算。
+本题可使用上一题的cnt 数组计算(在a[i]元素不太大时)，同时也可以按位计算对结果的贡献，先前缀异或，从左向右扫记录二进制前缀的1，0个数，xor[i]==xor[j]^1的时候就加上这一位的权值，时间复杂度 O(nlog(n))
 
 ```c++
-long long xorSumSeqSum(vector<int> &a) {
-    int n = a.size(), m = 16;
-    long long sum = 0;
-    for (int i = 0; i < m; ++i) {
-        vector<int> s(n), p(n + 1);
-        s[n - 1] = (a[n - 1] >> i & 1);
-        for (int j = n - 2; j >= 0; --j) {
-            s[j] = (s[j + 1] + (a[j] >> i & 1)) % 2;
-        }
-        for (int j = 0; j < n; ++j) 
-            p[j + 1] = p[j] + s[j];
-        for (int j = 0; j < n; ++j) {
-            int x = 0;
-            if (a[j] >> i & 1) {
-                x = (s[j] == 0) ? j + 1 - p[j + 1] : p[j + 1];
-            } else {
-                x = (s[j] == 0) ? p[j + 1] : j + 1 - p[j + 1];
-            }
-            sum += x * 1ll * (1 << i);
+long long subXorsum(vector<int> &a) {
+    int n = a.size(), mx = (*max_element(a.begin(), a.end()));
+    int m = max(32 - (int)__builtin_clz(mx), 1);
+    vector<int> s(n + 1);
+    for (int i = 0; i < n; ++i) {
+        s[i + 1] = s[i] ^ a[i];
+    }
+    vector<array<int, 2>> f(m);
+    long long ans = 0;
+
+    for (int i = 0; i <= n; ++i) {
+        for (int j = 0; j < m; ++j) {
+            int x = (s[i] >> j) & 1;
+            ans += f[j][x ^ 1] * (1ll << j);
+            f[j][x]++;
         }
     }
-    return sum;
+    return ans;
 }
 ```
