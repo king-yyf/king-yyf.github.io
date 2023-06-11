@@ -36,10 +36,11 @@ Index
   - [Lazy-区间赋值区间和](#区间赋值区间和)
   - [Lazy-区间异或区间和](#区间异或区间和)
   - [Lazy-区间加第一个大于x的数](#区间加第一个大于x的数)
-  - [Lazy-区间赋值&区间加-求和](#区间赋值&区间加-求和)
+  - [Lazy-区间赋值&区间加-求和](#区间赋值区间加-求和)
   - [Lazy-区间加等差数列](#区间加等差数列)
   - [Lazy-区间加求区间乘等差数列和](#区间加求区间乘等差数列和)
   - [Lazy-区间乘c加d](#区间乘c加d)
+  - [Lazy-区间异或查询区间和](#区间异或查询区间和)
 - [权值线段树](#权值线段树)
   - [统计大小在某个范围内的数量](#统计大小在某个范围内的数量)
   - [查询集合MEX](#查询集合mex)
@@ -1349,7 +1350,7 @@ int main() {
 }
 ```
 
-### 区间赋值&区间加-求和
+### 区间赋值区间加-求和
 
 [part2 step4a](https://codeforces.com/edu/course/2/lesson/5/4/practice/contest/280801/problem/A)
 
@@ -1804,6 +1805,81 @@ int main() {
     }
 
     return 0;
+}
+```
+
+### 区间异或查询区间和
+
+[cf242 E](https://codeforces.com/contest/242/problem/E)
+
+一个长度为n的序列，q次操作，每次操作有两种形式
++ 1 l r 输出 a[l,..r]的和
++ 2 l r x 异或操作，对 l <= i <= r 的i，执行 a[i] = a[i] ^ x
+
++ 1 <= n <= 1e5
++ 1 <= m <= 5e4
++ 0 <= a[i], x <= 1e6
+
+```c++
+const int K = 20; // 根据值域调整
+struct S{
+    array<int,K> a;
+    int siz;
+};
+using F = int;
+S op(S l, S r) {
+    if(l.siz==0)return r;
+    if(r.siz==0)return l;
+    S s;
+    s.siz = l.siz+r.siz;
+    for(int i=0;i<K;++i){
+        s.a[i]=l.a[i]+r.a[i];
+    }
+    return s;
+}
+
+S e() { return S{}; }
+
+S tag(F l, S r) {
+    if(l==0)return r;
+    for(int i=0;i<K;++i){
+        if((l>>i)&1)r.a[i]=r.siz-r.a[i];
+    }
+    return r;
+}
+F merge(F l, F r) { return l^r; }
+F id() { return 0; }
+
+void ac_yyf(int tt) {
+    int n, q;
+    cin >> n;
+    using Seg=LazySegTree<S, op, e, F, tag, merge, id>;
+    vector<S> a(n); 
+    for (int i = 0, x; i < n; ++i) {
+        cin >> x;
+        for(int j=0;j<K;++j){
+            a[i].a[j]=((x>>j)&1);
+        }
+        a[i].siz=1;
+    }
+    Seg seg(a);
+    cin >> q;
+    for (int i = 0, t, l, r, x; i < q; ++i) {
+        cin >> t;
+        if (t == 1) {
+            cin >> l >> r;
+            ll ans = 0;
+            auto p = seg.get(l - 1, r).a;
+            for (int j = 0; j < K; ++j) {
+                ans += p[j] * 1ll * (1 << j);
+            }
+            cout << ans << '\n';
+
+        } else if (t == 2) {
+            cin >> l >> r >> x;
+            seg.apply(l - 1, r, x);
+        } 
+    }
 }
 ```
 
