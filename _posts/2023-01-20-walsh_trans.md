@@ -22,6 +22,7 @@ Index
   - [频率最高的子序列异或和](#频率最高的子序列异或和)
   - [所有子数组异或和之和](#所有子数组异或和之和)
   - [所有子数组按位与和之和](#所有子数组按位与和之和)
+  - [所有子数组按位或和之和](#所有子数组按位或和之和)
 
    
 <!-- /TOC -->
@@ -311,3 +312,30 @@ long long bitandsum(vector<int> &a){
 }
 ```
 
+### 所有子数组按位或和之和
+
+一个长度为n的数组a有 n * (n+1)/2 个非空子数组，每个子数组有一个按位或和，求所有子数组按位或和的总和。
+
++ 1 <= n <= 1e5
++ 1 < a[i] <= 1e9
+
+```c++
+long long subarrOrSum(vector<int> &a) {
+    const int K = 30;
+    int n = a.size();
+    long long s=0;
+    for(int i=0;i<K;++i){
+        long long cu=0,p=0;
+        for(int j=0;j<n;++j){
+            if((a[j]>>i)&1) {
+                p=0;
+            } else{
+                p++;
+                cu+=p;
+            }
+        }
+        s+=(1ll<<i)*(n*(n+1ll)/2-cu);
+    }
+    return s;
+}
+```
