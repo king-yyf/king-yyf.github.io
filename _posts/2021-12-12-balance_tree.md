@@ -17,6 +17,8 @@ Index
 - [pbds实现multiset](#pbds实现multiset)
 - [序列顺序查询](#序列顺序查询)
 - [滑动窗口中位数](#滑动窗口中位数)
+- [滑动窗口中位数2](#滑动窗口中位数2)
+- [滑动窗口最小代价](#滑动窗口最小代价)
    
 
 
@@ -255,4 +257,121 @@ public:
     }
 };
 
+```
+
+### 滑动窗口中位数2
+
+[cses sliding median](https://vjudge.net/problem/CSES-1076)
+
+输入n,k，和长度为n的数组a，求每个长度为k的数组的中位数，如果数字为奇数，中位数为中间的数，如果为偶数，中位数为中间两个数中较小的数。
+
++ 1 <= k <= n <= 1e5
++ 1 <= a[i] <= 1e9
+
+**1.离散化+FenwickTree**
+
+140ms
+
+```c++
+// FenwickTree
+// Discrete
+int main() {
+    ios::sync_with_stdio(false); cin.tie(nullptr); 
+    int n, k;
+    cin >> n >> k;
+    vector<int> a(n);
+    for (int i = 0; i < n; ++i) {
+        cin >> a[i];
+    }
+
+    Discrete<int> v(a);
+    for (int i = 0; i < n; ++i) {
+        a[i] = v(a[i]);
+    }
+    FenwickTree<int> f(v.size());
+    for(int i = 0; i < n; ++i) {
+        f.add(a[i], 1);
+        if (i >= k) f.add(a[i - k], -1);
+        if (i >= k - 1) {
+            cout << v[f.kth((k - 1)  / 2)] << ' ';
+        }
+    }
+    return 0;
+}
+```
+
+**2.对顶堆**
+
+60ms
+
+```c++
+using PI = pair<int,int>;
+priority_queue<PI> minq;
+priority_queue<PI, vector<PI>, greater<PI>> maxq;
+vector<int> ans(n - k + 1);
+int m = (k + 1) / 2, cnt = 0;
+for (int i = 0; i < n; ++i) {
+    int x = a[i];
+    if (cnt < m) {
+        maxq.push({x, i});
+        minq.push(maxq.top());
+        maxq.pop();
+        cnt++;
+    } else {
+        minq.push({x, i});
+        maxq.push(minq.top());
+        minq.pop();
+    }
+    while (!minq.empty() && minq.top().second <= i - k) minq.pop();
+    while (!maxq.empty() && maxq.top().second <= i - k) maxq.pop();
+    if (i < k - 1) continue;
+    ans[i - k + 1] = minq.top().first;
+    if (a[i - k + 1] <= minq.top().first) cnt--;
+}
+```
+
+### 滑动窗口最小代价
+
+[cses sliding cost](https://vjudge.net/problem/CSES-1076)
+
+输入n,k，和长度为n的数组a，求每个长度为k的数组通过+1/-1操作使得所有数字变得相同的最小代价。
+
++ 1 <= k <= n <= 1e5
++ 1 <= a[i] <= 1e9
+
+**分析**
+
+本质还是中位数问题，最小代价即为将所有数都变为中位数，只需统计滑动窗口内小于中位数的和和大于中位数的和。
+
+```c++
+using PI = pair<int,int>;
+    priority_queue<PI> minq;
+    priority_queue<PI, vector<PI>, greater<PI>> maxq;
+    long long s1 = 0, s2 = 0;
+    vector<long long> ans(n - k + 1);
+    int m = (k + 1) / 2, cnt = 0;
+    for (int i = 0; i < n; ++i) {
+        while (!minq.empty() && minq.top().second <= i - k) minq.pop();
+        while (!maxq.empty() && maxq.top().second <= i - k) maxq.pop();
+        int x = a[i];
+        if (cnt < m) {
+            maxq.push({x, i}), s2 += x;
+            minq.push(maxq.top());
+            s1 += maxq.top().first, s2 -= maxq.top().first;
+            maxq.pop();
+            cnt++;
+        } else {
+            minq.push({x, i}), s1 += x;
+            maxq.push(minq.top());
+            s2 += minq.top().first, s1 -= minq.top().first;
+            minq.pop();
+        }
+        while (!minq.empty() && minq.top().second <= i - k) minq.pop();
+        while (!maxq.empty() && maxq.top().second <= i - k) maxq.pop();
+        if (i < k - 1) continue;
+        int md = minq.top().first;
+        ans[i - k + 1] = m * 1ll * md - s1 + s2 - (k - m) * 1ll *md;
+        if (a[i - k + 1] <= minq.top().first) cnt--, s1 -= a[i - k + 1];
+        else s2 -= a[i - k + 1];
+    }
 ```
