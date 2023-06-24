@@ -27,6 +27,7 @@ Index
   - [求交叉区间的数目](#求交叉区间的数目)
   - [区间交替符号和](#区间交替符号和)
   - [区间逆序对](#区间逆序对)
+  - [区间非下降子数组数目](#区间非下降子数组数目)
   - [Lazy-区间取max](#区间取max)
   - [Lazy-区间赋值](#区间赋值)
   - [Lazy-区间加区间求min](#区间加区间求min)
@@ -856,6 +857,61 @@ int main() {
         }
     }
     return 0;
+}
+```
+
+### 区间非下降子数组数目
+
+[no inversioins](https://www.hackerearth.com/practice/data-structures/advanced-data-structures/segment-trees/practice-problems/algorithm/no-inversions-db0ebea5/)
+
+给定长度为n的字符串s，仅包含小写字母，q次询问，每次询问给定[l,r],求区间[l,r]中优秀子串的数目，如果一个字符串不存在逆序对，则称优秀子串。
+
++ 1 <= n, q <= 2e5
++ l <= l <= r <= n
+
+```c++
+struct S {
+    long long cnt; //总数目
+    int lcnt, rcnt; // 从左边/右边非递减最大长度
+    char left, right;  // 最左边和最右边字符
+    bool isGood;
+    S():cnt(0),lcnt(0),rcnt(0),left(0),right(0),isGood(true){}
+    S(int u){
+        cnt=lcnt=rcnt=(u>0);
+        left=right=u; isGood=true;
+    }
+};
+ 
+S op(S x, S y) {
+    S s;
+    s.cnt = x.cnt + y.cnt;
+    if (x.right <= y.left) {
+        s.cnt += x.rcnt * 1ll * y.lcnt;
+        s.isGood = x.isGood & y.isGood;
+        s.lcnt = x.isGood ? y.lcnt + x.lcnt : x.lcnt;
+        s.rcnt = y.isGood ? x.rcnt + y.rcnt : y.rcnt;
+    } else {
+        s.isGood = false;
+        s.lcnt = x.lcnt;
+        s.rcnt = y.rcnt;
+    }
+    s.left = x.left;
+    s.right = y.right;
+    return s;
+}
+S e() {
+    return S{};
+}
+void ac_yyf(int tt) {
+    rd(n,s,q);
+    SegTree<S, op, e> seg(n);
+    for (int i = 0; i < n; ++i) {
+        seg.set(i, s[i]-'a'+1);
+    }
+    while(q--){
+        rd(x,y);
+        cout<<seg.get(x-1,y).cnt<<nl;
+    }
 }
 ```
 
@@ -1700,6 +1756,82 @@ int main() {
 }
 ```
 
+### 区间异或查询区间和
+
+[cf242 E](https://codeforces.com/contest/242/problem/E)
+
+一个长度为n的序列，q次操作，每次操作有两种形式
++ 1 l r 输出 a[l,..r]的和
++ 2 l r x 异或操作，对 l <= i <= r 的i，执行 a[i] = a[i] ^ x
+
++ 1 <= n <= 1e5
++ 1 <= m <= 5e4
++ 0 <= a[i], x <= 1e6
+
+```c++
+const int K = 20; // 根据值域调整
+struct S{
+    array<int,K> a;
+    int siz;
+};
+using F = int;
+S op(S l, S r) {
+    if(l.siz==0)return r;
+    if(r.siz==0)return l;
+    S s;
+    s.siz = l.siz+r.siz;
+    for(int i=0;i<K;++i){
+        s.a[i]=l.a[i]+r.a[i];
+    }
+    return s;
+}
+
+S e() { return S{}; }
+
+S tag(F l, S r) {
+    if(l==0)return r;
+    for(int i=0;i<K;++i){
+        if((l>>i)&1)r.a[i]=r.siz-r.a[i];
+    }
+    return r;
+}
+F merge(F l, F r) { return l^r; }
+F id() { return 0; }
+
+void ac_yyf(int tt) {
+    int n, q;
+    cin >> n;
+    using Seg=LazySegTree<S, op, e, F, tag, merge, id>;
+    vector<S> a(n); 
+    for (int i = 0, x; i < n; ++i) {
+        cin >> x;
+        for(int j=0;j<K;++j){
+            a[i].a[j]=((x>>j)&1);
+        }
+        a[i].siz=1;
+    }
+    Seg seg(a);
+    cin >> q;
+    for (int i = 0, t, l, r, x; i < q; ++i) {
+        cin >> t;
+        if (t == 1) {
+            cin >> l >> r;
+            ll ans = 0;
+            auto p = seg.get(l - 1, r).a;
+            for (int j = 0; j < K; ++j) {
+                ans += p[j] * 1ll * (1 << j);
+            }
+            cout << ans << '\n';
+
+        } else if (t == 2) {
+            cin >> l >> r >> x;
+            seg.apply(l - 1, r, x);
+        } 
+    }
+}
+```
+
+
 ## 权值线段树
 
 权值线段树维护的是大小在[l, r]的范围，一般配合离散化使用。
@@ -1808,80 +1940,6 @@ int main() {
 }
 ```
 
-### 区间异或查询区间和
-
-[cf242 E](https://codeforces.com/contest/242/problem/E)
-
-一个长度为n的序列，q次操作，每次操作有两种形式
-+ 1 l r 输出 a[l,..r]的和
-+ 2 l r x 异或操作，对 l <= i <= r 的i，执行 a[i] = a[i] ^ x
-
-+ 1 <= n <= 1e5
-+ 1 <= m <= 5e4
-+ 0 <= a[i], x <= 1e6
-
-```c++
-const int K = 20; // 根据值域调整
-struct S{
-    array<int,K> a;
-    int siz;
-};
-using F = int;
-S op(S l, S r) {
-    if(l.siz==0)return r;
-    if(r.siz==0)return l;
-    S s;
-    s.siz = l.siz+r.siz;
-    for(int i=0;i<K;++i){
-        s.a[i]=l.a[i]+r.a[i];
-    }
-    return s;
-}
-
-S e() { return S{}; }
-
-S tag(F l, S r) {
-    if(l==0)return r;
-    for(int i=0;i<K;++i){
-        if((l>>i)&1)r.a[i]=r.siz-r.a[i];
-    }
-    return r;
-}
-F merge(F l, F r) { return l^r; }
-F id() { return 0; }
-
-void ac_yyf(int tt) {
-    int n, q;
-    cin >> n;
-    using Seg=LazySegTree<S, op, e, F, tag, merge, id>;
-    vector<S> a(n); 
-    for (int i = 0, x; i < n; ++i) {
-        cin >> x;
-        for(int j=0;j<K;++j){
-            a[i].a[j]=((x>>j)&1);
-        }
-        a[i].siz=1;
-    }
-    Seg seg(a);
-    cin >> q;
-    for (int i = 0, t, l, r, x; i < q; ++i) {
-        cin >> t;
-        if (t == 1) {
-            cin >> l >> r;
-            ll ans = 0;
-            auto p = seg.get(l - 1, r).a;
-            for (int j = 0; j < K; ++j) {
-                ans += p[j] * 1ll * (1 << j);
-            }
-            cout << ans << '\n';
-
-        } else if (t == 2) {
-            cin >> l >> r >> x;
-            seg.apply(l - 1, r, x);
-        } 
-    }
-}
-```
 
 **方法3:权值线段树(350ms)**
 
