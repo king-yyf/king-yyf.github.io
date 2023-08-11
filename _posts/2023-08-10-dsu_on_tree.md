@@ -1,6 +1,6 @@
 ---
 layout: post
-title: 树上启发式合并/欧拉序
+title: 树上启发式合并
 date: 2023-08-10
 tags: 算法专题  
 ---
