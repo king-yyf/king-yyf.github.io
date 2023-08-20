@@ -17,12 +17,18 @@ Index
   - [与运算](#与运算)
   - [异或运算](#异或运算)
   - [同或运算](#同或运算)
-- [例题](#例题)
+- [异或例题](#异或例题)
   - [统计异或值在范围内的数对有多少](#统计异或值在范围内的数对有多少)
   - [频率最高的子序列异或和](#频率最高的子序列异或和)
   - [所有子数组异或和之和](#所有子数组异或和之和)
+- [按位与例题](#按位与例题)
   - [所有子数组按位与和之和](#所有子数组按位与和之和)
+- [按位或例题](#按位或例题)
   - [所有子数组按位或和之和](#所有子数组按位或和之和)
+  - [按位或最大的最小子数组长度](#按位或最大的最小子数组长度)
+  - [按位或二进制包含奇数个1的子数组数量](#按位或二进制包含奇数个1的子数组数量)
+  - [按位或和出现在数组中的子数组数目](#按位或和出现在数组中的子数组数目)
+  - [统计所有子数组按位或的出现次数](#统计所有子数组按位或的出现次数)
 
    
 <!-- /TOC -->
@@ -146,7 +152,7 @@ void FWT_bitxor(_Iterator first, _Iterator last) {
 <br />
 
 
-## 例题
+## 异或例题
 
 ### 统计异或值在范围内的数对有多少
 
@@ -284,6 +290,8 @@ long long subXorsum(vector<int> &a) {
 }
 ```
 
+## 按位与例题
+
 ### 所有子数组按位与和之和
 
 一个长度为n的数组a有 n * (n+1)/2 个非空子数组，每个子数组有一个按位与和，求所有子数组按位与和的总和。
@@ -312,6 +320,39 @@ long long bitandsum(vector<int> &a){
 }
 ```
 
+## 按位或例题
+
+**子数组或运算通用模板**
+
+考虑以i为起点的所有子数组，不同的按位或值最多有log(x)种，模板：
+
+其中对于每个i，p数组**从大到小**保存从i开始按位或大所有可能取值，与取得该值的最小左端点下标。
+例如: `设x=a[i]|a[i+1]|...|a[n-1], 则p[0].first = x, p[0].second表示取得x的最小左端点。`
+注意顺序p[0]是最大值，p.back()是等于a[i]的最小值。
+
+```c++
+vector<int> smallestSubarrays(vector<int>& a) {
+    int n = a.size();
+    vector<int> ans(n);
+    vector<pair<int,int>> p;
+    for (int i = n - 1; i >= 0; --i) {
+        p.emplace_back(0, i);
+        p[0].first |= a[i];
+        int k = 0;
+        for (int j = 1; j < p.size(); ++j) {
+            p[j].first |= a[i];
+            if (p[k].first == p[j].first) 
+                p[k].second = p[j].second;
+            else p[++k] = p[j];
+        }
+        p.resize(k + 1);
+        ans[i] = p[0].second - i + 1;
+    } 
+    return ans;
+}
+```
+
+
 ### 所有子数组按位或和之和
 
 一个长度为n的数组a有 n * (n+1)/2 个非空子数组，每个子数组有一个按位或和，求所有子数组按位或和的总和。
@@ -337,5 +378,140 @@ long long subarrOrSum(vector<int> &a) {
         s+=(1ll<<i)*(n*(n+1ll)/2-cu);
     }
     return s;
+}
+```
+
+### 按位或最大的最小子数组长度
+
+[leetcode 2411](https://leetcode.cn/problems/smallest-subarrays-with-maximum-bitwise-or/description/)
+
+给定长度为n的数组a，求长度为n的数组ans,ans[i]表示以i为起点，任意不小于i的j为终点的所有子数组的按位或的最大值，取得该最大值时的最小子数组长度。
+
++ 1 <= n <= 1e5
++ 1 <= a[i] <= 1e9
+
+```c++
+vector<int> smallestSubarrays(vector<int>& a) {
+    int n = a.size();
+    vector<int> ans(n);
+    vector<pair<int,int>> p;
+    for (int i = n - 1; i >= 0; --i) {
+        p.emplace_back(0, i);
+        p[0].first |= a[i];
+        int k = 0;
+        for (int j = 1; j < p.size(); ++j) {
+            p[j].first |= a[i];
+            if (p[k].first == p[j].first) 
+                p[k].second = p[j].second;
+            else p[++k] = p[j];
+        }
+        p.resize(k + 1);
+        ans[i] = p[0].second - i + 1;
+    } 
+    return ans;
+}
+```
+
+### 按位或二进制包含奇数个1的子数组数量
+
+[hackerearth cir_8](https://www.hackerearth.com/challenges/competitive/august-circuits-23/algorithm/bitwisebizarro-d932b3c7/)
+
+给定长度为n的数组a，求有多少个子数组满足，该子数组按位或的二进制表示中包含奇数个1.
+
++ 1 <= n <= 1e6
++ 1 <= a[i] <= 1e9
+
+```c++
+long long count_odd_pct(vector<int> &a) {
+    int n = a.size();
+    long long ans = 0;
+    vector<pair<int,int>> p;
+    for (int i = n - 1; i >= 0; --i) {
+        p.emplace_back(0, i);
+        p[0].first |= a[i];
+        int k = 0;
+        for (int j = 1; j < p.size(); ++j) {
+            p[j].first |= a[i];
+            if (p[k].first == p[j].first) 
+                p[k].second = p[j].second;
+            else p[++k] = p[j];
+        }
+        p.resize(k + 1);
+        for (int j = k; j >= 0; --j) {
+            if (__builtin_popcount(p[j].first) & 1) 
+                ans += (j > 0 ? p[j - 1].second : n) - p[j].second;
+        }
+    } 
+    return ans;
+}
+```
+
+### 按位或和出现在数组中的子数组数目
+
+[BNY Mellon OA](https://www.desiqna.in/15215/bny-mellon-oa-sde1-july-2023-array-compromise)
+
+输入数组a,求非空子数组的数目，满足该子数组的按位或和与数组中的某个元素相等。
+
+1 <= n <= 1e5
+1 <= a[i] <= 1e6
+
+**分析**
+
+和上题基本相同，只需修改一下判断条件。
+
+```c++
+long long count_or_subarray(vector<int> &a) {
+    int n = a.size();
+    long long ans = 0;
+    unordered_set<int> s(a.begin(), a.end());
+    vector<pair<int,int>> p;
+    for (int i = n - 1; i >= 0; --i) {
+        p.emplace_back(0, i);
+        p[0].first |= a[i];
+        int k = 0;
+        for (int j = 1; j < p.size(); ++j) {
+            p[j].first |= a[i];
+            if (p[k].first == p[j].first) 
+                p[k].second = p[j].second;
+            else p[++k] = p[j];
+        }
+        p.resize(k + 1);
+        for (int j = k; j >= 0; --j) {
+            if (s.count(p[j].first)) 
+                ans += (j > 0 ? p[j - 1].second : n) - p[j].second;
+        }
+    } 
+    return ans;
+}
+```
+
+### 统计所有子数组按位或的出现次数
+
+一个长度为n的数组a有 n * (n+1)/2 个非空子数组，每个子数组有一个按位或和，求所有子数组按位或和的出现次数。
+
++ 1 <= n <= 1e5
++ 1 <= a[i] <= 1e9
+
+```c++
+map<int, int> count_or_freq(vector<int> &a) {
+    int n = a.size();
+    map<int, int> mp;
+    vector<pair<int,int>> p;
+    for (int i = n - 1; i >= 0; --i) {
+        p.emplace_back(0, i);
+        p[0].first |= a[i];
+        int k = 0;
+        for (int j = 1; j < p.size(); ++j) {
+            p[j].first |= a[i];
+            if (p[k].first == p[j].first) 
+                p[k].second = p[j].second;
+            else p[++k] = p[j];
+        }
+        p.resize(k + 1);
+        for (int j = k; j >= 0; --j) {
+            mp[p[j].first] += (j > 0 ? p[j - 1].second : n) - p[j].second;
+        }
+    } 
+    return mp;
 }
 ```
