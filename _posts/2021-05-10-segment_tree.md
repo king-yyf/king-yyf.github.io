@@ -18,6 +18,7 @@ Index
 - [使用方法](#使用方法)
 - [线段树选题](#线段树选题)
   - [区间取模](#区间取模)
+  - [区间加求区间GCD](#区间加求区间gcd)
 - [cfedu题解](#cfedu题解)
   - [维护区间最值及出现次数](#维护区间最值及出现次数)
   - [维护区间最大子数组和](#维护区间最大子数组和)
@@ -423,6 +424,74 @@ int main() {
 }
 ```
 
+### 区间加求区间gcd
+
+[acwing 246](https://www.acwing.com/problem/content/description/247/)
+
+给定长度为n的数组a和m次操作，每次操作有如下两种形式:
++ `C l r d` 把 a[l],..a[r] 都加上d
++ `Q l r` 输出 a[l],..,a[r]的最大公约数
+
++ 1 <= n <= 5e5
++ 1 <= m <= 1e5
++ 1 <= a[i], |d| <= 1e18
+
+**分析**
+
+`gcd(a[l],...a[r]) = gcd(a[l], a[l+1]-a[l], ..., a[r] - a[r - 1])`
+
+设b为a的差分数组，则a数组区间加，可以转化为b数组两点加，`b[l]+d, b[r+1]-d`.
+操作2:
+
+```
+gcd(a[l],a[l+1],..,a[r]) = gcd(a[l],a[l+1]-a[l], ..., a[r] - a[r - 1])
+                         = gcd(a[l], gcd(b[l+1],b[l+2],...b[r]))
+                         = gcd(b[1]+..+b[l], gcd(b[l+1],b[l+2],...b[r]))
+```
+
+所以，只需用线段树维护差分数组的区间和以及区间gcd即可。
+
+```c++
+struct S{
+    long long s,d; //差分数目区间和，区间GCD
+    S& operator + (const long long x) {
+        s += x, d += x;
+        return *this;
+    }
+};
+S op(S x, S y) {
+    return S{x.s + y.s,gcd(x.d, y.d)};
+}
+S e() {
+    return S{0,0};
+}
+void ac_yyf(int tt) {
+    cin >> n >> m;
+    vector<long long> a(n + 1);
+    for (int i = 1; i <= n; ++i) {
+        cin >> a[i];
+    }
+    vector<S> v(n + 1);
+    for (int i = 0; i < n; ++i) {
+        v[i] = S{a[i + 1] - a[i], a[i + 1] - a[i]};
+    }
+    SegTree<S, op, e> seg(v);
+
+    char c;
+    long long d;
+    for (int i = 0, l, r; i < m; ++i) {
+        cin >> c >> l >> r;
+        if (c == 'C') {
+            cin >> d;
+            l--;
+            seg.set(l, seg.get(l) + d);
+            seg.set(r, seg.get(r) + (-d));
+        } else {
+            cout << gcd(seg.get(0, l).s, seg.get(l, r).d) << '\n';
+        }
+    }
+}
+```
 
 ## cfedu题解
 
