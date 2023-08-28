@@ -14,6 +14,8 @@ Index
 
 - [模板](#模板)
 - [跳k次后的位置](#跳k次后的位置)
+- [k步后的距离之和与最小值](#k步后的距离之和与最小值)
+- [k次传球后最大函数值](#k次传球后最大函数值)
 - [城市之间最少边数](#城市之间最少边数)
 - [两点之间的最少天数](#两点之间的最少天数)
 - [树上倍增](#树上倍增)
@@ -212,6 +214,76 @@ int main() {
     return 0;
 }
 ```
+
+### k步后的距离之和与最小值
+
+[cf 702e](https://codeforces.com/contest/702/problem/E)
+
+一个有向图，每条边只有一条出边，编号0-n-1,每条边的出边有权重w，给定k。对于每个点，求
+1. 沿着出边距离为k的所有边上的权重之和
+2. 沿着出边距离为k的所有边上的权重的最小值。
+
++ 1 <= n <= 1e5
++ 1 <= k <= 1e10
++ 1 <= w[i] <= 1e8
+
+[submission link](https://codeforces.com/contest/702/submission/220806587)
+
+```c++
+// 模板1
+using S = pair<long long, long long>;
+S op(S l, S r) {
+    return S{l.first + r.first, min(l.second, r.second)};
+}
+
+int main() {
+    cin >> n >> k;
+    vector<int> a(n);
+    vector<S> w(n);
+    cin >> a;
+    for (auto &[x, y] : w) {
+        cin >> x;
+        y = x;
+    }
+
+    BiLiftring<S, op> b(a, w);
+    for (int i = 0; i < n; ++i)
+        cout << b.get(i, k) << '\n';
+    return 0;
+}
+```
+
+### k次传球后最大函数值
+
+[lc周赛360 T4](https://leetcode.cn/problems/maximize-value-of-function-in-a-ball-passing-game/)
+
+n名玩家，每名玩家会传球给编号为a[i]的玩家，可以从任意玩家开始游戏，求能得到的传球k次所经过节点的编号之和的最大值。
+
++ 1 <= n <= 1e5
++ 1 <= k <= 1e10
+
+```c++
+// 模板1
+using S = long long;
+S op(S l, S r) {
+    return l + r;
+}
+
+class Solution {
+public:
+    long long getMaxFunctionValue(vector<int>& a, long long k) {
+        int n = a.size();
+        vector<long long> w(n);
+        iota(w.begin(), w.end(), 0);
+        BiLiftring<S, op> b(a, w);
+        long long res = 0;
+        for (int i = 0; i < n; ++i)
+            res = max(res, b.get(i, k + 1));
+        return res;
+    }
+};
+```
+
 
 ### 城市之间最少边数
 
