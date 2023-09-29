@@ -344,46 +344,43 @@ int main() {
 // FenwickTree
 
 vector<int> path_equal_k(vector<int> &a, vector<vector<int>> &es, vector<vector<int>> &qs){
-    n=sz(a),q=sz(qs);
+    int n=sz(a),q=sz(qs);
     vector<vector<int>> g(n);
     for(auto&e:es){
         g[e[0]].push_back(e[1]);
         g[e[1]].push_back(e[0]);
     }
     EulerTour e(g);
+    vector<int> v=a;
+    for(auto&q1:qs)
+        v.push_back(q1[2]);
+    Discrete<int> d(v);
+    int m=sz(v);
+
+    vector<vector<int>> c(m), p(m);
+    f0(n)c[d(a[i])].push_back(i);
+    f0(q)p[d(qs[i][2])].push_back(i);
+
     FenwickTree<int> f(n*2);
-    vector<ar4> Q(q);
-    map<int,vector<int>> mp;
-    f0(n)mp[a[i]].push_back(i);
-    f0(q){
-        Q[i]={qs[i][2],qs[i][0],qs[i][1],i};
-    } 
-    sort(all(Q),[&](auto &x, auto &y){
-        return x[0]<y[0];
-    });
-    auto add=[&](int x, int v){
-        f.add(e.in[x], v);
-        f.add(e.out[x], -v);
+    auto add=[&](int k, int v){
+        for (auto &x: c[k]) {
+            f.add(e.in[x], v);
+            f.add(e.out[x], -v);
+        }
     };
     vector<int> ans(q);
-    int pk=-1;
-    for(auto&[k,u,v,i]:Q){
-        if(pk>=-1&&pk!=k){
-            for(auto&x:mp[pk]){
-                add(x,-1);
-            }
+
+    f0(m) {
+        if(sz(c[i])==0||sz(p[i])==0) continue;
+        add(i, 1);
+        for(auto&j:p[i]){
+            int s=0;
+            e.node_query(qs[j][0],qs[j][1],[&](int x, int y){
+                s+=f.sum(x,y);
+            });
+            ans[j]=s;
         }
-        if(pk==-1||pk!=k){
-            for(auto&x:mp[k]){
-                add(x,1);
-            }
-        }
-        int s=0;
-        e.node_query(u,v,[&](int x, int y){
-            s+=f.sum(x,y);
-        });
-        ans[i]=s;
-        pk=k;
+        add(i, -1);
     }
     return ans;
 }
