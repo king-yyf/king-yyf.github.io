@@ -1,6 +1,6 @@
 ---
 layout: post
-title: 树上启发式合并
+title: 树上启发式合并&欧拉序
 date: 2023-08-10
 tags: 算法专题  
 ---
@@ -12,10 +12,11 @@ Index
 ---
 <!-- TOC -->
 
-- [启发式合并模板](#启发式合并模板)
-- [子树出现次数最多的颜色编号之和](#子树出现次数最多的颜色编号之和)
-- [树上数颜色](#树上数颜色)
-- [欧拉序模板](#欧拉序模板)
+- [启发式合并](#启发式合并模板)
+  - [子树出现次数最多的颜色编号之和](#子树出现次数最多的颜色编号之和)
+  - [树上数颜色](#树上数颜色)
+- [欧拉序](#欧拉序模板)
+  - [查询路径和](#查询路径和)
 
 
 
@@ -23,7 +24,7 @@ Index
 
 树上启发式合并用于解决树上对所有子树的查询问题，一般不带修改，总时间复杂度为 O(nlog(n))
 
-### 启发式合并模板
+## 启发式合并模板
 
 ```c++
 struct DsuOnTree {
@@ -203,7 +204,7 @@ int main() {
 }
 ```
 
-### 欧拉序模板
+## 欧拉序模板
 
 ```c++
 struct EulerTour {
@@ -264,3 +265,125 @@ struct EulerTour {
 };
 ```
 
+### 查询路径和
+
+[vertex_add_path_sum](https://judge.yosupo.jp/problem/vertex_add_path_sum)
+
+一颗n个节点的树，每个节点有个值a[i], q个操作
+1. 0 p x 赋值 a[p] = a[p] + x
+2. 1 u v 输出从节点u到节点v路径上的权值和
+
++ 1 <= n,q <= 5e5
++ 0 <= a[i], x <= 1e9
++ 0 <= p, u, v < n
+
+```c++
+// EulerTour
+// FenwickTree
+int main() {
+    
+    int n, q;
+    cin >> n >> q;
+    vector<int> a(n);
+    for (int i = 0; i < n; ++i) {
+        cin >> a[i];    
+    }
+
+    vector<vector<int>> g(n);
+    for (int i = 1, u, v; i < n; ++i) {
+        cin >> u >> v;
+        g[u].push_back(v);
+        g[v].push_back(u);
+    }
+
+    EulerTour et(g);
+    FenwickTree<long long> f(2 * n);
+    for (int i = 0; i < n; ++i) {
+        f.set(et.in[i], a[i]);
+        f.set(et.out[i],-a[i]);
+    }
+
+    for (int i = 0, t; i < q; ++i) {
+        cin >> t;
+        if (t == 0) {
+            int p, x;
+            cin >> p >> x;
+            f.add(et.in[p], x);
+            f.add(et.out[p], -x);
+        } else {
+            int u, v;
+            cin >> u >> v;
+            long long s = 0;
+            et.node_query(u, v, [&](int x, int y){
+                s += f.sum(x, y);
+            });
+            cout << s << '\n';
+        }
+    }
+
+    return 0;
+}
+```
+
+### 路径上等于k的节点数
+
+[hackerearth cir_9_e](https://www.hackerearth.com/problem/algorithm/workers-1faf1dc4/)
+
+一颗n个节点的树，每个节点有个值a[i], q个询问，每次询问给定 u,v,k,求从u到v路径上值等于k的节点数。
+
++ 1 <= n, q <= 1e5
++ 0 < a[i], k <= 1e9
+
+**分析**
+
+离线查询，对于每个k单独查询，使用欧拉序维护树上前缀和。
+
+```c++
+// EulerTour
+// FenwickTree
+
+vector<int> path_equal_k(vector<int> &a, vector<vector<int>> &es, vector<vector<int>> &qs){
+    n=sz(a),q=sz(qs);
+    vector<vector<int>> g(n);
+    for(auto&e:es){
+        g[e[0]].push_back(e[1]);
+        g[e[1]].push_back(e[0]);
+    }
+    EulerTour e(g);
+    FenwickTree<int> f(n*2);
+    vector<ar4> Q(q);
+    map<int,vector<int>> mp;
+    f0(n)mp[a[i]].push_back(i);
+    f0(q){
+        Q[i]={qs[i][2],qs[i][0],qs[i][1],i};
+    } 
+    sort(all(Q),[&](auto &x, auto &y){
+        return x[0]<y[0];
+    });
+    auto add=[&](int x, int v){
+        f.add(e.in[x], v);
+        f.add(e.out[x], -v);
+    };
+    vector<int> ans(q);
+    int pk=-1;
+    for(auto&[k,u,v,i]:Q){
+        if(pk>=-1&&pk!=k){
+            for(auto&x:mp[pk]){
+                add(x,-1);
+            }
+        }
+        if(pk==-1||pk!=k){
+            for(auto&x:mp[k]){
+                add(x,1);
+            }
+        }
+        int s=0;
+        e.node_query(u,v,[&](int x, int y){
+            s+=f.sum(x,y);
+        });
+        ans[i]=s;
+        pk=k;
+    }
+    return ans;
+}
+```
