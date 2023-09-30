@@ -16,10 +16,9 @@ Index
 - [区间修改与懒标记](#区间修改与懒标记)
 - [模板代码](#模板代码)
 - [使用方法](#使用方法)
-- [线段树选题](#线段树选题)
+- [单点修改例题](#单点修改例题)
   - [区间取模](#区间取模)
   - [区间加求区间GCD](#区间加求区间gcd)
-- [cfedu题解](#cfedu题解)
   - [维护区间最值及出现次数](#维护区间最值及出现次数)
   - [维护区间最大子数组和](#维护区间最大子数组和)
   - [第k个1的下标](#第k个1的下标)
@@ -29,6 +28,7 @@ Index
   - [区间交替符号和](#区间交替符号和)
   - [区间逆序对](#区间逆序对)
   - [区间非下降子数组数目](#区间非下降子数组数目)
+- [带懒标记例题](#带懒标记例题)
   - [Lazy-区间取max](#区间取max)
   - [Lazy-区间赋值](#区间赋值)
   - [Lazy-区间加区间求min](#区间加区间求min)
@@ -43,6 +43,7 @@ Index
   - [Lazy-区间加求区间乘等差数列和](#区间加求区间乘等差数列和)
   - [Lazy-区间乘c加d](#区间乘c加d)
   - [Lazy-区间异或查询区间和](#区间异或查询区间和)
+  - [Lazy-区间翻转求最长连续1数目](#区间翻转求最长连续1数目)
 - [权值线段树](#权值线段树)
   - [统计大小在某个范围内的数量](#统计大小在某个范围内的数量)
   - [查询集合MEX](#查询集合mex)
@@ -355,7 +356,7 @@ seg.seg(a-1, seg.get(a-1) + b);
 
 
 
-## 线段树选题
+## 单点修改例题
 
 ### 区间取模
 
@@ -492,9 +493,6 @@ void ac_yyf(int tt) {
     }
 }
 ```
-
-## cfedu题解
-
 
 ### 维护区间最值及出现次数
 
@@ -983,6 +981,9 @@ void ac_yyf(int tt) {
     }
 }
 ```
+
+## 带懒标记例题
+
 
 ### 区间取max
 
@@ -1900,6 +1901,70 @@ void ac_yyf(int tt) {
 }
 ```
 
+### 区间翻转求最长连续1数目
+
+[abc 322f](https://atcoder.jp/contests/abc322/tasks/abc322_f)
+
+一个长度为n的01序列，q次查询。
+1. 1 l r 将区间[l,r]的1变为0，0变为1
+2. 2 l r 输出区间[l,r]中最长连续1的长度
+
++ 1 <= q <= 1e5
++ 1 <= n <= 5e5
+
+```c++
+struct S {
+    int len_in_0, len_l_0, len_r_0;
+    bool is_conn_0;
+    int len_in_1, len_l_1, len_r_1;
+    bool is_conn_1;
+};
+using F = bool;
+
+S op(S l, S r) {
+    const int len_in_0 = max({l.len_r_0 + r.len_l_0, l.len_in_0, r.len_in_0});
+    const int len_l_0 = l.len_l_0 + (l.is_conn_0 ? r.len_l_0 : 0);
+    const int len_r_0 = r.len_r_0 + (r.is_conn_0 ? l.len_r_0 : 0);
+    const bool is_conn_0 = l.is_conn_0 && r.is_conn_0;
+
+    const int len_in_1 = max({l.len_r_1 + r.len_l_1, l.len_in_1, r.len_in_1});
+    const int len_l_1 = l.len_l_1 + (l.is_conn_1 ? r.len_l_1 : 0);
+    const int len_r_1 = r.len_r_1 + (r.is_conn_1 ? l.len_r_1 : 0);
+    const bool is_conn_1 = l.is_conn_1 && r.is_conn_1;
+
+    return S{len_in_0, len_l_0, len_r_0, is_conn_0, len_in_1, len_l_1, len_r_1, is_conn_1};
+}
+S e() {
+    return {0,0,0,true,0,0,0,true};
+};
+S U0() {
+    return {1, 1, 1, true, 0, 0, 0, false};
+}
+S U1() {
+    return {0, 0, 0, false, 1, 1, 1, true};
+}
+S tag(F f, S x) { 
+    if (!f) return x;
+    return {x.len_in_1, x.len_l_1, x.len_r_1, x.is_conn_1, x.len_in_0, x.len_l_0, x.len_r_0, x.is_conn_0};
+}
+F merge(F x, F y) { return x ^ y; }
+F id() { return false; }
+void ac_yyf(int tt) {
+    int n, q;
+    string s;
+    cin >> n >> q >> s;
+    vector<S> v(n);
+    for (int i = 0; i < n; ++i) {
+        v[i] = s[i] == '1' ? U1() : U0();
+    } 
+    LazySegTree<S, op, e, F, tag, merge, id> seg(v);
+    for (int i = 0, t, l, r; i < q; ++i) {
+        cin >> t >> l >> r;
+        if (t == 1) seg.apply(l - 1, r, true);
+        else cout << seg.get(l - 1, r).len_in_1 << '\n';
+    }
+}
+```
 
 ## 权值线段树
 
