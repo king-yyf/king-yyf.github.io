@@ -18,6 +18,8 @@ Index
 - [欧拉序](#欧拉序模板)
   - [查询路径和](#查询路径和)
   - [路径上等于k的节点数](#路径上等于k的节点数)
+- [bfs序](#bfs序)
+  - [权值大于p的节点最小高度](#权值大于p的节点最小高度)
 
 
 
@@ -381,6 +383,114 @@ vector<int> path_equal_k(vector<int> &a, vector<vector<int>> &es, vector<vector<
             ans[j]=s;
         }
         add(i, -1);
+    }
+    return ans;
+}
+```
+
+## bfs序
+
+bfs序可以用来处理按照节点深度查询的问题，bfs序能够将深度在区间[l,r] 内的节点编号为一个连续的区间，可以借助线段树进行查询和修改。
+
+**模板**
+
+```c++
+struct BFSTree {
+    int n;
+    bool is_build;
+    vector<vector<int>> g;
+    vector<int> dep, seq, ids, h; //h[i]:高度为i的节点起始编号
+    BFSTree(){init(0);}
+    BFSTree(int _n){init(_n);};
+    void init(int _n) {
+        this->n = _n;
+        is_build = false; h.reserve(n);
+        ids.resize(n); seq.resize(n);
+        dep.resize(n); g.resize(n);
+    }
+    void add_edge(int u, int v) {
+        g[u].push_back(v);
+        g[v].push_back(u);
+    }
+    void build(int root = 0) {
+        is_build = true;
+        queue<int> q;
+        vector<bool> vis(n);
+        q.push(root);
+        vis[root] = true;
+        int t = 0, d = 0;
+        while (q.size()) {
+            int m = q.size();
+            for (int i = 0; i < m; ++i) {
+                auto u = q.front(); q.pop();
+                ids[u] = t++, dep[u] = d;
+                seq[ids[u]] = u;
+                for (int v : g[u]) if (!vis[v]) {
+                    q.push(v); vis[v] = true;
+                }
+            }
+            h.push_back(t - 1);
+            d++;
+        }
+    }
+
+    int new_dep(int u) const { assert(is_build); return dep[seq[u]];}
+    int ori_dep(int u) const { assert(is_build); return dep[u];}
+
+    template<typename F> // 处理高度从[lo, hi]的区间
+    void depth(int lo, int hi, F &&f) {
+        if (lo > hi) swap(lo, hi);
+        int m = h.size();
+        if (hi >= m) hi = m - 1;
+        if (lo > hi) return;
+        int r = hi == m - 1 ? n : h[hi + 1];
+        f(h[lo], r); // 左闭右开区间
+    }
+};
+```
+
+### 权值大于p的节点最小高度
+
+[hackerearth tree_querys](https://www.hackerearth.com/problem/algorithm/tree-queries-4-044903fe/?source=list_view)
+
+n个节点的树，每个节点有值a[i], 根节点为1，q次询问，每次询问有两种形式
++ 1 u x 将节点u处的值增加x
++ 2 p 查询离根节点距离最小的节点的距离，满足节点的权值严格大于p
+
++ 2 <= n, q <= 1e5
++ 1 <= a[i], x <= 1e6
++ 1 <= p <= 1e12
+
+```c++
+using S = long long;
+S op(S x, S y) {
+   return max(x,y);
+}
+S e() {
+    return S{};
+}
+vector<int> tree_querys(vector<int> &a, vector<vector<int>> &es, vector<vector<ll>> &qs){
+    int n = a.size();
+    BFSTree g(n);  // bfs序，将每次查询转换为一个连续区间的查询
+    for(auto &e : es){
+        g.add_edge(e[0], e[1]);
+    }
+    g.build();
+    SegTree<S, op, e> seg(n); // 线段树，进行修改和二分查询
+    for (int i = 0; i < n; ++i) {
+        seg.set(g.ids[i], a[i]);
+    }
+    vector<int> ans;
+    for(auto &q : qs){
+        if (q[0] == 1) {
+            seg.set(g.ids[q[1]], seg.get(g.ids[q[1]]) + q[2]);
+        }  else {
+            int r = seg.max_right(0,[&](S x){
+                return x <= q[1];
+            });
+            int s = r >= n ? -1 : g.new_dep(r);
+            ans.push_back(s);
+        }
     }
     return ans;
 }

@@ -44,6 +44,7 @@ Index
   - [Lazy-区间乘c加d](#区间乘c加d)
   - [Lazy-区间异或查询区间和](#区间异或查询区间和)
   - [Lazy-区间翻转求最长连续1数目](#区间翻转求最长连续1数目)
+  - [Lazy-区间赋值取反查询最大连续1数目](#区间赋值取反查询最大连续1数目)
 - [权值线段树](#权值线段树)
   - [统计大小在某个范围内的数量](#统计大小在某个范围内的数量)
   - [查询集合MEX](#查询集合mex)
@@ -1914,57 +1915,146 @@ void ac_yyf(int tt) {
 
 ```c++
 struct S {
-    int len_in_0, len_l_0, len_r_0;
-    bool is_conn_0;
-    int len_in_1, len_l_1, len_r_1;
-    bool is_conn_1;
+    int pre[2] = {0, 0}; // 前缀0/1长度
+    int suf[2] = {0, 0}; // 后缀0/1长度
+    int mx[2] = {0, 0};  // 区间连续0/1最大值
+    int cnt[2] = {0, 0}; // 区间0/1的数量
 };
-using F = bool;
-
-S op(S l, S r) {
-    const int len_in_0 = max({l.len_r_0 + r.len_l_0, l.len_in_0, r.len_in_0});
-    const int len_l_0 = l.len_l_0 + (l.is_conn_0 ? r.len_l_0 : 0);
-    const int len_r_0 = r.len_r_0 + (r.is_conn_0 ? l.len_r_0 : 0);
-    const bool is_conn_0 = l.is_conn_0 && r.is_conn_0;
-
-    const int len_in_1 = max({l.len_r_1 + r.len_l_1, l.len_in_1, r.len_in_1});
-    const int len_l_1 = l.len_l_1 + (l.is_conn_1 ? r.len_l_1 : 0);
-    const int len_r_1 = r.len_r_1 + (r.is_conn_1 ? l.len_r_1 : 0);
-    const bool is_conn_1 = l.is_conn_1 && r.is_conn_1;
-
-    return S{len_in_0, len_l_0, len_r_0, is_conn_0, len_in_1, len_l_1, len_r_1, is_conn_1};
+using F = bool; // 是否取反
+S op(S x, S y) {
+    S s{};
+    for (int i = 0; i < 2; ++i) {
+        s.cnt[i] = x.cnt[i] + y.cnt[i];
+        s.pre[i] = x.cnt[i ^ 1] ? x.pre[i] : x.cnt[i] + y.pre[i];
+        s.suf[i] = y.cnt[i ^ 1] ? y.suf[i] : y.cnt[i] + x.suf[i];
+        s.mx[i] = max({x.mx[i], y.mx[i], x.suf[i] + y.pre[i]});
+    }
+    return s;
 }
 S e() {
-    return {0,0,0,true,0,0,0,true};
+    return S{};
 };
-S U0() {
-    return {1, 1, 1, true, 0, 0, 0, false};
+S E0() {
+    return S{{1, 0}, {1, 0}, {1, 0}, {1, 0}};
 }
-S U1() {
-    return {0, 0, 0, false, 1, 1, 1, true};
+S E1() {
+    return S{{0, 1}, {0, 1}, {0, 1}, {0, 1}};
 }
-S tag(F f, S x) { 
-    if (!f) return x;
-    return {x.len_in_1, x.len_l_1, x.len_r_1, x.is_conn_1, x.len_in_0, x.len_l_0, x.len_r_0, x.is_conn_0};
+S tag(F f, S s) {
+    if (!f) return s;
+    swap(s.pre[0], s.pre[1]);
+    swap(s.cnt[0], s.cnt[1]);
+    swap(s.suf[0], s.suf[1]);
+    swap(s.mx[0], s.mx[1]);
+    return s;
 }
-F merge(F x, F y) { return x ^ y; }
+F merge(F x, F y) { 
+    return x ^ y;
+}
 F id() { return false; }
+
 void ac_yyf(int tt) {
     int n, q;
     string s;
     cin >> n >> q >> s;
     vector<S> v(n);
     for (int i = 0; i < n; ++i) {
-        v[i] = s[i] == '1' ? U1() : U0();
+        v[i] = s[i] == '1' ? E1() : E0();
     } 
     LazySegTree<S, op, e, F, tag, merge, id> seg(v);
     for (int i = 0, t, l, r; i < q; ++i) {
         cin >> t >> l >> r;
         if (t == 1) seg.apply(l - 1, r, true);
-        else cout << seg.get(l - 1, r).len_in_1 << '\n';
+        else cout << seg.get(l - 1, r).mx[1] << '\n';
     }
 }
 ```
+
+### 区间赋值取反查询最大连续1数目
+
+[luogu p2572](https://www.luogu.com.cn/problem/P2572)
+
+长度为n的01序列，五种操作
++ 0 l r : [l,r]区间内的所有数全变成 0
++ 1 l r : [l,r]区间内的所有数全变成 1
++ 2 l r : [l,r]区间内的所有数全部取反,0变成1，1变成0
++ 3 l r : [l,r]区间内总共有多少个1
++ 4 l r : [l,r]区间内最多有多少个连续的1
+
++ 1 <= n, m <= 2e5
+
+```c++
+struct S {
+    int pre[2] = {0, 0}; // 前缀0/1长度
+    int suf[2] = {0, 0}; // 后缀0/1长度
+    int mx[2] = {0, 0};  // 区间连续0/1最大值
+    int cnt[2] = {0, 0}; // 区间0/1的数量
+};
+using F = array<int, 2>; // (赋值， 取反)
+S op(S x, S y) {
+    S s{};
+    for (int i = 0; i < 2; ++i) {
+        s.cnt[i] = x.cnt[i] + y.cnt[i];
+        s.pre[i] = x.cnt[i ^ 1] ? x.pre[i] : x.cnt[i] + y.pre[i];
+        s.suf[i] = y.cnt[i ^ 1] ? y.suf[i] : y.cnt[i] + x.suf[i];
+        s.mx[i] = max({x.mx[i], y.mx[i], x.suf[i] + y.pre[i]});
+    }
+    return s;
+}
+S e() {
+    return S{};
+};
+S E0() {
+    return S{{1, 0}, {1, 0}, {1, 0}, {1, 0}};
+}
+S E1() {
+    return S{{0, 1}, {0, 1}, {0, 1}, {0, 1}};
+}
+S tag(F f, S s) {
+    if (f[0] == -1) {
+        if (!f[1]) return s;
+        swap(s.pre[0], s.pre[1]);
+        swap(s.cnt[0], s.cnt[1]);
+        swap(s.suf[0], s.suf[1]);
+        swap(s.mx[0], s.mx[1]);
+    } else {
+        int x = f[0], y = f[0] ^ 1;
+        s.pre[x] = s.suf[x] = s.mx[x] = s.cnt[x] = s.cnt[x] + s.cnt[y];;
+        s.pre[y] = s.suf[y] = s.mx[y] = s.cnt[y] = 0;
+    }
+    return s;
+}
+F merge(F x, F y) { 
+    if (x[0] != -1) return F{x[0], 0};
+    if (x[1] == 0) {
+        return y[0] == -1 ? y : F{y[0], 0};
+    } 
+    return y[0] == -1 ? F{-1, y[1] ^ 1} : F{y[0] ^ 1, 0};
+}
+F id() { return {-1, 0}; }
+
+void ac_yyf(int tt) {
+    int n, m;
+    cin >> n >> m;
+    vector<S> a(n);
+    for (int i = 0; i < n; ++i) {
+        cin >> x;
+        a[i] = x == 0 ? E0() : E1();
+    }
+    LazySegTree<S, op, e, F, tag, merge, id> seg(a);
+    for (int i = 0, t, l, r; i < m; ++i) {
+        cin >> t >> l >> r;
+        r++;
+        if (t <= 1) {
+            seg.apply(l, r, F{t, 0});
+        }
+        else if (t == 2) seg.apply(l, r, F{-1, 1});
+        else if (t == 3) cout << seg.get(l, r).cnt[1] << '\n';
+        else cout << seg.get(l, r).mx[1] << '\n';
+    }
+}
+```
+
 
 ## 权值线段树
 
