@@ -28,6 +28,7 @@ Index
   - [区间交替符号和](#区间交替符号和)
   - [区间逆序对](#区间逆序对)
   - [区间非下降子数组数目](#区间非下降子数组数目)
+  - [区间方差](#区间方差)
 - [带懒标记例题](#带懒标记例题)
   - [Lazy-区间取max](#区间取max)
   - [Lazy-区间赋值](#区间赋值)
@@ -981,6 +982,56 @@ void ac_yyf(int tt) {
         cout<<seg.get(x-1,y).cnt<<nl;
     }
 }
+```
+
+### 区间方差
+
+[洛谷 p5142](https://www.luogu.com.cn/problem/P5142)
+
+给定一个长为n的数组吗，m次查询。
+
++ 1 l r 赋值 a[l] = r
++ 2 l r 求区间 [l,r]的方差, 模1e9+7
+
++ 1 <= n,m <= 1e5
++ 1 <= a[i], y <= 1e9
+
+```c++
+using S = mint;
+S op(S x, S y) {
+    return x + y;
+}
+S e() {
+    return S();
+}
+int main() {
+    ios::sync_with_stdio(false); cin.tie(nullptr);
+    
+    int n, m;
+    cin >> n >> m;
+    vector<mint> a(n), b(n);
+    for (int i = 0; i < n; ++i) {
+        cin >> a[i];
+        b[i] = a[i] * a[i];
+    }
+
+    SegTree<S, op, e> s1(a), s2(b);
+
+    for (int i = 0, t, x, y; i < m; ++i) {
+        cin >> t >> x >> y;
+        x--;
+        if (t == 1) {
+            s1.set(x, y);
+            s2.set(x, mint(y) * y);
+        } else {
+            mint c = s1.get(x, y) / (y - x);
+            mint ans =s2.get(x, y) / (y - x) - c * c;
+            cout << ans << '\n';
+        }
+    }
+    return 0;
+}
+
 ```
 
 ## 带懒标记例题
