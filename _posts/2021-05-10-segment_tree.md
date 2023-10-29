@@ -46,6 +46,7 @@ Index
   - [Lazy-区间异或查询区间和](#区间异或查询区间和)
   - [Lazy-区间翻转求最长连续1数目](#区间翻转求最长连续1数目)
   - [Lazy-区间赋值取反查询最大连续1数目](#区间赋值取反查询最大连续1数目)
+  - [Lazy-区间不同元素数目平方和](#区间不同元素数目平方和)
 - [权值线段树](#权值线段树)
   - [统计大小在某个范围内的数量](#统计大小在某个范围内的数量)
   - [查询集合MEX](#查询集合mex)
@@ -2106,6 +2107,80 @@ void ac_yyf(int tt) {
 }
 ```
 
+### 区间不同元素数目平方和
+
+[hackerearch](https://www.hackerearth.com/practice/data-structures/advanced-data-structures/segment-trees/practice-problems/algorithm/something-genuine/)
+
+[双周赛116 t4](https://leetcode.cn/problems/subarrays-distinct-element-sum-of-squares-ii/description/)
+
+长度为n的数组a，定义f(l,r)为子数组a[l..r]的不同元素数目，求所有非空子数组f(l,r)的平方和。模1e9+7.
+
++ 1 <= n <= 2e5
++ 1 <= a[i] <= 2e5
+
+**分析**
+
+设 last[x] 为上一次出现x的坐标，则
+
+```c++
+f(l, r) = f(l, r - 1) + 1; // if l > last[nums[r]]
+f(l, r) = f(l, r - 1); // if l <= last[nums[r]]
+```
+设 `g(i) = f(0,0) + f(0, 1) + ... + f(0, i)`
+
+答案即为
+
+```
+ans = g(0)^2 + g(1)^2 + ... + g(n-1)^2
+```
+
+可以按顺序依次维护g(i)^2。
+
+```c++
+struct S {
+    mint s1, s2, size;
+};
+using F = mint;
+S op(S x, S y) {
+    return S{x.s1 + y.s1, x.s2 + y.s2, x.size + y.size};
+}
+S e() {
+    return S{};
+};
+S tag(F f, S s) { 
+    if (f == 0) return s;
+    S res = s;
+    res.s2 = s.s2 + s.size * f;
+    res.s1 = s.s1 + 2 * f * s.s2 + s.size * f * f;
+    return res;
+}
+F merge(F x, F y) { return x + y; }
+F id() { return 0; }
+int main() {
+    ios::sync_with_stdio(false); cin.tie(nullptr);
+    
+    int n;
+    cin >> n;
+    vector<int> a(n);
+    for (int i = 0; i < n; ++i) {
+        cin >> a[i];
+    }
+
+    int mx = *max_element(a.begin(), a.end());
+    vector<int> p(mx + 1, -1);
+
+    LazySegTree<S, op, e, F, tag, merge, id> seg(vector<S>(n,{0,0,1}));
+    mint ans = 0;
+    for (int i = 0; i < n; ++i) {
+        seg.apply(p[a[i]] + 1, i + 1, 1);
+        p[a[i]] = i;
+        ans += seg.get(0, i + 1).s1;
+    }
+    cout << ans << '\n';
+
+    return 0;
+}
+```
 
 ## 权值线段树
 
