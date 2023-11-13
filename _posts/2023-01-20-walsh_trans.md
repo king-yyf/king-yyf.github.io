@@ -23,6 +23,7 @@ Index
   - [所有子数组异或和之和](#所有子数组异或和之和)
 - [按位与例题](#按位与例题)
   - [所有子数组按位与和之和](#所有子数组按位与和之和)
+  - [按位与奇数个1异或偶数个1的子数组数目](#按位与奇数个1异或偶数个1的子数组数目)
 - [按位或例题](#按位或例题)
   - [所有子数组按位或和之和](#所有子数组按位或和之和)
   - [按位或最大的最小子数组长度](#按位或最大的最小子数组长度)
@@ -292,6 +293,41 @@ long long subXorsum(vector<int> &a) {
 
 ## 按位与例题
 
+**子数组与运算通用模版**
+
+考虑以i为终点的所有子数组，不同的按位与值最多有log(x)种，模板：
+
+其中对于每个i，p数组**从大到小**保存从i开始按位与的所有可能取值，与取得该值的最小左端点下标。
+
+```c++
+template<typename F> 
+void bitwise_and(vector<int> &a, F &&f) {
+    vector<pair<int,int>> p, q;
+    for (int n = a.size(), i = 0; i < n; ++i) {
+        q.emplace_back(a[i], i);
+        int k = 0;
+        for (int j = 0; j < p.size(); ++j) {
+            p[j].first &= a[i];
+            if (p[j].first == q[k].first) {
+                q[k].second = p[j].second;
+            } else {
+                q.emplace_back(p[j].first, p[j].second);
+                k++;
+            }
+        }
+        p = q;
+        q.clear();
+        for (int j = k; j >= 0; --j) {
+            // 以[l, r-1]为左端点，i为右端点的所有子数组，按位与的值都为p[j].first
+            int l = p[j].second, r = (j > 0 ? p[j - 1].second : i + 1);
+            f(i, l, r, p[j].first);
+        }
+    } 
+}
+```
+
+
+
 ### 所有子数组按位与和之和
 
 一个长度为n的数组a有 n * (n+1)/2 个非空子数组，每个子数组有一个按位与和，求所有子数组按位与和的总和。
@@ -320,6 +356,58 @@ long long bitandsum(vector<int> &a){
 }
 ```
 
+### 按位与奇数个1异或偶数个1的子数组数目
+
+[hackerearth](https://www.hackerearth.com/practice/basic-programming/bit-manipulation/basics-of-bit-manipulation/practice-problems/algorithm/bitwisebafflement-00eabd02/)
+
+给定长度为n的数组a，计算有多少个子数组满足，子数组的按位与和二进制表示中包含奇数个1，按位异或和包含偶数个1.
+
++ 1 <= n <= 1e6
++ 1 <= a[i] <= 1e9
+
+**分析**
+
+对于两个数x和y，如果x和y的二进制表示中包含1的个数的奇偶性相同，则异或和包含偶数个1，否则包含奇数个1.
+则可以用前缀和维护任意子数组包含1的个数的奇偶性。
+
+```c++
+void solve() {
+    int n;
+    cin >> n;
+    vector<int> a(n);
+    for (int i = 0; i < n; ++i) {
+        cin >> a[i];    
+    }
+
+    vector<int> s(n + 1), c(n + 1);
+    for (int i = 0; i < n; ++i) {
+        s[i + 1] = s[i] ^ a[i]; 
+    }
+
+    for (int i = 0; i <= n; ++i) {
+        if (__builtin_popcount(s[i]) & 1) c[i] ++;
+    }
+    for (int i = 1; i <= n; ++i) {
+        c[i] += c[i - 1];
+    }
+    
+    long long ans = 0;
+
+    bitwise_and(a, [&](int i, int l, int r, int val){
+        if (__builtin_popcount(val) & 1) {
+            int d = (__builtin_popcount(s[i + 1]) & 1);
+            if (d == 1) {
+                ans += c[r - 1] - (l > 0 ? c[l - 1] : 0);
+            } else {
+                ans += r - l - c[r - 1] + (l > 0 ? c[l - 1] : 0);
+            }
+        }
+    });
+
+    cout << ans << '\n';
+}
+```
+
 ## 按位或例题
 
 **子数组或运算通用模板**
@@ -331,11 +419,10 @@ long long bitandsum(vector<int> &a){
 注意顺序p[0]是最大值，p.back()是等于a[i]的最小值。
 
 ```c++
-vector<int> smallestSubarrays(vector<int>& a) {
-    int n = a.size();
-    vector<int> ans(n);
+template<typename F> 
+void bitwise_or(vector<int> &a, F &&f) {
     vector<pair<int,int>> p;
-    for (int i = n - 1; i >= 0; --i) {
+    for (int n = a.size(), i = n - 1; i >= 0; --i) {
         p.emplace_back(0, i);
         p[0].first |= a[i];
         int k = 0;
@@ -346,9 +433,12 @@ vector<int> smallestSubarrays(vector<int>& a) {
             else p[++k] = p[j];
         }
         p.resize(k + 1);
-        ans[i] = p[0].second - i + 1;
-    } 
-    return ans;
+        for (int j = k; j >= 0; --j) {
+            // 以i为左端点，[l,r-1]中任意元素为右端点的子数组按位或的值都为p[j].first
+            int l = p[j].second, r = (j > 0 ? p[j - 1].second : n);
+            f(i, l, r, p[j].first);
+        }
+    }
 }
 ```
 
@@ -394,20 +484,9 @@ long long subarrOrSum(vector<int> &a) {
 vector<int> smallestSubarrays(vector<int>& a) {
     int n = a.size();
     vector<int> ans(n);
-    vector<pair<int,int>> p;
-    for (int i = n - 1; i >= 0; --i) {
-        p.emplace_back(0, i);
-        p[0].first |= a[i];
-        int k = 0;
-        for (int j = 1; j < p.size(); ++j) {
-            p[j].first |= a[i];
-            if (p[k].first == p[j].first) 
-                p[k].second = p[j].second;
-            else p[++k] = p[j];
-        }
-        p.resize(k + 1);
-        ans[i] = p[0].second - i + 1;
-    } 
+    bitwise_or(a, [&](int i, int l, int r, int val){
+        if(r == n) ans[i] = l - i + 1;
+    });
     return ans;
 }
 ```
@@ -422,27 +501,17 @@ vector<int> smallestSubarrays(vector<int>& a) {
 + 1 <= a[i] <= 1e9
 
 ```c++
-long long count_odd_pct(vector<int> &a) {
-    int n = a.size();
+void ac_yyf(int tt) {
+    cin >> n;
+    vector<int> a(n);
+    for (int i = 0; i < n; ++i) {
+        cin >> a[i];
+    }
     long long ans = 0;
-    vector<pair<int,int>> p;
-    for (int i = n - 1; i >= 0; --i) {
-        p.emplace_back(0, i);
-        p[0].first |= a[i];
-        int k = 0;
-        for (int j = 1; j < p.size(); ++j) {
-            p[j].first |= a[i];
-            if (p[k].first == p[j].first) 
-                p[k].second = p[j].second;
-            else p[++k] = p[j];
-        }
-        p.resize(k + 1);
-        for (int j = k; j >= 0; --j) {
-            if (__builtin_popcount(p[j].first) & 1) 
-                ans += (j > 0 ? p[j - 1].second : n) - p[j].second;
-        }
-    } 
-    return ans;
+    bitwise_or(a, [&](int i, int l, int r, int val){
+        if (__builtin_popcount(val) & 1) ans += r - l;
+    });
+    cout << ans << '\n';
 }
 ```
 
