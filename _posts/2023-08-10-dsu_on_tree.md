@@ -18,6 +18,7 @@ Index
 - [欧拉序](#欧拉序模板)
   - [查询路径和](#查询路径和)
   - [路径上等于k的节点数](#路径上等于k的节点数)
+  - [路径上被k整除的节点数](#路径上被k整除的节点数)
 - [bfs序](#bfs序)
   - [权值大于p的节点最小高度](#权值大于p的节点最小高度)
 
@@ -385,6 +386,70 @@ vector<int> path_equal_k(vector<int> &a, vector<vector<int>> &es, vector<vector<
         add(i, -1);
     }
     return ans;
+}
+```
+
+### 路径上被k整除的节点数
+
+[hackerearth cir11](https://www.hackerearth.com/problem/algorithm/treepath-divisibility-621877f1/)
+
+一棵n个节点的树，每个节点有个权值，n个节点的权值形成1-n的排列，q次询问，每次询问给定u,v,k，求从u到v的路径上有多少个节点的权值能被k整除。
+
++ 2 <= n, q <= 1e5
++ 1 <= u, v, k <= n
+
+```c++
+void ac_yyf(int tt) {
+    int n, q;
+    cin >> n >> q;
+    vector<int> p(n + 1);
+    for (int i = 0; i < n; ++i) {
+        cin >> x;
+        p[x] = i;    
+    }
+    vector<vector<int>> g(n);
+    for (int i = 0, u, v; i < n - 1; ++i) {
+        cin >> u >> v;
+        u--, v--;
+        g[u].push_back(v);
+        g[v].push_back(u);
+    }
+    EulerTour e(g);
+
+    vector<vector<array<int, 3>> > qs(n + 1);
+    for (int i = 0; i < q; ++i) {
+        int u, v, k;
+        cin >> u >> v >> k;
+        u--, v--;
+        qs[k].push_back({u, v, i});
+    }
+
+    vector<int> ans(q);
+    FenwickTree<int> f(2 * n);
+
+    for (int i = 1; i <= n; ++i) {
+        if (qs[i].size() == 0) continue;
+        for (int k = i; k <= n; k += i) {
+            f.add(e.in[p[k]], 1);
+            f.add(e.out[p[k]], -1);
+        }
+        for (auto &[u, v, idx] : qs[i]) {
+            int s = 0;
+            e.node_query(u, v, [&](int x, int y){
+                s += f.sum(x, y);
+            });
+            ans[idx] = s;
+        }
+        for (int k = i; k <= n; k += i) {
+            f.add(e.in[p[k]], -1);
+            f.add(e.out[p[k]], 1);
+        }
+
+    }
+
+    for (int i = 0; i < q; ++i) {
+        cout << ans[i] << "\n";    
+    }
 }
 ```
 
