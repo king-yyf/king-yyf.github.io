@@ -17,6 +17,7 @@ Index
 - [最长递增子序列的个数](#最长递增子序列的个数)
 - [最大上升子序列和](#最大上升子序列和)
 - [最长公共子上升序列](#最长公共子上升序列)
+- [双向最长上升子序列](#双向最长上升子序列)
 
 <!-- /TOC -->
 
@@ -190,5 +191,42 @@ vector<int> maxLCSLIS(int a1[], int n1, int a2[], int n2) {
         if (ans[idx].len < ans[i].len) idx = i;
     }
     return ans[idx].iv;
+}
+```
+
+### 双向最长上升子序列
+
+[codechef](https://www.codechef.com/problems/LWS)
+
+给定一个字符串s，仅含小写字母，找出最长的子序列t，满足：可以将t划分成两个字符串t1,t2,使得t1单调不减，t2单调不升，求最长子序列t的长度。
+
++ 1 <= s.size() <= 2000
+
+**分析**
+
+定义 `dp[k][c1][c2]` 表示前k个字符组成的非递减子序列的结尾为字符c1,非递增子序列的结尾为字符c2 所能获得的最长子序列。
+时间复杂度 `26*26*n`
+
+```c++
+int lws(string &s) {
+    int n = s.size(); 
+    vector f(26, vector<int>(26));
+    for (int i = 0; i < n; ++i) {
+        int t = s[i] - 'a';
+        auto g = f;
+        for (int x = 0; x < 26; ++x) {
+            for (int y = 0; y < 26; ++y) {
+                if (x <= t) g[t][y] = max(g[t][y], f[x][y] + 1);
+                if (y >= t) g[x][t] = max(g[x][t], f[x][y] + 1);
+            }
+        }
+        g.swap(f);
+    }
+    int ans = 0;
+    for (int i = 0; i < 26; ++i) {
+        for (int j = 0; j < 26; ++j) 
+            ans = max(ans, f[i][j]);
+    }
+    return ans;
 }
 ```
