@@ -47,6 +47,7 @@ Index
   - [Lazy-区间翻转求最长连续1数目](#区间翻转求最长连续1数目)
   - [Lazy-区间赋值取反查询最大连续1数目](#区间赋值取反查询最大连续1数目)
   - [Lazy-区间不同元素数目平方和](#区间不同元素数目平方和)
+  - [Lazy-区间加区间乘积和](#区间加区间乘积和)
 - [权值线段树](#权值线段树)
   - [统计大小在某个范围内的数量](#统计大小在某个范围内的数量)
   - [查询集合MEX](#查询集合mex)
@@ -2181,6 +2182,73 @@ int main() {
     return 0;
 }
 ```
+
+### 区间加区间乘积和
+
+[atc357f](https://atcoder.jp/contests/abc357/tasks/abc357_f)
+
+给定两个长度为n的数组a和b，q次操作:
++ 1 l r x: 对所有 l <= i <= r 执行 a[i] = a[i] + x
++ 2 l r x: 对所有 l <= i <= r 执行 b[i] = b[i] + x
++ 3 l r: 输出 `a[l]*b[l] + a[l+1]*b[l+1]+...+a[r]*b[r]`，模 998244353
+
++ 1 <= n, q <= 2e5
++ 0 <= a[i], b[i], x <= 1e9
++ 1 <= l <= r <= n
+
+```c++
+struct S {
+    mint sa, sb, sab;
+    int len;
+};
+struct F {
+    mint fa, fb;
+};
+S op(S x, S y) {
+    return S{ x.sa + y.sa, x.sb + y.sb, x.sab + y.sab, x.len + y.len };
+}
+S e() {
+    return S{ 0, 0, 0, 0};
+};
+S tag(F f, S x) { 
+    return S{x.sa + f.fa * x.len, x.sb + f.fb * x.len, x.sab + x.sa * f.fb + x.sb * f.fa + f.fa * f.fb * x.len, x.len };
+}
+F merge(F x, F y) { return F{ x.fa + y.fa, x.fb + y.fb };}
+F id() { return F{0,0}; }
+int main() {
+    ios::sync_with_stdio(false); cin.tie(nullptr);
+    
+    int n, q;
+    cin >> n >> q;
+    vector<int> a(n);
+
+    for (int i = 0; i < n; ++i) {
+        cin >> a[i];
+    }
+    vector<S> v(n);
+    for (int i = 0, x; i < n; ++i) {
+        cin >> x;
+        v[i] = S{a[i], x, mint(a[i]) * x, 1};
+    } 
+    LazySegTree<S, op, e, F, tag, merge, id> seg(v);
+
+    for (int i = 0, t, l, r, x; i < q; ++i) {
+        cin >> t;
+        if (t == 1) {
+            cin >> l >> r >> x;
+            seg.apply(l - 1, r, F{ x, 0 });
+        } else if (t == 2) {
+            cin >> l >> r >> x;
+            seg.apply(l - 1, r, F{ 0, x });
+        } else {
+            cin >> l >> r;
+            cout << seg.get(l - 1, r).sab << '\n';
+        }
+    }
+    return 0;
+}
+```
+
 
 ## 权值线段树
 
